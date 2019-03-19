@@ -42,7 +42,7 @@ module.exports = {
   }
 }
 
-if (prod || 0) {
+if (prod || 1) {
 
   // 压缩sass
   // module.exports.compilers['sass'] = {outputStyle: 'compressed'}

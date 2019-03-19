@@ -30,7 +30,6 @@ page{
     <view class="content">
       <view class="desc">
       <htmlParser :parserName="name" :parserContent.sync="content" parserType="md"/>
-      <!-- <htmlParser :parserName="name1" :parserContent.sync="content" parserType="md"/> -->
         <!-- <view>
           <view class='cu-tag bg-red light sm round'>假装有猫系列</view>
           <view class='cu-tag bg-green light sm round'>戏精系列</view>
@@ -47,7 +46,6 @@ page{
 <script>
   import wepy from 'wepy'
   import commApi from '../../api/comm'
-  // import html2wxml from '../../components/html2wxml'
     import htmlParser from '../../components/htmlParser'
   export default class Index extends wepy.page {
     config = {
