@@ -1,0 +1,104 @@
+<style lang="less">
+page{
+  padding-bottom: 100rpx;
+}
+.cu-bar .content image{
+  height: 60rpx;
+  width: 240rpx;
+}
+
+</style>
+<template>
+  <view>
+
+
+<view class='cu-custom'>
+  <view class="cu-bar fixed bg-shadeTop" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
+      <navigator class='action' open-type="navigateBack" delta="1" hover-class="none">
+      <text class='icon-back'></text> 返回
+    </navigator> 
+    <view class='content' style='top:{{StatusBar}}px;'>易然自得</view>
+  </view>
+</view>
+
+<view class="cu-card article {{isCard?'no-card':''}}">
+  <view wx:for="1" wx:key class="cu-item shadow">
+    <view class="title">{{article.title}}</view>
+    <view class="content">
+      <view>{{article.author}}</view>
+    </view>
+    <view class="content">
+      <view class="desc">
+      <htmlParser :parserName="name" :parserContent.sync="content" parserType="md"/>
+      <!-- <htmlParser :parserName="name1" :parserContent.sync="content" parserType="md"/> -->
+        <!-- <view>
+          <view class='cu-tag bg-red light sm round'>假装有猫系列</view>
+          <view class='cu-tag bg-green light sm round'>戏精系列</view>
+        </view> -->
+      </view>
+    </view>
+  </view>
+</view>
+
+
+</view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import commApi from '../../api/comm'
+  // import html2wxml from '../../components/html2wxml'
+    import htmlParser from '../../components/htmlParser'
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '每天自律打卡',
+    }
+
+
+    components = {
+      htmlParser: htmlParser,
+    };
+
+
+    data = {
+      isCard:true,
+      StatusBar:0,
+      CustomBar:0,
+      article:[],
+      content: "",  
+      name: 'myHtmlParserKiner',
+      name1: 'myHtmlParserKiner',
+    }
+
+    methods = {
+        tips(intro){
+            wepy.showModal({
+                content: intro,
+                showCancel: false
+            });
+        },
+       
+      isCard(e) {
+          this.isCard = e.detail.value
+        },
+        click(){},
+
+    }
+
+    async onLoad(query) {
+        this.StatusBar= wepy.$instance.globalData.StatusBar
+        this.CustomBar= wepy.$instance.globalData.CustomBar
+        this.article = await commApi.GetArticleInfo(query.id)
+        this.content = this.article.body
+        //更新
+        this.$apply()
+        // 记录用户行为
+        commApi.ViewAction(query.id)
+        //调用通知接口通知组件更新数据
+        this.$invoke('htmlParser', 'htmlParserNotice')
+    }
+
+
+  }
+
+</script>

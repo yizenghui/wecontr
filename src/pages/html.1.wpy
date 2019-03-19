@@ -1,0 +1,60 @@
+<style lang="less">
+@import '../wxparse/wxParse.wxss';
+</style>
+<template>
+  <view class="container">
+    <button type="default" @tap="translate">点击翻译富文本</button>
+    <button type="default" @tap="translate1">点击翻译富文本1</button>
+
+    <view class="content">
+      <html2wxml :parserName="name" :parserContent.sync="textContent"></html2wxml>
+      <html2wxml1 :parserName="name1" :parserContent.sync="textContent1"></html2wxml1>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import html2wxml from '../components/html2wxml'
+
+  export default class Html extends wepy.page {
+    config = {
+      navigationBarTitleText: 'wxparseDemo'
+    }
+
+    components = {
+      html2wxml: html2wxml,
+      html2wxml1: html2wxml
+    }
+
+    data = {
+      name: 'myHtmlParserKiner',
+      name1: 'myHtmlParserKiner1',
+      textContent: '',
+      textContent1: '',
+      mock: "<p>JavaScript 是世界上最流行的脚本语言。</p><p>JavaScript 是属于 web 的语言，它适用于 PC、笔记本电脑、平板电脑和移动电话。</p><p>JavaScript 被设计为向 HTML 页面增加交互性。</p><p>许多 HTML 开发者都不是<span style='color: red;'>程序员</span>，但是 JavaScript 却拥有非常简单的语法。几乎每个人都有能力将小的 JavaScript 片段添加到网页中。</p>",
+      mock1: "<p style='color: blue;'>感谢使用，您的star是对我最大的鼓励</p><p>JavaScript 是属于 web 的语言，它适用于 PC、笔记本电脑、平板电脑和移动电话。</p><p>JavaScript 被设计为向 HTML 页面增加交互性。</p><p>许多 HTML 开发者都不是<span style='color: gray;'>程序员</span>，但是 JavaScript 却拥有非常简单的语法。几乎每个人都有能力将小的 JavaScript 片段添加到网页中111。</p>"
+    }
+
+    methods = {
+      translate () {
+        //此处只模仿本地环境
+        //获取数据
+        this.textContent = this.mock
+        //更新
+        this.$apply()
+        //调用通知接口通知组件更新数据
+        this.$invoke('html2wxml', 'htmlParserNotice')
+      },
+      translate1 () {
+        //此处只模仿本地环境
+        //获取数据
+        this.textContent1 = this.mock1
+        //更新
+        this.$apply()
+        //调用通知接口通知组件更新数据
+        this.$invoke('html2wxml1', 'htmlParserNotice')
+      }
+    }
+  }
+</script>

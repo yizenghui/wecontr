@@ -1,0 +1,105 @@
+<style lang="less">
+  .weui-mask {
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+  }
+
+  .weui-dialog {
+    position: fixed;
+    z-index: 5000;
+    width: 80%;
+    max-width: 300px;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    background-color: #FFFFFF;
+    text-align: center;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.weui-skin_android .weui-dialog__hd {
+    text-align: left;
+}
+
+.weui-dialog__hd {
+    padding: 1.3em 1.6em 0.5em;
+}
+
+.weui-dialog__bd {
+    padding: 0 1.6em 0.8em;
+    min-height: 40px;
+    font-size: 15px;
+    line-height: 1.3;
+    word-wrap: break-word;
+    word-break: break-all;
+    color: #808080;
+}
+.weui-skin_android .weui-dialog__bd {
+    color: #808080;
+    padding: 0.25em 1.6em 2em;
+    font-size: 17px;
+    text-align: left;
+}
+.weui-skin_android .weui-dialog__ft {
+    display: block;
+    text-align: right;
+    line-height: 42px;
+    font-size: 16px;
+    padding: 0 1.6em 0.7em;
+}
+
+.weui-dialog__btn {
+    display: block;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    flex: 1;
+    color: #09BB07;
+    text-decoration: none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    position: relative;
+}
+.weui-skin_android .weui-dialog__btn_default {
+    color: #808080;
+}
+.weui-skin_android .weui-dialog__btn:last-child {
+    margin-right: -0.8em;
+}
+.weui-dialog__btn_primary {
+    color: #09BB07;
+}
+.weui-skin_android .weui-dialog__btn {
+    display: inline-block;
+    vertical-align: top;
+    padding: 0 .8em;
+}
+</style>
+<template>
+  <view class="weui-mask">
+      <view class="weui-dialog weui-skin_android">
+          <view class="weui-dialog__hd"><strong class="weui-dialog__title">弹窗标题</strong></view>
+          <view class="weui-dialog__bd">
+              弹窗内容，告知当前状态、信息和解决方法，描述文字尽量控制在三行内
+          </view>
+          <view class="weui-dialog__ft">
+              <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default">辅助操作</a>
+              <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary">主操作</a>
+          </view>
+      </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+
+  export default class Login extends wepy.component {
+    onLoad(){
+      console.log('用户没有登录时弹出来！！！')
+    }
+  }
+</script>

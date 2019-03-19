@@ -1,0 +1,85 @@
+<style lang="less">
+page{
+  padding-bottom: 100rpx;
+}
+.cu-bar .content image{
+  height: 60rpx;
+  width: 240rpx;
+}
+
+</style>
+<template>
+  <view>
+
+<image src='/images/BasicsBg.png' mode='widthFix' class='png' style='width:100%;height:486rpx'></image>
+
+
+
+<view class="cu-bar bg-white solid-bottom margin-top">
+  <view class='action'>
+    <text class='icon-title text-orange '></text> {{topic.name}}
+  </view>
+</view>
+
+<view class="cu-card article {{isCard?'no-card':''}}">
+  <view wx:for="{{articles}}" wx:key class="cu-item shadow"  @tap="goto({{item.wxto}})">
+    <view class="title">{{item.title}}</view>
+    <view class="content">
+      <image wx:if="{{item.cover}}" src="{{item.cover}}" mode="aspectFill"></image>
+      <view class="desc">
+        <view class='text-content' wx:if="{{item.intro}}"> {{item.intro}}</view>
+        <view class="text-gray">
+            <text class="icon-attentionfill"></text> {{item.view}}
+            <text class="icon-appreciatefill"></text> {{item.liked}}
+            <text class="icon-messagefill"></text> {{item.commented}}
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+
+</view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import commApi from '../../api/comm'
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '每天自律打卡',
+    }
+
+    components = {
+    };
+
+
+    data = {
+      isCard:true,
+      StatusBar:0,
+      CustomBar:0,
+      topic:[],
+      articles:[]
+    }
+
+
+    methods = {
+      goto(to){
+          console.log('to',to)
+          wepy.navigateTo({url:to});
+      },
+      click(){},
+    }
+
+    async onLoad(query) {
+      
+        this.StatusBar= wepy.$instance.globalData.StatusBar
+        this.CustomBar= wepy.$instance.globalData.CustomBar
+        this.topic = await commApi.GetTopicInfo(1)
+        this.articles = await commApi.GetTopicArticles(1,1)
+        this.$apply()
+    }
+
+
+  }
+
+</script>

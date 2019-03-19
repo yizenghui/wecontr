@@ -1,0 +1,120 @@
+<style lang="less">
+.tooltip {
+    position: absolute;
+    z-index: 1070;
+    display: block;
+    margin: 0;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.5;
+    text-align: left;
+    text-align: start;
+    text-decoration: none;
+    text-shadow: none;
+    text-transform: none;
+    letter-spacing: normal;
+    word-break: normal;
+    word-spacing: normal;
+    white-space: normal;
+    line-break: auto;
+    font-size: .875rem;
+    word-wrap: break-word;
+    opacity: 1;
+}
+.tooltip-inner {
+    max-width: 200px;
+    padding: .25rem .5rem;
+    color: #fff;
+    text-align: center;
+    background-color: #000;
+    border-radius: .25rem;
+}
+
+.bs-tooltip-bottom .arrow {
+    top: 0;
+}
+
+.bs-tooltip-top .arrow {
+    bottom: 0;
+}
+.tooltip .arrow {
+    position: absolute;
+    display: block;
+    width: .8rem;
+    height: .4rem;
+}
+.tooltip .arrow::before {
+    position: absolute;
+    content: "";
+    border-color: transparent;
+    border-style: solid;
+}
+.bs-tooltip-bottom .arrow::before {
+    bottom: 0;
+    border-width: 0 .4rem .4rem;
+    border-bottom-color: #000;
+}
+.bs-tooltip-top .arrow::before {
+    top: 0;
+    border-width: .4rem .4rem 0;
+    border-top-color: #000;
+}
+.bs-tooltip-top {
+    padding: .4rem 0;
+}
+.bs-tooltip-bottom {
+    padding: .4rem 0;
+}
+</style>
+<template>
+<view class="page" >
+
+    <view class="tooltip fade bs-tooltip-bottom show" role="tooltip" id="tooltip951720" style="will-change: transform; position: absolute; top: 0px; right: 10px;" x-placement="bottom">
+        <view class="arrow" style="left: 58px;"></view>
+        <view class="tooltip-inner">添加到我的小程序</view>
+    </view>
+
+    <view class="tooltip fade bs-tooltip-top show" role="tooltip" id="tooltip951720" style="will-change: transform; position: absolute; bottom: 60px; left: 10px;" x-placement="bottom">
+        <view class="arrow" style="left: 58px;"></view>
+        <view class="tooltip-inner">东日温暖 DC.林华贤</view>
+    </view>
+
+    <view class="tool-tipsbox" data-style="will-change: transform;position: absolute;transform: translate3d(555px, 1549px, 0px);top: 0px;left: 0px;">
+        <view class="tool-tips">
+            <view class="tool-arrow"></view>
+            <view class="tool-body">
+                添加到我的小程序
+            </view>
+        </view>
+    </view>
+
+
+</view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class Tips extends wepy.page {
+    config = {
+      navigationBarTitleText: '每天自律打卡',
+    }
+
+
+
+    data = {
+        price:110,
+    }
+
+    methods = {
+        
+    }
+
+    async onLoad() {
+        
+    }
+
+  }
+
+</script>

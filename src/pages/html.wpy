@@ -1,0 +1,98 @@
+<style lang="less">
+.index{
+    word-break:break-all;word-wrap:break-word
+}
+.page{
+    padding: 1em 0.8em;
+}
+.p{
+    text-indent:2em;
+    margin-top:0.5em;
+    word-break:break-all;
+    word-wrap:break-word;
+}
+/* widget */
+.btn-area{
+  margin-top: 60rpx;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0 30rpx;
+}
+.from{
+    margin-top: .77em;
+    margin-bottom: .3em;
+    padding-right: 15px;
+    color: #808080;
+    font-size: 14px;
+    text-align:right;
+}
+</style>
+<template>
+  <view class="container">
+    
+      <htmlParser :parserName="name1" :parserContent.sync="content" parserType="md"/>
+
+      
+    <button type="default" @tap="translate">点击翻译富文本</button>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+    import htmlParser from '../components/htmlParser';
+
+  export default class Html extends wepy.page {
+    config = {
+      navigationBarTitleText: 'wxparseDemo'
+    }
+
+    components = {
+            htmlParser: htmlParser,
+    }
+
+    data = {
+        title:"",
+        content: "",  
+        name1: 'myHtmlParserKiner1',
+    }
+
+    methods = {
+      translate () {
+        
+                this.content = `![image](https://mmbiz.qpic.cn/mmbiz_jpg/rQCu3EetJwicr2mZe4URVXNuesHG7zMkyibUCIUXIlYhu0D94icXsPibeNRQ0kcx6uwrOsnxNLJpPRYSfLW6FbNhog/640?wx_fmt=jpeg)
+↵
+↵当我们出生，原始欲望与恐惧就已存在。我们需要自我疗愈，学会知足，享受快乐。
+↵
+↵我们出生的时候，恐惧和我们同时出生。当我们还在母亲的子宫那九个月里，我们觉得很安全，很舒适，我们不需要做任何事情。但当我们出世，环境便全然改变了。他们切断脐带，我们必须学会自己呼吸。我们的肺部可能有些液体，我们需要把那些液体推出体外以吸到第一口气，我们能否生存就靠那一口气，这就是我们原始恐惧的由来。我们想生存，但作为一名幼嫩、脆弱的婴儿，虽然有手有脚，但却不能运用它们，我们需要有人照顾。随着原始恐惧而来的，是原始欲望。即使我们长大成人，原始恐惧和原始欲望仍然存在。
+↵
+↵恐惧和欲望来自同一源头。我们害怕死亡，欲望便由此而来，我们期盼有人能够帮助我们生存。每时每刻，我们都期待着这样的人来临，帮助我们，保护我们。我们感到无助，因为无法单靠自己个人生存，我们需要另外一个人。深入观察欲望会发现，我们每一个欲望都是这个原始欲望的延续。由于我们还不懂辨识内在小孩的欲望，我们的欲望因此无法得到满足。我们希望发展新的关系、找到新的工作或者得到更多金钱，但当我们真的得到了这些东西，却并不享受这些东西。欲望总是一个接着一个，永不停止。
+↵
+↵**知足是快乐的条件**
+↵
+↵佛陀讲过关于“知足”的修习，就是在此时此地获得觉知。我们已经拥有幸福快乐的条件，不需要得到更多。Samtusta被翻译为“觉知到一个人拥有很少就已满足”。当我们回到当下，我们会看到自己已拥有所有快乐幸福的条件，我们也可能发现，自己所拥有的，已经超过让自己在当下感到快乐所需的条件了。我们必须停止追逐，因为即使得到自己所欲求的对象，我们也不会感到快乐，因为我们会想着要追逐另一个目标。
+↵
+↵如果我们有安全感，就可能不会再有更多的欲望。我的小屋够好了，小屋有很多窗门，外部景观非常漂亮，我不需要更大的。我们已有很多幸福快乐的条件，不需要到未来追逐，追求得到更多，我们所拥有的已足够。一旦我们实践这个生活方式，我们立刻能成为幸福快乐的人。
+↵
+↵我们如何在现代生活中实践这样的智慧？很多人还是相信，只有当我们拥有很多金钱以及权力时，我们才会快乐。环顾四周，我们看到很多人拥有很多钱，也享有权力，但还是深受着压力与孤单之苦。因此，权力与金钱并非答案，我们需要的是教导自己正念生活的艺术。
+↵
+↵![image](https://mmbiz.qpic.cn/mmbiz_jpg/rQCu3EetJw9FjK5XkMHtutqosV4YRo0vUBcxib2YM9SMGu6lcC48YjbF0OqYF2ibvtrU6CiamPIHwxY29Y0ic62mfQ/640?wx_fmt=jpeg)
+↵
+↵**与痛苦的回忆告别**
+↵
+↵藏识就像一间私人房间，总是放映着过去的影片。在那里，我们保存了创伤和痛苦的记忆。我们在理性上明白，过去的已经过去，但过去的影像仍然停留在那里，时而浮现，可能是在我们梦中，也可能是在我们清醒时，我们会回去再次经历过去的痛苦。我们有被过去监禁的倾向。原则上，我们都知道过去的早已不在，记忆只是影片或是照片，但那些影片持续播放，每一次播放，都使我们再度受苦。
+↵
+↵假设我们在一间电影院内，那部影片在银幕上播放。坐在座位上看这部影片，我们可能以为这是一个真实的故事，我们甚至会哭泣。那痛苦的感受是真实的，那眼泪是真的，但那经历不是在当下发生，那只是一部电影。
+↵
+↵如果我邀请你和我一起走近银幕，触摸那个银幕，我们会知道并没有人在那里，只有光在银幕上闪烁。我们无法和银幕上的人交谈，无法邀请他们和我们一起喝茶，因为这只是一个虚构的故事，并不真实，但它产生了真实的痛苦、真实的忧郁。
+↵
+↵知道内在的小孩还在那里，沉溺于过去，这个很重要。我们必须拯救他。
+↵
+↵安稳地坐好，安住当下，我们应该与内在小孩讲话：“我亲爱的小兄弟，我亲爱的小姐妹，你该知道我们已经长大，现在我们可以保护和维护自己了。”`
+
+                this.$apply();
+                this.$invoke('htmlParser', 'htmlParserNotice')
+      },
+      
+    }
+  }
+</script>

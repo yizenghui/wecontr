@@ -1,0 +1,248 @@
+
+<style>
+.posterbackground{
+   width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.5);
+    position:fixed;
+    top:0;
+    left:0;
+    z-index:199;
+
+}
+.posterbackground .inner{
+    width:664rpx;
+    height:1050rpx;
+    background:#fff;
+    border-radius:8rpx;
+    margin:30rpx auto 0;
+    overflow:hidden;
+}
+.posterbox{
+    text-align: center;
+}
+.fui-picture image {
+  width:664rpx;
+  height:935.2rpx
+}
+
+.clearBtnStyle{
+    padding: 0;
+    margin: 0;
+    height: auto;
+    line-height: auto;
+    line-height:1;
+    font-size:12px;
+}
+
+.clearBtnStyle,.button-hover {
+color:rgba(0, 0, 0, 0.6);
+background-color:white;
+}
+.navshare{
+  padding: 5px 10px;
+  text-align: center;
+  width:100px;
+}
+.navposter{
+  padding: 5px 10px;
+  text-align: center;
+  width:100px;
+  font-size:12px;
+
+}
+.navshare,button::after{
+border:none;
+}
+.navshare,input{
+outline:none;
+border:none;
+list-style: none;
+}
+.navshare,.button-hover {
+color:rgba(0, 0, 0, 0.6);
+background-color:white;
+}
+
+
+.cards{
+    padding: 10rpx;
+    background-color: white;
+}
+.card{
+    margin-bottom: 10rpx;
+    background-color: bisque;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+}
+.card-box_hd{
+    margin-right: .8em;
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    text-align: center;
+}
+
+.card-box_bd{
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    flex: 1;
+    min-width: 0;
+    position:relative;
+}
+.card-box_bd{
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    flex: 1;
+    min-width: 0;
+}
+.card-icon{
+    position:absolute;
+    width:30rpx;
+    height:30rpx;
+    right:0px;
+    top:0px;
+    z-index:100;
+    border: red solid 1px;
+}
+.card-report{
+    position:absolute;
+    width:30rpx;
+    height:30rpx;
+    right:0px;
+    bottom:0px;
+    z-index:100;
+    border: red solid 1px;
+}
+.card-title{
+
+}
+.card-desc{
+    color: #808080;
+    font-size: 13px;
+    line-height: 1.2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+</style>
+<template>
+    <view>
+
+
+        <view class="cards">
+
+            <view class="card">
+                <view class="card-box_hd">
+                    头像
+                </view>
+                <view class="card-box_bd">
+                    <view class="card-icon">
+                        <image style="width: 20rpx; height: 20rpx; " mode="scaleToFill" src="{{src}}" ></image>
+                    </view>
+
+                    <view class="card-report" @tap="report('openid')">
+                        <image style="width: 20rpx; height: 20rpx; " mode="scaleToFill" src="{{src}}" ></image>
+                    </view>
+                    <view class="card-title">
+                        小易同学   <text class="card-subtitle">律值：123654</text>
+                    </view>
+                    <view class="card-desc">
+                        小易同学个性签名内容小易同学个性签名内容小易同学个性签名内容小易同学个性签名内容小易同学个性签名内容小易同学个性签名内容小易同学个性签名内容小易同学个性签名内容
+                        小易同学个性签名内容小易同学个性签名内容小易同学个性签名内容小易同学个性签名内容小易同学个性签名内容小易同学个性签名内容小易同学个性签名内容小易同学个性签名内容
+                    </view>
+                </view>
+            </view>
+            <view class="card">
+                <view class="card-box_hd">
+                    头像
+                </view>
+                <view class="card-box_bd">
+                    <view class="card-icon">
+                        <image style="width: 20rpx; height: 20rpx; " mode="scaleToFill" src="{{src}}" ></image>
+                    </view>
+
+                    <view class="card-report" @tap="report('openid')">
+                        <image style="width: 20rpx; height: 20rpx; " mode="scaleToFill" src="{{src}}" ></image>
+                    </view>
+                    <view class="card-title">
+                        小易同学   <text class="card-subtitle">律值：123654</text>
+                    </view>
+                    <view class="card-desc">
+                        小易同学个性签名内容小易同学个性签名内容小易同学个性签名内容小易同学个性签名内容小易同学个性签名内容小易同学个性签名内容小易同学个性签名内容小易同学个性签名内容
+                        小易同学个性签名内容小易同学个性签名内容小易同学个性签名内容小易同学个性签名内容小易同学个性签名内容小易同学个性签名内容小易同学个性签名内容小易同学个性签名内容
+                    </view>
+                </view>
+            </view>
+
+        </view>
+        
+
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+    import commApi from '../../api/comm';
+    import userApi from '../../api/user';
+    export default class Poster extends wepy.page {   
+        components = {
+            // Fixed
+        };
+        config = {
+            'navigationBarTitleText': '自定义导航',
+        }
+        data = {
+            showPoster:false,
+            poster_api:'https://miniapi.93zp.com/poster/job?id=2366262&hp=0&hc=0',
+            posterURL:''
+        };
+        events = {
+            'parentFn2': () => {
+                console.log('xxx parentFn2');
+            }
+        };
+        methods = {
+          eventDraw() {
+            wepy.showLoading({
+                title: "绘制分享图片中",
+                mask: true
+            });
+            this.painting = DrawerData;
+            this.$apply();
+            
+          },
+
+          async eventSave() {
+              // 保存图片至本地
+              const res = await wepy.saveImageToPhotosAlbum({
+                  filePath: this.shareImage
+              });
+              if (res.errMsg === "saveImageToPhotosAlbum:ok") {
+                  wepy.showToast({
+                      title: "保存图片成功",
+                      icon: "success",
+                      duration: 2000
+                  });
+              }
+          },
+
+          eventGetImage(event) {
+              wepy.hideLoading();
+              const { tempFilePath, errMsg } = event;
+              if (errMsg === "canvasdrawer:ok") this.shareImage = tempFilePath;
+          }
+        }
+
+        
+        async onLoad () {
+            // 签名openid
+            await userApi.getOpenID();
+        }
+
+    
+    }
+</script>

@@ -1,0 +1,105 @@
+<style lang="less">
+page{
+  padding-bottom: 100rpx;
+}
+.cu-bar .content image{
+  height: 60rpx;
+  width: 240rpx;
+}
+
+</style>
+<template>
+  <view>
+
+<!-- <image src='/images/BasicsBg.png' mode='widthFix' class='png' style='width:100%;height:486rpx'></image> -->
+
+<view class='cu-custom'>
+  <view class="cu-bar fixed bg-shadeTop" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
+    <view class='content' style='top:{{StatusBar}}px;'>易然自得</view>
+  </view>
+</view>
+<swiper class="screen-swiper round-dot" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500">
+  <swiper-item wx:for="{{4}}" wx:key>
+    <image src="https://image.weilanwl.com/img/4x3-{{index+1}}.jpg" mode='aspectFill'></image>
+  </swiper-item>
+</swiper>
+
+
+
+<view class="cu-card article {{isCard?'no-card':''}}">
+  <view wx:for="{{articles}}" wx:key class="cu-item shadow"  @tap="goto({{item.wxto}})">
+    <view class="title">{{item.title}}</view>
+    <view class="content">
+      <image wx:if="{{item.cover}}" src="{{item.cover}}" mode="aspectFill"></image>
+      <view class="desc">
+        <view class='text-content' wx:if="{{item.intro}}"> {{item.intro}}</view>
+        <view class="text-gray">
+            <text class="icon-attentionfill"></text> {{item.view}}
+            <text class="icon-appreciatefill"></text> {{item.liked}}
+            <text class="icon-messagefill"></text> {{item.commented}}
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 
+<view class="cu-card article {{isCard?'no-card':''}}">
+  <view wx:for="[1,2,3,4,5]" wx:key class="cu-item shadow">
+    <view class="title">这里有个戏精铲屎官，主子了解一下？</view>
+    <view class="content">
+      <image src="https://image.weilanwl.com/img/4x3-3.jpg" mode="aspectFill"></image>
+      <view class="desc">
+        <view class='text-content'> 这是一个伪铲屎官为了给自己的程序凑字数瞎几把乱写的一堆文字，了解一下就OK！ヾ(=･ω･=)o</view>
+        <view>
+          <view class='cu-tag bg-red light sm round'>假装有猫系列</view>
+          <view class='cu-tag bg-green light sm round'>戏精系列</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view> -->
+
+</view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import commApi from '../../api/comm'
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '每天自律打卡',
+    }
+
+
+    components = {
+    };
+
+
+    data = {
+      isCard:true,
+      StatusBar:0,
+      CustomBar:0,
+      articles: []
+    }
+
+    methods = {
+      goto(to){
+          console.log('to',to)
+          wepy.navigateTo({url:to});
+      },
+      click(){},
+    }
+
+
+    async onLoad(query) {
+        this.StatusBar= wepy.$instance.globalData.StatusBar
+        this.CustomBar= wepy.$instance.globalData.CustomBar
+        this.articles = await commApi.GetRecommendedArticles(1)
+        this.$apply()
+    }
+
+
+  }
+
+</script>

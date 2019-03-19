@@ -1,0 +1,13 @@
+{
+  "description": "a wepy sign app",
+  "setting": {
+    "urlCheck": true,
+    "es6": false,
+    "postcss": false,
+    "minified": false
+  },
+  "compileType": "miniprogram",
+  "appid": "wxa94ddd94358b2d1d",
+  "projectname": "sign",
+  "miniprogramRoot": "./dist"
+}

@@ -1,0 +1,235 @@
+
+<template>
+<view>
+<view wx:if="{{showPoster}}" class="posterbackground posterin" bindtap="close">
+  <view class="inner" catchtap="click"> 
+        <view class="posterbox">
+            <view bindtap="previewImage" class="fui-picture">
+                <image bindload="loadImg" src="{{posterURL}}" ></image>
+            </view>
+            <view bindtap="savePicture" class="save-btn">
+                <button class="weui-btn" type="primary" style="width:70%;margin:5px auto;height:80rpx;line-height:80rpx;"  @tap="savePoster()">保存图片并分享</button>
+            </view>
+        </view>
+    </view>
+</view>
+
+<view class="flex fix_nav_sp">     
+    <view class="navshare">
+        <button class="clearBtnStyle" openType="share" >
+            <image src="../../images/wx.png" style="width:48rpx;height:48rpx;display:block;margin: 0 auto;"></image>
+                分享
+        </button>
+    </view>
+    <view class="navposter" wx:if="{{api}}">
+        <button class="clearBtnStyle"  @tap="getPoster()" >
+            <image src="../../images/tp.png" style="width:48rpx;height:48rpx;display:block;margin: 0 auto;"></image>
+                生成海报
+        </button>
+    </view>
+    <view class="flex">
+        <button class="weui-btn" type="primary" style="width:100%;margin:5px;height:80rpx;line-height:80rpx;"  @tap="tapBtnFunc()">{{btnTitle}}</button>
+    </view>
+</view>
+</view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import commApi from '../../api/comm';
+  import Tips from '../../utils/Tips';
+
+  export default class Nav extends wepy.component {
+    
+    props = {
+      api:{
+        type:String,
+        default:""
+      },
+      btnTitle:{
+        type:String,
+        default:"投递简历"
+      },
+      btnFunc:{
+        type:String,
+        default:"childFn"
+      },
+    };
+
+    data = {
+        showPoster:false,
+        posterURL:''
+    };
+
+    methods = {
+      
+        tapBtnFunc () {
+          // 请在 events 里面监听回调，不要通过 @childFn.user="parentFn" 传递过来(测试不能动态调用)
+          this.$emit(`${this.btnFunc}`)
+        },
+        previewImage: function() {
+            wx.previewImage({
+                current: this.posterURL,
+                urls: [ this.posterURL ]
+            });
+        },
+        close(){
+            this.showPoster = false
+            console.log('close')
+        },
+        click(){
+            console.log('click')
+        },
+        savePoster(){
+            // 待优化
+            var e = this;
+            wx.getSetting({
+                success: function(t) {
+                    t.authSetting["scope.writePhotosAlbum"] ? (wx.showLoading({
+                        title: "图片下载中..."
+                    }), setTimeout(function() {
+                        wx.hideLoading();
+                    }, 1e3), wx.downloadFile({
+                        url: e.posterURL,
+                        success: function(t) {
+                            wx.saveImageToPhotosAlbum({
+                                filePath: t.tempFilePath,
+                                success: function(t) {
+                                    e.showPoster = false
+                                    e.setData({showPoster:false})
+                                    // o.toast(e, "保存图片成功");
+                                    Tips.toast("保存图片成功");
+                                },
+                                fail: function(t) {
+                                    e.errMsg = t.errMsg,Tips.error("保存图片失败");
+                                }
+                            });
+                        }
+                    })) : wx.authorize({
+                        scope: "scope.writePhotosAlbum",
+                        success () {
+                            // Tips.toast("已获取授权");
+
+                            wx.showLoading({
+                                title: "图片下载中..."
+                            }), setTimeout(function() {
+                                wx.hideLoading();
+                            }, 1e3), wx.downloadFile({
+                                url: e.posterURL,
+                                success: function(t) {
+                                    wx.saveImageToPhotosAlbum({
+                                        filePath: t.tempFilePath,
+                                        success: function(t) {
+                                            e.showPoster = false
+                                    e.setData({showPoster:false})
+                                            // o.toast(e, "保存图片成功");
+                                            Tips.toast("保存图片成功");
+                                        },
+                                        fail: function(t) {
+                                            e.errMsg = t.errMsg,Tips.error("保存图片失败");
+                                        }
+                                    });
+                                }
+                            })
+
+                        },
+                        fail: function() {
+                            wx.showModal({
+                                title: "警告",
+                                content: "您点击了拒绝授权，将无法正常使用保存图片或视频的功能体验，请删除小程序重新进入。"
+                            });
+                        }
+                    });
+                }
+            });
+        },
+
+        async getPoster() {
+            // if(this.posterURL==''){
+                Tips.loading('海报生成中')
+                const {error,url}  = await commApi.getPosterURL(this.api)
+                if(error ===0){
+                    this.showPoster = true
+                    this.posterURL = url
+                }
+                Tips.loaded()
+            // }else{
+                
+            //     this.showPoster = true
+            // }
+            this.$apply()
+        }
+    }
+    
+    onLoad(){
+    }
+  }
+</script>
+
+
+<style>
+.posterbackground{
+   width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.5);
+    position:fixed;
+    top:0;
+    left:0;
+    z-index:199;
+
+}
+.posterbackground .inner{
+    width:664rpx;
+    height:1050rpx;
+    background:#fff;
+    border-radius:8rpx;
+    margin:30rpx auto 0;
+    overflow:hidden;
+}
+.posterbox{
+    text-align: center;
+}
+.fui-picture image {
+  width:664rpx;
+  height:935.2rpx
+}
+
+.clearBtnStyle{
+    padding: 0;
+    margin: 0;
+    height: auto;
+    line-height: auto;
+    line-height:1;
+    font-size:12px;
+}
+
+.clearBtnStyle,.button-hover {
+color:rgba(0, 0, 0, 0.6);
+background-color:white;
+}
+.navshare{
+  padding: 5px 10px;
+  text-align: center;
+  width:100px;
+}
+.navposter{
+  padding: 5px 10px;
+  text-align: center;
+  width:100px;
+  font-size:12px;
+
+}
+.navshare,button::after{
+border:none;
+}
+.navshare,input{
+outline:none;
+border:none;
+list-style: none;
+}
+.navshare,.button-hover {
+color:rgba(0, 0, 0, 0.6);
+background-color:white;
+}
+
+</style>

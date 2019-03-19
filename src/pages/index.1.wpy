@@ -1,0 +1,87 @@
+<style lang="less">
+  .userinfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .userinfo-avatar {
+    width: 80rpx;
+    height: 80rpx;
+    border-radius: 50%;
+  }
+
+  .userinfo-nickname {
+    color: #aaa;
+  }
+</style>
+<template>
+  <view >
+      <view class="cards">
+        <view class="card">
+            <view class="head">
+              <image class="card-img-top" wx:if="{{ card.cover }}" src="{{card.cover}}" mode="widthFix" />
+            </view>
+            <view>
+              <view>
+                张三
+              </view>
+              <view>
+                坚持签到30天
+              </view>
+            </view>
+        </view>
+      </view>
+      <!-- <Login /> -->
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import testMixin from '../mixins/test'
+  import userApi from '../api/user'
+  import Login from '../components/login'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: 'test',
+    }
+    components = {
+      Login
+    }
+    mixins = [testMixin]
+
+    data = {
+    }
+
+    computed = {
+      now () {
+        return +new Date()
+      }
+    }
+
+    methods = {
+      onChange(event) {
+        wepy.showToast({
+          title: `切换到标签 ${event.detail.index + 1}`,
+          icon: 'none'
+        });
+      }
+    }
+
+    events = {
+      'index-emit': (...args) => {
+        let $event = args[args.length - 1]
+        console.log(`${this.$name} receive ${$event.name} from ${$event.source.$name}`)
+      }
+    }
+
+    async onLoad() {
+      // console.log('xx onShow', wepy.$instance.globalData.token)
+      // await userApi.sign()
+      await userApi.getOpenID()
+      await userApi.getOpenID()
+      
+    }
+  }
+</script>

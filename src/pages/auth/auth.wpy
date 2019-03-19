@@ -1,0 +1,92 @@
+<style lang="less">
+.UCenter-bg {
+  background-image: url(https://image.weilanwl.com/color2.0/index.jpg);
+  background-size: cover;
+  height: 700rpx;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  color: #fff;
+  font-weight: 300;
+  text-shadow: 0 0 3px rgba(0,0,0,0.3);
+}
+.UCenter-bg::after {
+ content: "";
+ position: absolute;
+ width: 100vw;
+ height: 50vw;
+ background-color: #f1f1f1;
+ transform: rotate(-10deg) scale(2,2);
+ bottom: -60vw;
+ left: 0;
+ right: 0;
+ margin: auto;
+
+}
+.UCenter-bg text{
+  opacity: 0.8;
+}
+.UCenter-bg image {
+  width: 250rpx;
+  height: 250rpx;
+}
+</style>
+<template>
+  <view>
+    <view class='UCenter-bg'>
+      <image src='/images/logo.png' class='png' mode='widthFix'></image>
+      <view class='text-xl'>ColorUI组件库
+        <text class='text-df'>v2.0</text>
+      </view>
+      <view class='margin-top-sm'>
+        <text>By:文晓港</text>
+      </view>
+    </view>
+    <view class='padding-xl'>
+      <button class='cu-btn  bg-green shadow lg block' open-type="getUserInfo" bindgetuserinfo="confirmLogin">微信登录</button>
+    </view>
+</view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import commApi from '../../api/comm'
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '登录',
+    }
+
+    data = {
+    }
+
+    methods = {
+      async confirmLogin({detail}) {
+        if (detail.rawData) {
+          const result = await auth.user({block: false, redirect: false}, detail);
+          if (!result) return;
+          Tips.success('授权成功');
+          if (this.redirect == 'true') {
+            WxUtils.backOrRedirect('/pages/user/index');
+          } else {
+            wepy.navigateBack();
+          }
+        } else {
+          // wepy.model('授权失败');
+        }
+      }
+    }
+    
+    async onLoad(query) {
+        this.StatusBar= wepy.$instance.globalData.StatusBar
+        this.CustomBar= wepy.$instance.globalData.CustomBar
+        this.projects = await commApi.GetAllProject()
+        this.$apply()
+    }
+
+
+  }
+
+</script>

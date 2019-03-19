@@ -1,0 +1,100 @@
+<style lang="less">
+
+</style>
+<template>
+<view class="page" >
+    <view class="weui-cells__title">当天表现评价勾选(多选)</view>
+    <view class="weui-cells weui-cells_after-title">
+        <checkbox-group @change="checkboxChange">
+            <label class="weui-cell weui-check__label" wx:for="{{checkboxItems}}" wx:key="value">
+                <checkbox class="weui-check" value="{{item.value}}" checked="{{item.checked}}"/>
+
+                <view class="weui-cell__hd weui-check__hd_in-checkbox">
+                    <icon class="weui-icon-checkbox_circle" type="circle" size="23" wx:if="{{!item.checked}}"></icon>
+                    <icon class="weui-icon-checkbox_success" type="success" size="23" wx:if="{{item.checked}}"></icon>
+                </view>
+                <view class="weui-cell__bd">{{item.name}}</view>
+                <view class="weui-cell__ft " catchtap="tips('{{item.intro}}')"> ? </view>
+            </label>
+        </checkbox-group>
+    </view>
+    <div class="weui-cells__tips">表现评价不会公开，请结合自身情况勾选！</div>
+
+    <view class="weui-btn-area">
+        <button class="weui-btn" type="primary" @tap="showTopTips">确定</button>
+    </view>
+</view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import userApi from '../api/user'
+  import commApi from '../api/comm'
+
+
+  export default class Sign extends wepy.page {
+    config = {
+      navigationBarTitleText: '签到打卡',
+    }
+    components = {
+    }
+
+
+    data = {
+        checkboxValue:[],
+        checkboxItems: [
+            {name: '早睡早起', value: '1', checked: true, intro:"1弹窗内容，告知当前状态、信息和解决方法，描述文字尽量控制在三行内"},
+            {name: '运动健身', value: '2', checked: false, intro:"2弹窗内容，告知当前状态、信息和解决方法，描述文字尽量控制在三行内"},
+            {name: '学新知识', value: '3', checked: false, intro:"3弹窗内容，告知当前状态、信息和解决方法，描述文字尽量控制在三行内"},
+            {name: '远离手机', value: '4', checked: false, intro:"4弹窗内容，告知当前状态、信息和解决方法，描述文字尽量控制在三行内"},
+            {name: '情绪控制', value: '5', checked: true, intro:"5弹窗内容，告知当前状态、信息和解决方法，描述文字尽量控制在三行内"},
+            {name: '高效执行', value: '6', checked: false, intro:"6弹窗内容，告知当前状态、信息和解决方法，描述文字尽量控制在三行内"}
+        ],
+
+        userInfo:[],
+        signInfo:[]
+    }
+
+    computed = {
+      now () {
+        return +new Date()
+      }
+    }
+
+    methods = {
+        tips(intro){
+            wepy.showModal({
+                content: intro,
+                showCancel: false
+            });
+        },
+        checkboxChange (e) {
+            console.log('checkbox发生change事件，携带value值为：', e.detail.value);
+            this.checkboxValue =  e.detail.value;
+            var checkboxItems = this.checkboxItems, values = e.detail.value;
+            for (var i = 0, lenI = checkboxItems.length; i < lenI; ++i) {
+                checkboxItems[i].checked = false;
+
+                for (var j = 0, lenJ = values.length; j < lenJ; ++j) {
+                    if (checkboxItems[i].value === values[j]) {
+                        checkboxItems[i].checked = true;
+                        break;
+                    }
+                }
+            }
+
+            this.checkboxItems = checkboxItems;
+        },
+        doSign(){
+            // 
+        },
+    }
+    async onLoad() {
+        this.signConfig = await commApi.GetSignConfig()
+        console.log(signConfig)
+        this.$apply()
+    }
+    async onShow() {
+    }
+  }
+</script>

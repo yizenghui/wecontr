@@ -1,0 +1,90 @@
+<template>
+    <view class="app">
+        <image src="{{shareImage}}" class="share-image"></image>
+        <canvasdrawer :painting.sync="painting" @getImage.user="eventGetImage"></canvasdrawer>
+        <button @tap="eventDraw">绘制</button>
+        <button @tap="eventSave">保存到本地</button>
+    </view>
+</template>
+
+<script>
+import wepy from "wepy";
+import canvasdrawer from "../components/canvasdrawer/canvasdrawer";
+import DrawerData from "../components/canvasdrawer/drawerdata";
+
+export default class Canvas extends wepy.page {
+    config = {
+        navigationBarTitleText: "生成图片",
+        navigationBarBackgroundColor: "#fff",
+        navigationBarTextStyle: "black"
+    };
+
+    components = {
+        canvasdrawer
+    };
+
+    data = {
+        shareImage: "",
+        painting: null
+    };
+
+    computed = {};
+
+    methods = {
+        eventDraw() {
+            wepy.showLoading({
+                title: "绘制分享图片中",
+                mask: true
+            });
+            this.painting = DrawerData;
+            this.$apply();
+            
+        },
+
+        async eventSave() {
+            // 保存图片至本地
+            const res = await wepy.saveImageToPhotosAlbum({
+                filePath: this.shareImage
+            });
+            if (res.errMsg === "saveImageToPhotosAlbum:ok") {
+                wepy.showToast({
+                    title: "保存图片成功",
+                    icon: "success",
+                    duration: 2000
+                });
+            }
+        },
+
+        eventGetImage(event) {
+            wepy.hideLoading();
+            const { tempFilePath, errMsg } = event;
+            if (errMsg === "canvasdrawer:ok") this.shareImage = tempFilePath;
+        }
+    };
+
+    events = {};
+
+    onLoad() {
+        
+        wepy.showLoading({
+            title: "绘制分享图片中",
+            mask: true
+        });
+        this.painting = DrawerData;
+        this.$apply();
+    }
+}
+</script>
+<style lang="less">
+    .share-image {
+        display: block;
+        width: 600rpx;
+        height: 888rpx;
+        margin: 40rpx auto;
+        border: 1px solid black;
+    }
+
+    button {
+        margin-top: 20rpx;
+    }
+</style>

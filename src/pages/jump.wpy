@@ -1,0 +1,48 @@
+<style lang="less">
+
+</style>
+<template>
+<view class="page" >
+loading
+</view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import userApi from '../api/user'
+
+  export default class Jump extends wepy.page {
+    config = {
+      navigationBarTitleText: '每天自律打卡',
+    }
+
+
+
+    data = {
+        config:[],
+        userInfo:[],
+        signInfo:[],
+        shareImage: "",
+        painting: null,
+        showposter: false,
+        users: [],
+        page:1,
+    }
+
+    methods = {
+        click(){},
+    }
+
+    async onLoad(query) {
+        // scene 需要使用 decodeURIComponent 才能获取到生成二维码时传入的 scene
+        if( query.scene  ){
+            // 跳转到用户详情页
+            wepy.redirectTo({url:"/pages/info?id="+decodeURIComponent(query.scene)});
+        }else{
+            wepy.redirectTo({url:"/pages/index"});
+        }
+    }
+
+  }
+
+</script>

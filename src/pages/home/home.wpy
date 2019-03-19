@@ -1,0 +1,181 @@
+<style lang="less">
+page{
+  padding-bottom: 100rpx;
+}
+.cu-bar .content image{
+  height: 60rpx;
+  width: 240rpx;
+}
+
+</style>
+<template>
+  <view>
+
+<image src='/images/BasicsBg.png' mode='widthFix' class='png' style='width:100%;height:486rpx'></image>
+
+<view class="bg-img bg-mask margin-top" style="background-image: url('https://albedo-theme.com/wp-content/uploads/2016/08/pexels-photo-26180.jpg')">
+  <view class='padding-xl text-white'>
+    <view class='padding-xs text-xl'>
+      早起挑战
+    </view>
+    <view class='padding-xs'>
+      累计32100人次挑战成功
+    </view>
+  </view>
+</view>
+
+
+<view class="bg-img bg-mask margin-top" style="background-image: url('https://albedo-theme.com/wp-content/uploads/2016/08/pexels-photo-26180.jpg')">
+  <view class='padding-xl'>
+    <view class='padding-xs text-xl  text-white'>
+      早起挑战
+    </view>
+    <view class='padding-xs text-gray'>
+      累计32100人次挑战成功
+    </view>
+  </view>
+</view>
+
+
+<view class="bg-img bg-mask margin-top" style="background-image: url('https://albedo-theme.com/wp-content/uploads/2016/08/pexels-photo-26180.jpg')">
+  <view class='padding-xl'>
+    <view class='padding-xs text-xl  text-white'>
+      运动健身
+    </view>
+    <view class='padding-xs text-gray'>
+      累计32100人次挑战成功
+    </view>
+    <view class='padding-xs'>
+      <view class='action'>
+        <text class='text-grey text-sm'>最近签到:</text>
+        <view class="cu-avatar-group">
+          <view class="cu-avatar round sm" style="background-image:url(https://image.weilanwl.com/img/square-4.jpg);"></view>
+          <view class="cu-avatar round sm" style="background-image:url(https://image.weilanwl.com/img/square-3.jpg);"></view>
+          <view class="cu-avatar round sm" style="background-image:url(https://image.weilanwl.com/img/square-2.jpg);"></view>
+          <view class="cu-avatar round sm" style="background-image:url(https://image.weilanwl.com/img/square-1.jpg);"></view>
+        
+          <view class="cu-avatar round sm" style="background-image:url(https://image.weilanwl.com/img/square-4.jpg);"></view>
+          <view class="cu-avatar round sm" style="background-image:url(https://image.weilanwl.com/img/square-3.jpg);"></view>
+          <view class="cu-avatar round sm" style="background-image:url(https://image.weilanwl.com/img/square-2.jpg);"></view>
+          <view class="cu-avatar round sm" style="background-image:url(https://image.weilanwl.com/img/square-1.jpg);"></view>
+        
+          <view class="cu-avatar round sm" style="background-image:url(https://image.weilanwl.com/img/square-4.jpg);"></view>
+          <view class="cu-avatar round sm" style="background-image:url(https://image.weilanwl.com/img/square-3.jpg);"></view>
+          <view class="cu-avatar round sm" style="background-image:url(https://image.weilanwl.com/img/square-2.jpg);"></view>
+          <view class="cu-avatar round sm" style="background-image:url(https://image.weilanwl.com/img/square-1.jpg);"></view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<view class="bg-img bg-mask margin-top" style="background-image: url('https://albedo-theme.com/wp-content/uploads/2016/08/pexels-photo-26180.jpg')">
+  <view class='padding-xl'>
+    <view class='padding-xs text-xl  text-white'>
+      情绪控制
+    </view>
+    <view class='padding-xs text-gray'>
+      累计32100人次挑战成功
+    </view>
+  </view>
+</view>
+
+<view class="bg-img bg-mask margin-top" style="background-image: url('https://albedo-theme.com/wp-content/uploads/2016/08/pexels-photo-26180.jpg')">
+  <view class='padding-xl'>
+    <view class='padding-xs text-xl  text-white'>
+      高效执行
+    </view>
+    <view class='padding-xs text-gray'>
+      累计32100人次挑战成功
+    </view>
+  </view>
+</view>
+
+
+<view class="bg-img bg-mask padding-tb-xl margin-top" style="background-image: url('https://albedo-theme.com/wp-content/uploads/2016/08/pexels-photo-26180.jpg')">
+  <view class='padding-xl text-white'>
+    <view class='padding-xs text-xl'>
+      我和春天有个约会
+    </view>
+    <view class='padding-xs'>
+      I Have a Date with Spring
+    </view>
+  </view>
+</view>
+
+</view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import commApi from '../../api/comm'
+  export default class Home extends wepy.page {
+    config = {
+      navigationBarTitleText: '每天自律打卡',
+    }
+
+
+    components = {
+    };
+
+
+    data = {
+      StatusBar:0,
+      CustomBar:0,
+      list: [{
+          title: '索引列表',
+          img: 'https://image.weilanwl.com/color2.0/plugin/sylb2244.jpg',
+          url: '../indexes/indexes'
+        },
+        {
+          title: '微动画',
+          img: 'https://image.weilanwl.com/color2.0/plugin/wdh2236.jpg',
+          url: '../animation/animation'
+        }
+      ]
+    }
+
+    computed = {
+      now () {
+        return +new Date()
+      }
+    }
+    event = {
+      getImage (e) {
+        //   console.log('getImage',e) 
+          wepy.showToast({
+                    title: e,
+                    icon: "success",
+                    duration: 2000
+                });
+      }
+    }
+
+    methods = {
+        tips(intro){
+            wepy.showModal({
+                content: intro,
+                showCancel: false
+            });
+        },
+       
+      isCard(e) {
+          this.isCard = e.detail.value
+        },
+        click(){},
+
+    }
+
+    async onLoad(query) {
+      
+        this.StatusBar= wepy.$instance.globalData.StatusBar
+        this.CustomBar= wepy.$instance.globalData.CustomBar
+        this.projects = await commApi.GetAllProject()
+        this.$apply()
+        console.log(wepy.$instance.globalData)
+    }
+
+
+  }
+
+</script>
