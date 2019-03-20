@@ -11,9 +11,15 @@ page{
 <template>
   <view>
 
-<image src='/images/BasicsBg.png' mode='widthFix' class='png' style='width:100%;height:486rpx'></image>
 
-
+  <view class="cu-custom" style="height:{{CustomBar}}px;">
+  <view class="cu-bar fixed bg-gradual-pink" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
+    <navigator class='action border-custom' open-type="navigateBack" delta="1" hover-class="none" style='width:{{Custom.width}}px;height:{{Custom.height}}px;margin-left:calc(750rpx - {{Custom.right}}px)'>
+      <text class='icon-back'></text>
+    </navigator>
+    <view class='content' style='top:{{StatusBar}}px;'>{{topic.name}}</view>
+  </view>
+</view>
 
 <view class="cu-bar bg-white solid-bottom margin-top">
   <view class='action'>
@@ -36,6 +42,36 @@ page{
       </view>
     </view>
   </view>
+
+  <view wx:for="{{articles}}" wx:key class="cu-item shadow"  @tap="goto({{item.wxto}})">
+    <view class="title">{{item.title}}</view>
+    <view class="content">
+      <image wx:if="{{item.cover}}" src="{{item.cover}}" mode="aspectFill"></image>
+      <view class="desc">
+        <view class='text-content' wx:if="{{item.intro}}"> {{item.intro}}</view>
+        <view class="text-gray">
+            <text class="icon-attentionfill"></text> {{item.view}}
+            <text class="icon-appreciatefill"></text> {{item.liked}}
+            <text class="icon-messagefill"></text> {{item.commented}}
+        </view>
+      </view>
+    </view>
+  </view>
+  <view wx:for="{{articles}}" wx:key class="cu-item shadow"  @tap="goto({{item.wxto}})">
+    <view class="title">{{item.title}}</view>
+    <view class="content">
+      <image wx:if="{{item.cover}}" src="{{item.cover}}" mode="aspectFill"></image>
+      <view class="desc">
+        <view class='text-content' wx:if="{{item.intro}}"> {{item.intro}}</view>
+        <view class="text-gray">
+            <text class="icon-attentionfill"></text> {{item.view}}
+            <text class="icon-appreciatefill"></text> {{item.liked}}
+            <text class="icon-messagefill"></text> {{item.commented}}
+        </view>
+      </view>
+    </view>
+  </view>
+  
 </view>
 
 </view>
@@ -57,6 +93,7 @@ page{
       isCard:true,
       StatusBar:0,
       CustomBar:0,
+      Custom:0,
       topic:[],
       articles:[]
     }
@@ -74,6 +111,7 @@ page{
       
         this.StatusBar= wepy.$instance.globalData.StatusBar
         this.CustomBar= wepy.$instance.globalData.CustomBar
+        this.Custom= wepy.$instance.globalData.Custom
         this.topic = await commApi.GetTopicInfo(1)
         this.articles = await commApi.GetTopicArticles(1,1)
         this.$apply()
