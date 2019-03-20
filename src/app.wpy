@@ -144,6 +144,7 @@ export default class extends wepy.app {
       // 'pages/html',
       'pages/index/index',
       'pages/topic/index',
+      'pages/user/index',
       'pages/topic/list',
       'pages/article/info',
       'pages/home/home',
@@ -160,7 +161,7 @@ export default class extends wepy.app {
     },
 
 
-    "tabBarx": {
+    "tabBar": {
       "custom": false,
       "color": "#aaa",
       "selectedColor": "#39b54a",
@@ -171,13 +172,19 @@ export default class extends wepy.app {
           "pagePath": "pages/index/index",
           "iconPath": "/images/tabbar/basics.png",
           "selectedIconPath": "/images/tabbar/basics_cur.png",
-          "text": "基础"
+          "text": "推荐"
         },
         {
-          "pagePath": "pages/index/index",
+          "pagePath": "pages/topic/index",
+          "iconPath": "/images/tabbar/component.png",
+          "selectedIconPath": "/images/tabbar/component_cur.png",
+          "text": "专题"
+        },
+        {
+          "pagePath": "pages/user/index",
           "iconPath": "/images/tabbar/about.png",
           "selectedIconPath": "/images/tabbar/about_cur.png",
-          "text": "关于"
+          "text": "我的"
         }
       ]
     }
@@ -295,7 +302,7 @@ export default class extends wepy.app {
     console.log(e)
     wepy.$instance.globalData.StatusBar =  e.statusBarHeight;
     wepy.$instance.globalData.CustomBar =   e.platform == 'android' ? e.statusBarHeight + 50 : e.statusBarHeight + 45;
-
+    wepy.$instance.globalData.Custom = wx.getMenuButtonBoundingClientRect();
   }
 
 }

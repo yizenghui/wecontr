@@ -10,16 +10,16 @@ page{
 </style>
 <template>
   <view>
-
-
-<view class='cu-custom'>
-  <view class="cu-bar fixed bg-shadeTop" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
-      <navigator class='action' open-type="navigateBack" delta="1" hover-class="none">
-      <text class='icon-back'></text> 返回
-    </navigator> 
-    <view class='content' style='top:{{StatusBar}}px;'>易然自得</view>
+<view class="cu-custom" style="height:{{CustomBar}}px;">
+  <view class="cu-bar fixed bg-gradual-pink" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
+    <navigator class='action border-custom' open-type="navigateBack" delta="1" hover-class="none" style='width:{{Custom.width}}px;height:{{Custom.height}}px;margin-left:calc(750rpx - {{Custom.right}}px)'>
+      <text class='icon-back'></text>
+      <text class='icon-homefill'></text>
+    </navigator>
+    <view class='content' style='top:{{StatusBar}}px;'>专栏文章</view>
   </view>
 </view>
+
 
 <view class="cu-card article {{isCard?'no-card':''}}">
   <view wx:for="1" wx:key class="cu-item shadow">
@@ -62,6 +62,7 @@ page{
       isCard:true,
       StatusBar:0,
       CustomBar:0,
+      Custom:[],
       article:[],
       content: "",  
       name: 'myHtmlParserKiner',
@@ -86,6 +87,7 @@ page{
     async onLoad(query) {
         this.StatusBar= wepy.$instance.globalData.StatusBar
         this.CustomBar= wepy.$instance.globalData.CustomBar
+        this.Custom= wepy.$instance.globalData.Custom
         this.article = await commApi.GetArticleInfo(query.id)
         this.content = this.article.body
         //更新

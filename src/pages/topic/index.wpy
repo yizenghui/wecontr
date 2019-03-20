@@ -63,6 +63,25 @@
           </view>
         </view>
       </view>
+      <view class="cu-item bg-img shadow-blur" style="background-image:url({{item.cover}})" @tap="goto({{item.wxto}})" wx:for="{{topics}}" wx:key>
+          <view class='padding-xl text-white'>
+          <view class='padding-xs text-xl'>
+            {{item.name}}
+          </view>
+          <view class='padding-xs'>
+            {{item.intro}}
+          </view>
+        </view>
+      </view><view class="cu-item bg-img shadow-blur" style="background-image:url({{item.cover}})" @tap="goto({{item.wxto}})" wx:for="{{topics}}" wx:key>
+          <view class='padding-xl text-white'>
+          <view class='padding-xs text-xl'>
+            {{item.name}}
+          </view>
+          <view class='padding-xs'>
+            {{item.intro}}
+          </view>
+        </view>
+      </view>
     </view>
     <view class='cu-tabbar-height'></view>
 </view>
