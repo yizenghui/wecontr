@@ -180,7 +180,7 @@
       this.article = await commApi.GetArticleInfo(query.id)
       this.content = this.article.body
       this.userlikearticle = this.article.userlikearticle
-      this.likeusers = await commApi.GetArticleLikeUsers(query.id)
+      // this.likeusers = await commApi.GetArticleLikeUsers(query.id)
       
       this.loadModal = false
       //更新

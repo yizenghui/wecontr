@@ -52,25 +52,25 @@ page{
     </navigator>
   </view>
   <view class="cu-item arrow">
-    <view class='content' bindtap="showQrcode">
+    <navigator class='content' url='/pages/user/like' hover-class='none'>
       <text class='icon-appreciatefill text-red'></text>
       <text class='text-grey'>我点赞的文章</text>
-    </view>
+    </navigator>
   </view>
-  <view class="cu-item arrow">
+  <!-- <view class="cu-item arrow">
     <view class='content' bindtap="showQrcode">
       <text class='icon-comment text-red'></text>
       <text class='text-grey'>我的评论</text>
     </view>
-  </view>
+  </view> -->
   <view class="cu-item arrow">
-    <view class='content' bindtap="showQrcode">
+    <navigator class='content' url='/pages/user/footprint' hover-class='none'>
       <text class='icon-footprint text-red'></text>
       <text class='text-grey'>我的足迹</text>
-    </view>
+    </navigator>
   </view>
   <view class="cu-item arrow">
-    <navigator class='content' url='../about/about' hover-class='none'>
+    <navigator class='content' url='/pages/user/goods' hover-class='none'>
       <text class='icon-shop text-red'></text>
       <text class='text-grey'>积分商城</text>
     </navigator>

@@ -53,6 +53,18 @@ export default class comm extends base {
     //
     return  await this.get(`${this.baseUrl}/articles/recommend`, {page: page});
   }
+  // 获取关注过的文章列表
+  static async GetFootprintArticles(page) {
+    return  await this.get(`${this.baseUrl}/user/footprint`, {page: page});
+  }
+  // 获取关注过的文章列表
+  static async GetLikeArticles(page) {
+    return  await this.get(`${this.baseUrl}/user/like`, {page: page});
+  }
+  // 获取积分商城所有商品
+  static async GetGoodses(page) {
+    return  await this.get(`${this.baseUrl}/goodses`, {page: page});
+  }
   // 获取文章详细
   static async GetArticleInfo(article_id) {
     return  await this.get(`${this.baseUrl}/articles/${article_id}`);

@@ -1,0 +1,110 @@
+<style lang="less">
+page{
+  // padding-bottom: 100rpx;
+}
+.cu-bar .content image{
+  height: 60rpx;
+  width: 240rpx;
+}
+
+</style>
+<template>
+  <view>
+
+<view class="cu-custom" style="height:{{CustomBar}}px;">
+  <view class="cu-bar fixed bg-gradual-pink" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
+    <navigator class='action' open-type="navigateBack" delta="1" hover-class="none">
+      <text class='icon-back'></text> 
+      积分商城
+    </navigator>
+    <view class='action'>
+      <!-- 专栏：自我提供 -->
+    </view>
+  </view>
+</view>
+
+<view class="cu-card case {{isCard?'no-card':''}}">
+  <view wx:for="{{articles}}" wx:key class="cu-item shadow">
+    <view class='image'>
+      <image src="{{item.cover}}" mode="widthFix"></image>
+      <view class="cu-tag bg-blue">兑现</view>
+      <view class='cu-bar bg-shadeBottom text-xxl'>{{item.name}}</view>
+    </view>
+    
+<view class='padding flex text-center text-grey bg-white shadow-warp'>
+  <view class='flex flex-sub flex-direction solid-right'>
+    <view class="text-xxl text-orange">{{item.point}}</view>
+    <view class="margin-top-sm">
+      <text class='icon-goodsfill'></text> 积分</view>
+  </view>
+  <view class='flex flex-sub flex-direction solid-right'>
+    <view class="text-xxl text-blue">{{item.out}}</view>
+    <view class="margin-top-sm">
+      <text class='icon-fork'></text> 出货</view>
+  </view>
+  <view class='flex flex-sub flex-direction'>
+    <view class="text-xxl text-green">{{item.stock}}</view>
+    <view class="margin-top-sm">
+      <text class='icon-all'></text> 库存</view>
+  </view>
+</view>
+
+
+    <view class="cu-bar bg-white margin-top text-right">
+      <view class='action'> 截止时间： {{item.lower_at}} 
+      </view>
+      <view class='action'>
+          <button class='cu-btn round bg-green shadow'>兑换</button>
+      </view>
+    </view>
+
+
+  </view>
+</view>
+
+
+
+</view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import commApi from '../../api/comm'
+  export default class Goods extends wepy.page {
+    config = {
+      navigationBarTitleText: '我的足迹',
+    }
+
+    components = {
+    };
+
+
+    data = {
+      isCard:false,
+      StatusBar:0,
+      CustomBar:0,
+      Custom:0,
+      articles:[]
+    }
+
+
+    methods = {
+      goto(to){
+          wepy.navigateTo({url:to});
+      },
+      click(){},
+    }
+
+    async onLoad(query) {
+      
+        this.StatusBar= wepy.$instance.globalData.StatusBar
+        this.CustomBar= wepy.$instance.globalData.CustomBar
+        this.Custom= wepy.$instance.globalData.Custom
+        this.articles = await commApi.GetGoodses(1)
+        this.$apply()
+    }
+
+
+  }
+
+</script>
