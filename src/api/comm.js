@@ -11,6 +11,27 @@ export default class comm extends base {
     return  await this.get(`${this.baseUrl}/action/view`, {article_id: article_id});
   }
   
+  // 用户点赞某个文章
+  static async LikeArticleAction(article_id) {
+    return  await this.get(`${this.baseUrl}/action/likearticle`, {article_id: article_id});
+  }
+  
+  // 用户取消点赞某个文章
+  static async UnLikeArticleAction(article_id) {
+    return  await this.get(`${this.baseUrl}/action/unlikearticle`, {article_id: article_id});
+  }
+  
+  // 用户点赞某个评论
+  static async LikeCommentAction(comment_id) {
+    return  await this.get(`${this.baseUrl}/action/likecomment`, {comment_id: comment_id});
+  }
+  
+  // 获取首页轮播图
+  static async GetSwipers() {
+    // const {data} = await this.get(`${this.baseUrl}/topics`, {page: page});
+    // return data
+    return  await this.get(`${this.baseUrl}/getswipers`);
+  }
   
   // 获取所有专题
   static async GetTopics(page) {
@@ -18,7 +39,6 @@ export default class comm extends base {
     // return data
     return  await this.get(`${this.baseUrl}/topics`, {page: page});
   }
-  
   // 获取专题详细
   static async GetTopicInfo(topic_id) {
     return  await this.get(`${this.baseUrl}/topics/${topic_id}`);
@@ -36,6 +56,11 @@ export default class comm extends base {
   // 获取文章详细
   static async GetArticleInfo(article_id) {
     return  await this.get(`${this.baseUrl}/articles/${article_id}`);
+  }
+
+  // 获取喜欢此文章的用户列表
+  static async GetArticleLikeUsers(article_id) {
+    return  await this.get(`${this.baseUrl}/articles/${article_id}/likeusers`);
   }
 
   // 获取今天签到用户

@@ -18,9 +18,9 @@ page{
     <view class='content' style='top:{{StatusBar}}px;'>易然自得</view>
   </view>
 </view>
-<swiper class="screen-swiper round-dot" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500">
-  <swiper-item wx:for="{{4}}" wx:key>
-    <image src="https://image.weilanwl.com/img/4x3-{{index+1}}.jpg" mode='aspectFill'></image>
+<swiper wx:if="{{swipers.length}}" class="screen-swiper round-dot" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500">
+  <swiper-item wx:for="{{swipers}}" wx:key   @tap="goto({{item.wxto}})">
+    <image src="{{item.cover}}" mode='aspectFill'></image>
   </swiper-item>
 </swiper>
 
@@ -36,7 +36,7 @@ page{
         <view class="text-gray">
             <text class="icon-attentionfill"></text> {{item.view}}
             <text class="icon-appreciatefill"></text> {{item.liked}}
-            <text class="icon-messagefill"></text> {{item.commented}}
+            <!-- <text class="icon-messagefill"></text> {{item.commented}} -->
         </view>
       </view>
     </view>
@@ -80,19 +80,20 @@ page{
       isCard:true,
       StatusBar:0,
       CustomBar:0,
+      swipers: [],
       articles: []
     }
 
     methods = {
       goto(to){
-          console.log('to',to)
-          wepy.navigateTo({url:to});
+        if(to) wepy.navigateTo({url:to});
       },
       click(){},
     }
 
 
     async onLoad(query) {
+        this.swipers = await commApi.GetSwipers()
         this.StatusBar= wepy.$instance.globalData.StatusBar
         this.CustomBar= wepy.$instance.globalData.CustomBar
         this.articles = await commApi.GetRecommendedArticles(1)
