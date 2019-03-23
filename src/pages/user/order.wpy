@@ -15,7 +15,7 @@ page{
   <view class="cu-bar fixed bg-gradual-pink" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
     <navigator class='action' open-type="navigateBack" delta="1" hover-class="none">
       <text class='icon-back'></text> 
-      积分商城
+      我的礼品
     </navigator>
     <view class='action'>
       <!-- 专栏：自我提供 -->
@@ -114,9 +114,10 @@ page{
     </button>
     <view class="action" @tap="gift()">
       <view class='icon-ticket'>
-        <view class='cu-tag badge' wx:if="{{gifttips}}"></view>
+        <view class='cu-tag badge'></view>
       </view>
       我的礼品
+        
     </view>
     <view class="action" @tap="pointtips()">
       <view class='icon-goodsfill'>
@@ -135,7 +136,7 @@ page{
 <script>
   import wepy from 'wepy'
   import commApi from '../../api/comm'
-  export default class Goods extends wepy.page {
+  export default class Order extends wepy.page {
     config = {
       navigationBarTitleText: '我的足迹',
     }
@@ -202,7 +203,7 @@ page{
         if(this.user.lock_at){
           // todo 用户被锁定了，不允许操作
         }
-        this.goodses = await commApi.GetGoodses(1)
+        this.goodses = await commApi.GetOrders(1)
         this.$apply()
     }
 

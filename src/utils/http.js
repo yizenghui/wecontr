@@ -2,7 +2,7 @@ import wepy from 'wepy'
 
 // HTTP工具类
 export default class http {
-  static async request (method, url, data) {
+  static async request (method, url, requestdata) {
     // 如果全局变量中没有签名参数，先获取签名再发出请求
     if (!wepy.$instance.globalData.token) {
       let token = await wepy.getStorageSync('token') // 获取缓存中的token
@@ -29,15 +29,34 @@ export default class http {
     const param = {
       url: url,
       method: method,
-      data: data
+      data: requestdata
     }
 
     const res = await wepy.request(param)
 
     if (this.isSuccess(res)) {
       return res.data
-    } else {
-      throw this.requestException(res)
+    } else { // 如果是因为token过期了，二次授权
+      console.log('resres',res)
+      if(res.message ==  "Unauthenticated."){
+        
+        const {code} = await wepy.login()
+        const {data} = await wepy.request({ url: wepy.$instance.globalData.baseUrl + '/gettoken', data: { code: code } })
+        wepy.$instance.globalData.token = data.token
+        wepy.setStorageSync('token', data.token)
+        const param = {
+          url: url,
+          method: method,
+          data: requestdata
+        }
+        const res2 = await wepy.request(param)
+
+        if (this.isSuccess(res2)) {
+          return res2.data
+        } 
+      }else{
+        throw this.requestException(res)
+      }
     }
   }
 
