@@ -116,7 +116,7 @@ page{
       <view class='icon-ticket'>
         <view class='cu-tag badge' wx:if="{{gifttips}}"></view>
       </view>
-      我的礼品
+      我的兑换卷
     </view>
     <view class="action" @tap="pointtips()">
       <view class='icon-goodsfill'>

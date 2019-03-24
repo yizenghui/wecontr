@@ -37,18 +37,12 @@ export default class http {
     if (this.isSuccess(res)) {
       return res.data
     } else { // 如果是因为token过期了，二次授权
-      console.log('resres',res)
-      if(res.message ==  "Unauthenticated."){
-        
+      if(res.data.message ==  "Unauthenticated."){
         const {code} = await wepy.login()
         const {data} = await wepy.request({ url: wepy.$instance.globalData.baseUrl + '/gettoken', data: { code: code } })
         wepy.$instance.globalData.token = data.token
         wepy.setStorageSync('token', data.token)
-        const param = {
-          url: url,
-          method: method,
-          data: requestdata
-        }
+
         const res2 = await wepy.request(param)
 
         if (this.isSuccess(res2)) {
