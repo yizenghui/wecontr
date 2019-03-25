@@ -1,0 +1,59 @@
+<style type="less">
+  .group {}
+</style>
+<template>
+<view>
+  <view class="cu-bar bg-white solid-bottom margin-top no-card">
+    <view class='action'>
+      <text class='icon-title text-green'></text>教程步骤
+    </view>
+    <view class='action'>
+      <button class='cu-btn bg-green shadow' @tap="nextsteps()">下一步</button>
+    </view>
+  </view>
+  <view class='bg-white padding'>
+    <view class='cu-steps'>
+      
+    <repeat wx:for="{{steps}}" wx:key>
+      <view class="cu-item {{index>step?'':'text-blue'}}" >
+        <text class='icon-{{item.icon}}'></text> {{item.name}}
+      </view>
+    </repeat>
+    </view>
+    <view class="flex-sub padding">
+      {{guide}}
+    </view>
+  </view>
+</view>
+</template>
+<script>
+  import wepy from 'wepy'
+
+  export default class GuideStep extends wepy.component {
+    props = {
+      steps: {
+        type:Array,
+        default:[]
+      },
+      step: {
+        type:Number,
+        default:0
+      }
+    }
+    data = {
+      // step:0,
+    }
+
+    methods = {
+      nextsteps() {
+        this.step = this.step == this.steps.length - 1 ? 0 : this.step + 1
+      },
+    }
+    
+    computed = {
+        guide () {
+            return  this.steps[this.step].intro
+        }
+    };
+  }
+</script>

@@ -27,7 +27,7 @@ page{
   <view wx:for="{{goodses}}" wx:key class="cu-item shadow">
     <view class='image'>
       <image src="{{item.cover}}" mode="widthFix"></image>
-      <view class="cu-tag bg-blue">现金红包</view>
+      <view class="cu-tag bg-{{item.tag_style}}" wx:if="{{item.tag}}">{{item.tag}}</view>
       <view class='cu-bar bg-shadeBottom text-xxl'>{{item.name}}</view>
     </view>
     

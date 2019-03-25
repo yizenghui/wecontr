@@ -82,10 +82,10 @@ page{
     </navigator>
   </view>
   <view class="cu-item arrow">
-    <view class='content' bindtap="showQrcode">
+    <navigator class='content' url='/pages/user/order' hover-class='none'>
       <text class='icon-barcode text-red'></text>
       <text class='text-grey'>我的兑换卷</text>
-    </view>
+    </navigator>
   </view>
   <view class="cu-item arrow">
     <navigator class='content' url='../test/list' hover-class='none'>
