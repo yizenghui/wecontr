@@ -80,7 +80,7 @@ page{
       <text class='text-grey'>售后客服</text>
     </view>
     <view class='action'>
-      <!-- <text class='text-grey text-sm'>微信号： {{order.boss.wxid}}</text> -->
+      <text class='text-grey text-sm'>{{order.boss.wxid}}</text>
     </view>
   </view>
 </view>
@@ -117,7 +117,7 @@ page{
       guidesteps:[{
             icon: 'usefullfill',
             name: '联系客服',
-            intro:'点击售后客服名片，识别名片中的二维码，将售后客服添加为微信好友。'
+            intro:'点售后客服保存名片(图片)到手机相册，用微信扫一扫识别相册中的名片，添加微信好友后联系。'
           }, {
             icon: 'radioboxfill',
             name: '发送密令',

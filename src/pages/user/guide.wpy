@@ -1,0 +1,113 @@
+<style lang="less">
+page{
+  padding-bottom: 100rpx;
+}
+.cu-bar .content image{
+  height: 60rpx;
+  width: 240rpx;
+}
+
+</style>
+<template>
+  <view>
+  <view class='cu-custom'>
+    <view class="cu-bar fixed bg-shadeTop" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
+      <view class='content' style='top:{{StatusBar}}px;'>易然自得</view>
+    </view>
+  </view>
+<view class="cu-list menu card-menu margin-top-xl margin-bottom-xl shadow-lg">
+  
+  <view class="cu-item arrow">
+    <navigator class='content' url='../test/list' hover-class='none'>
+      <text class='icon-creativefill text-orange'></text>
+      <text class='text-grey'>积分攻略</text>
+    </navigator>
+  </view>
+
+
+  <view class="cu-item arrow">
+    <view class='content'>
+      <text class='icon-squarecheckfill text-green'></text>
+      <text class='text-grey'>签到 +30</text>
+    </view>
+    <view class='action'>
+      <text class='text-grey text-sm'></text>
+    </view>
+  </view>
+
+  <view class="cu-item arrow">
+    <view class='content'>
+      <text class='icon-appreciatefill text-red'></text>
+      <text class='text-grey'>阅读 +2 </text>
+    </view>
+    <view class='action'>
+      <text class='text-grey text-sm'>2 * 1 /  2 * 10</text>
+    </view>
+  </view>
+
+  <view class="cu-item arrow">
+    <view class='content'>
+      <text class='icon-appreciatefill text-red'></text>
+      <text class='text-grey'>点赞 +5 </text>
+    </view>
+    <view class='action'>
+      <text class='text-grey text-sm'>0 / 5 * 6</text>
+    </view>
+  </view>
+
+  <view class="cu-item arrow">
+    <view class='content'>
+      <text class='icon-activity  text-green'></text>
+      <text class='text-grey'>每日组队</text>
+    </view>
+    <view class='action'>
+      <text class='text-grey text-sm'>获得双倍积分</text>
+    </view>
+  </view>
+
+
+</view>
+
+</view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import commApi from '../../api/comm'
+  export default class Guide extends wepy.page {
+    config = {
+      navigationBarTitleText: '每天自律打卡',
+    }
+
+
+    components = {
+    };
+
+
+    data = {
+      isCard:true,
+      StatusBar:0,
+      CustomBar:0,
+      user:[],
+    }
+
+    methods = {
+      goto(to){
+          console.log('to',to)
+          wepy.navigateTo({url:to});
+      },
+      click(){},
+    }
+
+
+    async onLoad(query) {
+        this.StatusBar= wepy.$instance.globalData.StatusBar
+        this.CustomBar= wepy.$instance.globalData.CustomBar
+        this.user = await commApi.GetMe() // 获取当前用户
+        this.$apply()
+    }
+
+
+  }
+
+</script>

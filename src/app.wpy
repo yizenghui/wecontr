@@ -148,6 +148,7 @@ export default class extends wepy.app {
       'pages/user/like',
       'pages/user/goods',
       'pages/user/order',
+      'pages/user/guide',
       'pages/user/exchange',
       'pages/topic/list',
       'pages/article/info',
