@@ -10,6 +10,11 @@ export default class comm extends base {
   static async ViewAction(article_id) {
     return await this.get(`${this.baseUrl}/action/view`, {article_id: article_id});
   }
+
+  // 查看文章行为
+  static async GetUserTasks() {
+    return await this.get(`${this.baseUrl}/action/task`);
+  }
   
   // 用户点赞某个文章
   static async LikeArticleAction(article_id) {

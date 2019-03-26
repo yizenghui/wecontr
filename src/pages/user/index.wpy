@@ -87,7 +87,7 @@ page{
       <text class='text-grey'>我的兑换卷</text>
     </navigator>
   </view>
-  <view class="cu-item arrow">
+  <!-- <view class="cu-item arrow">
     <navigator class='content' url='../test/list' hover-class='none'>
       <text class='icon-post text-orange'></text>
       <text class='text-grey'>我要投稿</text>
@@ -98,7 +98,7 @@ page{
       <text class='icon-writefill text-cyan'></text>
       <text class='text-grey'>意见反馈</text>
     </button>
-  </view>
+  </view> -->
 </view>
 
 </view>

@@ -10,61 +10,32 @@ page{
 </style>
 <template>
   <view>
-  <view class='cu-custom'>
-    <view class="cu-bar fixed bg-shadeTop" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
-      <view class='content' style='top:{{StatusBar}}px;'>易然自得</view>
+
+
+<view class="cu-custom" style="height:{{CustomBar}}px;">
+  <view class="cu-bar fixed bg-gradual-pink" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
+    <navigator class='action' open-type="navigateBack" delta="1" hover-class="none">
+      <text class='icon-back'></text> 
+      积分攻略
+    </navigator>
+    <view class='action'>
+      <!-- 专栏：自我提供 -->
     </view>
   </view>
+</view>
+
 <view class="cu-list menu card-menu margin-top-xl margin-bottom-xl shadow-lg">
   
-  <view class="cu-item arrow">
-    <navigator class='content' url='../test/list' hover-class='none'>
-      <text class='icon-creativefill text-orange'></text>
-      <text class='text-grey'>积分攻略</text>
-    </navigator>
-  </view>
 
-
-  <view class="cu-item arrow">
+  <view class="cu-item arrow" wx:for="{{tasks}}" wx:key @tap="click({{item}})" >
     <view class='content'>
-      <text class='icon-squarecheckfill text-green'></text>
-      <text class='text-grey'>签到 +30</text>
+      <text class='icon-{{item.icon}} text-{{item.iconcolor}}'></text>
+      <text class='text-grey'>{{item.name}}</text>
     </view>
     <view class='action'>
-      <text class='text-grey text-sm'></text>
+      <text class='text-grey text-sm'>{{item.intro}}</text>
     </view>
   </view>
-
-  <view class="cu-item arrow">
-    <view class='content'>
-      <text class='icon-appreciatefill text-red'></text>
-      <text class='text-grey'>阅读 +2 </text>
-    </view>
-    <view class='action'>
-      <text class='text-grey text-sm'>2 * 1 /  2 * 10</text>
-    </view>
-  </view>
-
-  <view class="cu-item arrow">
-    <view class='content'>
-      <text class='icon-appreciatefill text-red'></text>
-      <text class='text-grey'>点赞 +5 </text>
-    </view>
-    <view class='action'>
-      <text class='text-grey text-sm'>0 / 5 * 6</text>
-    </view>
-  </view>
-
-  <view class="cu-item arrow">
-    <view class='content'>
-      <text class='icon-activity  text-green'></text>
-      <text class='text-grey'>每日组队</text>
-    </view>
-    <view class='action'>
-      <text class='text-grey text-sm'>获得双倍积分</text>
-    </view>
-  </view>
-
 
 </view>
 
@@ -88,7 +59,7 @@ page{
       isCard:true,
       StatusBar:0,
       CustomBar:0,
-      user:[],
+      tasks:[],
     }
 
     methods = {
@@ -96,14 +67,17 @@ page{
           console.log('to',to)
           wepy.navigateTo({url:to});
       },
-      click(){},
+      click(item){
+        // todo
+        console.log(item)
+      },
     }
 
 
     async onLoad(query) {
         this.StatusBar= wepy.$instance.globalData.StatusBar
         this.CustomBar= wepy.$instance.globalData.CustomBar
-        this.user = await commApi.GetMe() // 获取当前用户
+        this.tasks = await commApi.GetUserTasks() // 获取当前用户
         this.$apply()
     }
 
