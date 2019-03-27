@@ -97,7 +97,7 @@ page{
     <view class="cu-bar bg-white margin-top">
       <view class='action'>
         <text class='icon-title text-green'></text>
-        <text>每次结算时剩余积分变成可用积分</text>
+        <text>每期结算时剩余积分变成可用积分</text>
       </view>
     </view>
     </view>
@@ -124,7 +124,7 @@ page{
       </view>
       可用积分
     </view>
-    <view class='btn-group'>
+    <view class='btn-group'  @tap="goto('/pages/user/guide')">
       <button class='cu-btn bg-red round shadow-blur'>去赚积分</button>
     </view>
   </view>

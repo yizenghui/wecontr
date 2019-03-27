@@ -16,6 +16,11 @@ export default class comm extends base {
     return await this.get(`${this.baseUrl}/action/task`);
   }
   
+  // 查看用户积分日志
+  static async GetUserLogs(page) {
+    return await this.get(`${this.baseUrl}/user/pointlog`, {page: page});
+  }
+  
   // 用户点赞某个文章
   static async LikeArticleAction(article_id) {
     return await this.get(`${this.baseUrl}/action/likearticle`, {article_id: article_id});

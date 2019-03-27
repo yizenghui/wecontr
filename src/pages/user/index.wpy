@@ -29,17 +29,17 @@ page{
   <view class='flex flex-sub flex-direction solid-right'>
     <view class="text-xxl text-orange">{{user.total_point}}</view>
     <view class="margin-top-sm">
-      <text class='icon-attentionfill'></text> 我的积分</view>
+      <text class='icon-attentionfill'></text> 总积分</view>
   </view>
   <view class='flex flex-sub flex-direction solid-right'>
     <view class="text-xxl text-blue">200+</view>
     <view class="margin-top-sm">
-      <text class='icon-favorfill'></text> 我的排名</view>
+      <text class='icon-favorfill'></text> 当前排名</view>
   </view>
   <view class='flex flex-sub flex-direction'>
-    <view class="text-xxl text-green">12</view>
+    <view class="text-xxl text-green">+{{user.task.total}}</view>
     <view class="margin-top-sm">
-      <text class='icon-fork'></text> 今日任务</view>
+      <text class='icon-fork'></text> 今日积分</view>
   </view>
 </view>
 
@@ -76,7 +76,7 @@ page{
     </navigator>
   </view>
   <view class="cu-item arrow">
-    <navigator class='content' url='../log/log' hover-class='none'>
+    <navigator class='content' url='/pages/user/pointlog' hover-class='none'>
       <text class='icon-formfill text-green'></text>
       <text class='text-grey'>积分记录</text>
     </navigator>
@@ -133,12 +133,17 @@ page{
     }
 
 
-    async onLoad(query) {
-        this.StatusBar= wepy.$instance.globalData.StatusBar
-        this.CustomBar= wepy.$instance.globalData.CustomBar
+    async onShow() {
         this.user = await commApi.GetMe() // 获取当前用户
         this.$apply()
     }
+
+    async onLoad() {
+        this.StatusBar= wepy.$instance.globalData.StatusBar
+        this.CustomBar= wepy.$instance.globalData.CustomBar
+        this.$apply()
+    }
+
 
 
   }
