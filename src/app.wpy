@@ -149,6 +149,8 @@ export default class extends wepy.app {
       'pages/user/goods',
       'pages/user/order',
       'pages/user/guide',
+      'pages/user/sign',
+      'pages/user/task',
       'pages/user/pointlog',
       'pages/user/exchange',
       'pages/topic/list',
@@ -217,10 +219,11 @@ export default class extends wepy.app {
   }
 
   globalData = {
+    session: '',
     token: '',
     // baseUrl: 'http://wxcms.cc:626/api', 
-    baseUrl: 'https://wxcms.readfollow.com/api', 
-    // baseUrl: 'http://wxcms.oo/api', 
+    // baseUrl: 'https://wxcms.readfollow.com/api', 
+    baseUrl: 'http://wxcms.oo/api', 
     userInfo: null
   
   }

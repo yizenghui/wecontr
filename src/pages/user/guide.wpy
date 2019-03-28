@@ -68,8 +68,9 @@ page{
           wepy.navigateTo({url:to});
       },
       click(item){
-        // todo
-        console.log(item)
+        if(item.wxto){
+          wepy.navigateTo({url:item.wxto});
+        }
       },
     }
 

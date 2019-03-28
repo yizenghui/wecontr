@@ -1,0 +1,117 @@
+<style lang="less">
+page {
+  background: #fff;
+}
+
+
+</style>
+<template>
+  <view>
+
+<view class="cu-custom" style="height:{{CustomBar}}px;">
+  <view class="cu-bar fixed bg-gradual-green" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
+    <navigator class='action' open-type="navigateBack" delta="1" hover-class="none">
+      <text class='icon-back'></text> 
+      任务记录
+    </navigator>
+    <view class='action'>
+      <!-- 专栏：自我提供 -->
+    </view>
+  </view>
+</view>
+
+<view class="cu-timeline">
+  <view class='cu-item text-green' wx:for="{{logs}}" wx:key >
+    <view class="bg-gradual-green content shadow-blur">
+      <view class="cu-capsule radius">
+        <view class="cu-tag bg-white text-green">+{{item.total}}积分</view>
+        <view class="cu-tag line-white">{{item.did}}</view>
+      </view>
+      <view class='margin-top-sm text-content'>
+        <view>组队: {{item.team_id?'完成':'未完成'}}</view>
+        <view>签到: {{item.sign_at?'完成':'未完成'}}</view>
+        <view>阅读: {{item.read_num}}次</view>
+        <view>点赞: {{item.like_num}}次</view>
+        <view wx:if="{{item.join_num}}">邀新: {{item.join_num}}人 (邀请新用户)</view>
+        <view wx:if="{{item.sign_num}}">收成: {{item.sign_num}}次 (受邀用户签到)</view>
+      </view>
+    </view>
+  </view>
+</view>
+
+</view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import commApi from '../../api/comm'
+  export default class Task extends wepy.page {
+    config = {
+      navigationBarTitleText: '签到',
+    }
+
+    components = {
+    };
+
+
+    data = {
+      isCard:true,
+      StatusBar:0,
+      CustomBar:0,
+      Custom:0,
+      page:0,
+      logs:[]
+    }
+
+
+    methods = {
+      goto(to){
+          wepy.navigateTo({url:to});
+      },
+      click(){},
+    }
+
+    async onLoad(query) {
+      
+        this.StatusBar= wepy.$instance.globalData.StatusBar
+        this.CustomBar= wepy.$instance.globalData.CustomBar
+        this.Custom= wepy.$instance.globalData.Custom
+        this.logs = await commApi.GetUserTaskLogs(1)
+        this.page = 2;
+        this.$apply()
+    }
+    
+
+    
+    async onReachBottom(){
+      wepy.showToast({
+          title: "数据加载中",
+          icon: "loading",
+          duration: 500
+      });
+      let articles = await commApi.GetLikeArticles(this.page)
+      if(articles.length){
+          this.page ++
+          this.articles = [...this.articles,...articles]
+      }else{
+          wepy.showToast({
+              title: "到底了",
+              icon: "none",
+              duration: 1000
+          });
+      }
+      this.$apply()
+    }
+        
+    // 下拉刷新
+    async onPullDownRefresh() {
+        this.articles = await commApi.GetLikeArticles(1)
+        this.page = 2;
+        wepy.stopPullDownRefresh()
+        this.$apply()
+    }
+
+
+  }
+
+</script>

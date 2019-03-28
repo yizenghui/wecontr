@@ -16,6 +16,11 @@ export default class comm extends base {
     return await this.get(`${this.baseUrl}/action/task`);
   }
   
+  // 查看文章行为
+  static async GetUserTaskLogs() {
+    return await this.get(`${this.baseUrl}/user/tasklogs`);
+  }
+  
   // 查看用户积分日志
   static async GetUserLogs(page) {
     return await this.get(`${this.baseUrl}/user/pointlog`, {page: page});
@@ -149,5 +154,12 @@ export default class comm extends base {
   static async GetSignConfig() {
     const url = `${this.baseUrl}/api/getsignconfig`
     return await this.get(url)
+  }
+
+   /**
+   * 同步用户数据到服务器上
+   */
+  static async AsyncUserData(user) {
+    return this.post(`${this.baseUrl}/asyncuserdata`, {ed: user.encryptedData, iv: user.iv})
   }
 }
