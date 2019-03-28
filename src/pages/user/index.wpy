@@ -76,15 +76,15 @@ page{
     </navigator>
   </view>
   <view class="cu-item arrow">
-    <navigator class='content' url='/pages/user/pointlog' hover-class='none'>
-      <text class='icon-formfill text-green'></text>
-      <text class='text-grey'>积分记录</text>
-    </navigator>
-  </view>
-  <view class="cu-item arrow">
     <navigator class='content' url='/pages/user/order' hover-class='none'>
       <text class='icon-barcode text-red'></text>
       <text class='text-grey'>我的兑换卷</text>
+    </navigator>
+  </view>
+  <view class="cu-item arrow">
+    <navigator class='content' url='/pages/user/pointlog' hover-class='none'>
+      <text class='icon-formfill text-green'></text>
+      <text class='text-grey'>积分记录</text>
     </navigator>
   </view>
   <!-- <view class="cu-item arrow">
@@ -92,13 +92,13 @@ page{
       <text class='icon-post text-orange'></text>
       <text class='text-grey'>我要投稿</text>
     </navigator>
-  </view>
+  </view> -->
   <view class="cu-item arrow">
     <button class='cu-btn content' open-type='feedback'>
       <text class='icon-writefill text-cyan'></text>
       <text class='text-grey'>意见反馈</text>
     </button>
-  </view> -->
+  </view>
 </view>
 
 </view>
@@ -122,6 +122,7 @@ page{
       StatusBar:0,
       CustomBar:0,
       user:[],
+      swipers:[],
     }
 
     methods = {
@@ -141,6 +142,7 @@ page{
     async onLoad() {
         this.StatusBar= wepy.$instance.globalData.StatusBar
         this.CustomBar= wepy.$instance.globalData.CustomBar
+        this.swipers = await commApi.GetUserSwipers()
         this.$apply()
     }
 

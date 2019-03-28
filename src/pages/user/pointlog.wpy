@@ -14,7 +14,7 @@ page{
 
 
 <view class="cu-custom" style="height:{{CustomBar}}px;">
-  <view class="cu-bar fixed bg-gradual-pink" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
+  <view class="cu-bar fixed bg-gradual-green" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
     <navigator class='action' open-type="navigateBack" delta="1" hover-class="none">
       <text class='icon-back'></text> 
       积分记录
@@ -60,6 +60,7 @@ page{
       StatusBar:0,
       CustomBar:0,
       Custom:0,
+      page:0,
       logs:[]
     }
 
@@ -77,9 +78,38 @@ page{
         this.CustomBar= wepy.$instance.globalData.CustomBar
         this.Custom= wepy.$instance.globalData.Custom
         this.logs = await commApi.GetUserLogs(1)
+        this.page = 2;
         this.$apply()
     }
 
+    
+    async onReachBottom(){
+      wepy.showToast({
+          title: "数据加载中",
+          icon: "loading",
+          duration: 500
+      });
+      let logs = await commApi.GetUserLogs(this.page)
+      if(logs.length){
+          this.page ++
+          this.logs = [...this.logs,...logs]
+      }else{
+          wepy.showToast({
+              title: "到底了",
+              icon: "none",
+              duration: 1000
+          });
+      }
+      this.$apply()
+    }
+        
+    // 下拉刷新
+    async onPullDownRefresh() {
+        this.logs = await commApi.GetUserLogs(1)
+        this.page = 2;
+        wepy.stopPullDownRefresh()
+        this.$apply()
+    }
 
   }
 

@@ -13,7 +13,7 @@ page{
 
 
 <view class="cu-custom" style="height:{{CustomBar}}px;">
-  <view class="cu-bar fixed bg-gradual-pink" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
+  <view class="cu-bar fixed bg-gradual-green" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
     <navigator class='action' open-type="navigateBack" delta="1" hover-class="none">
       <text class='icon-back'></text> 
       积分攻略
@@ -80,7 +80,12 @@ page{
         this.tasks = await commApi.GetUserTasks() // 获取当前用户
         this.$apply()
     }
-
+    // 下拉刷新
+    async onPullDownRefresh() {
+        this.tasks = await commApi.GetUserTasks() // 获取当前用户
+        wepy.stopPullDownRefresh()
+        this.$apply()
+    }
 
   }
 

@@ -43,12 +43,16 @@ export default class comm extends base {
     return await this.get(`${this.baseUrl}/getswipers`);
   }
   
+  // 获取用户首页轮播图
+  static async GetUserSwipers() {
+    return await this.get(`${this.baseUrl}/getuserswipers`);
+  }
+  
   // 获取所有专题
   static async GetTopics(page) {
-    // const {data} = await this.get(`${this.baseUrl}/topics`, {page: page});
-    // return data
     return  await this.get(`${this.baseUrl}/topics`, {page: page});
   }
+
   // 获取专题详细
   static async GetTopicInfo(topic_id) {
     return await this.get(`${this.baseUrl}/topics/${topic_id}`);
@@ -63,6 +67,7 @@ export default class comm extends base {
     //
     return await this.get(`${this.baseUrl}/articles/recommend`, {page: page});
   }
+  
   // 获取关注过的文章列表
   static async GetFootprintArticles(page) {
     return await this.get(`${this.baseUrl}/user/footprint`, {page: page});

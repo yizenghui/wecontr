@@ -12,22 +12,18 @@ page{
   <view>
 
 
-  <view class="cu-custom" style="height:{{CustomBar}}px;">
-  <view class="cu-bar fixed bg-gradual-pink" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
-    <navigator class='action border-custom' open-type="navigateBack" delta="1" hover-class="none" style='width:{{Custom.width}}px;height:{{Custom.height}}px;margin-left:calc(750rpx - {{Custom.right}}px)'>
-      <text class='icon-back'></text>
+<view class="cu-custom" style="height:{{CustomBar}}px;">
+  <view class="cu-bar fixed bg-gradual-green" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
+    <navigator class='action' open-type="navigateBack" delta="1" hover-class="none">
+      <text class='icon-back'></text> 
+      {{topic.name}}
     </navigator>
-    <view class='content' style='top:{{StatusBar}}px;'>{{topic.name}}</view>
+    <view class='action'>
+    </view>
   </view>
 </view>
 
-<view class="cu-bar bg-white solid-bottom margin-top">
-  <view class='action'>
-    <text class='icon-title text-orange '></text> {{topic.name}}
-  </view>
-</view>
-
-<view class="cu-card article {{isCard?'no-card':''}}">
+<view class="cu-card article no-card}}">
   <view wx:for="{{articles}}" wx:key class="cu-item shadow"  @tap="goto({{item.wxto}})">
     <view class="title">{{item.title}}</view>
     <view class="content">
@@ -42,36 +38,6 @@ page{
       </view>
     </view>
   </view>
-
-  <view wx:for="{{articles}}" wx:key class="cu-item shadow"  @tap="goto({{item.wxto}})">
-    <view class="title">{{item.title}}</view>
-    <view class="content">
-      <image wx:if="{{item.cover}}" src="{{item.cover}}" mode="aspectFill"></image>
-      <view class="desc">
-        <view class='text-content' wx:if="{{item.intro}}"> {{item.intro}}</view>
-        <view class="text-gray">
-            <text class="icon-attentionfill"></text> {{item.view}}
-            <text class="icon-appreciatefill"></text> {{item.liked}}
-            <text class="icon-messagefill"></text> {{item.commented}}
-        </view>
-      </view>
-    </view>
-  </view>
-  <view wx:for="{{articles}}" wx:key class="cu-item shadow"  @tap="goto({{item.wxto}})">
-    <view class="title">{{item.title}}</view>
-    <view class="content">
-      <image wx:if="{{item.cover}}" src="{{item.cover}}" mode="aspectFill"></image>
-      <view class="desc">
-        <view class='text-content' wx:if="{{item.intro}}"> {{item.intro}}</view>
-        <view class="text-gray">
-            <text class="icon-attentionfill"></text> {{item.view}}
-            <text class="icon-appreciatefill"></text> {{item.liked}}
-            <text class="icon-messagefill"></text> {{item.commented}}
-        </view>
-      </view>
-    </view>
-  </view>
-  
 </view>
 
 </view>
@@ -82,7 +48,7 @@ page{
   import commApi from '../../api/comm'
   export default class Index extends wepy.page {
     config = {
-      navigationBarTitleText: '每天自律打卡',
+      navigationBarTitleText: '专题文章列表',
     }
 
     components = {
@@ -94,8 +60,10 @@ page{
       StatusBar:0,
       CustomBar:0,
       Custom:0,
+      id:0,
+      page:1,
       topic:[],
-      articles:[]
+      articles: [],
     }
 
 
@@ -108,13 +76,43 @@ page{
     }
 
     async onLoad(query) {
+      this.id = query.id
+      this.StatusBar= wepy.$instance.globalData.StatusBar
+      this.CustomBar= wepy.$instance.globalData.CustomBar
+      this.Custom= wepy.$instance.globalData.Custom
+      this.topic = await commApi.GetTopicInfo(this.id)
+      this.articles = await commApi.GetTopicArticles(this.id,1)
+      this.page = 2;
+      this.$apply()
+    }
+
+    async onReachBottom(){
       
-        this.StatusBar= wepy.$instance.globalData.StatusBar
-        this.CustomBar= wepy.$instance.globalData.CustomBar
-        this.Custom= wepy.$instance.globalData.Custom
-        this.topic = await commApi.GetTopicInfo(1)
-        this.articles = await commApi.GetTopicArticles(1,1)
-        this.$apply()
+      wepy.showToast({
+          title: "数据加载中",
+          icon: "loading",
+          duration: 500
+      });
+      let articles = await commApi.GetTopicArticles(this.id,this.page)
+      if(articles.length){
+          this.page ++
+          this.articles = [...this.articles,...articles]
+      }else{
+          wepy.showToast({
+              title: "数据到底了",
+              icon: "none",
+              duration: 1000
+          });
+      }
+      this.$apply()
+    }
+        
+    // 下拉刷新
+    async onPullDownRefresh() {
+      this.articles = await commApi.GetTopicArticles(this.id,1)
+      this.page = 2;
+      wepy.stopPullDownRefresh()
+      this.$apply()
     }
 
 

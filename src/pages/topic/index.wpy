@@ -43,13 +43,24 @@
 <template>
   <view>
 
-    <view class="cu-custom" style="height:{{CustomBar}}px;">
+    <!-- <view class="cu-custom" style="height:{{CustomBar}}px;">
       <view class="cu-bar fixed none-bg text-white bg-img" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;background-image:url(https://image.weilanwl.com/color2.0/plugin/cjkz2329.jpg);">
         <view class='content' style='top:{{StatusBar}}px;'>
           <image src="/images/cjkz.png" mode='widthFix'></image>
         </view>
       </view>
+    </view> -->
+
+        
+    <view class="cu-custom" style="height:{{CustomBar}}px;">
+      <view class="cu-bar fixed bg-gradual-green" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
+        
+        <view class='content' style="top:20px;">
+            所有专题
+        </view>
+      </view>
     </view>
+
 
 
     <view class="cu-card">
@@ -63,25 +74,7 @@
           </view>
         </view>
       </view>
-      <view class="cu-item bg-img shadow-blur" style="background-image:url({{item.cover}})" @tap="goto({{item.wxto}})" wx:for="{{topics}}" wx:key>
-          <view class='padding-xl text-white'>
-          <view class='padding-xs text-xl'>
-            {{item.name}}
-          </view>
-          <view class='padding-xs'>
-            {{item.intro}}
-          </view>
-        </view>
-      </view><view class="cu-item bg-img shadow-blur" style="background-image:url({{item.cover}})" @tap="goto({{item.wxto}})" wx:for="{{topics}}" wx:key>
-          <view class='padding-xl text-white'>
-          <view class='padding-xs text-xl'>
-            {{item.name}}
-          </view>
-          <view class='padding-xs'>
-            {{item.intro}}
-          </view>
-        </view>
-      </view>
+      
     </view>
     <view class='cu-tabbar-height'></view>
 </view>
@@ -92,7 +85,7 @@
   import commApi from '../../api/comm'
   export default class Index extends wepy.page {
     config = {
-      navigationBarTitleText: '每天自律打卡',
+      navigationBarTitleText: '所有专题',
     }
 
 
@@ -103,6 +96,8 @@
     data = {
       StatusBar:0,
       CustomBar:0,
+      Custom:0,
+      page:0,
       topics:[],
     }
 
@@ -117,9 +112,40 @@
     }
 
     async onLoad(query) {
-        this.StatusBar= wepy.$instance.globalData.StatusBar
-        this.CustomBar= wepy.$instance.globalData.CustomBar
+      this.StatusBar= wepy.$instance.globalData.StatusBar
+      this.CustomBar= wepy.$instance.globalData.CustomBar
+      this.Custom= wepy.$instance.globalData.Custom
+      this.topics = await commApi.GetTopics(1)
+      this.page = 2
+      this.$apply()
+    }
+
+    
+    async onReachBottom(){
+      wepy.showToast({
+          title: "数据加载中",
+          icon: "loading",
+          duration: 500
+      });
+      let topics = await commApi.GetTopics(this.page)
+      if(topics.length){
+          this.page ++
+          this.topics = [...this.topics,...topics]
+      }else{
+          wepy.showToast({
+              title: "到底了",
+              icon: "none",
+              duration: 1000
+          });
+      }
+      this.$apply()
+    }
+        
+    // 下拉刷新
+    async onPullDownRefresh() {
         this.topics = await commApi.GetTopics(1)
+        this.page = 2;
+        wepy.stopPullDownRefresh()
         this.$apply()
     }
 

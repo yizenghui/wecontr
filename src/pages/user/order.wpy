@@ -12,7 +12,7 @@ page{
   <view>
 
 <view class="cu-custom" style="height:{{CustomBar}}px;">
-  <view class="cu-bar fixed bg-gradual-pink" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
+  <view class="cu-bar fixed bg-gradual-green" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
     <navigator class='action' open-type="navigateBack" delta="1" hover-class="none">
       <text class='icon-back'></text> 
       我的兑换卷
@@ -74,6 +74,7 @@ page{
       StatusBar:0,
       CustomBar:0,
       Custom:0,
+      page:0,
       gifttips:false,
       showPointTips:false,
       user:[],
@@ -128,6 +129,36 @@ page{
           // todo 用户被锁定了，不允许操作
         }
         this.orders = await commApi.GetOrders(1)
+        this.page = 2;
+        this.$apply()
+    }
+
+    
+    async onReachBottom(){
+      wepy.showToast({
+          title: "数据加载中",
+          icon: "loading",
+          duration: 500
+      });
+      let orders = await commApi.GetOrders(this.page)
+      if(orders.length){
+          this.page ++
+          this.orders = [...this.orders,...orders]
+      }else{
+          wepy.showToast({
+              title: "到底了",
+              icon: "none",
+              duration: 1000
+          });
+      }
+      this.$apply()
+    }
+        
+    // 下拉刷新
+    async onPullDownRefresh() {
+        this.orders = await commApi.GetOrders(1)
+        this.page = 2;
+        wepy.stopPullDownRefresh()
         this.$apply()
     }
 

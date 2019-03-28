@@ -14,7 +14,7 @@
   </view>
 </view> -->
 <view class="cu-custom" style="height:{{CustomBar}}px;">
-  <view class="cu-bar fixed bg-gradual-pink" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
+  <view class="cu-bar fixed bg-gradual-green" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
     <navigator class='action' open-type="navigateBack" delta="1" hover-class="none">
       <text class='icon-back'></text> 
       正文阅读
@@ -115,7 +115,6 @@
 <script>
   import wepy from 'wepy'
   import commApi from '../../api/comm'
-    import htmlParser from '../../components/htmlParser'
   export default class Index extends wepy.page {
     config = {
       navigationBarTitleText: '每天自律打卡',
@@ -123,11 +122,6 @@
         "wemark": "../plugins/wemark/wemark"
       }
     }
-
-
-    components = {
-      htmlParser: htmlParser,
-    };
 
 
     data = {
@@ -151,20 +145,28 @@
               showCancel: false
           });
       },
-       
       async likearticle(id){
+        wepy.showToast({
+          title: "数据加载中",
+          icon: "loading",
+          duration: 500
+        });
         let state = await commApi.LikeArticleAction(id)
         this.userlikearticle = true;
         this.article.liked ++
         this.$apply()
       },
       async unlikearticle(id){
+        wepy.showToast({
+          title: "数据加载中",
+          icon: "loading",
+          duration: 500
+        });
         let state = await commApi.UnLikeArticleAction(id)
         this.userlikearticle = false;
         this.article.liked --
         this.$apply()
       },
-       
       isCard(e) {
           this.isCard = e.detail.value
       },

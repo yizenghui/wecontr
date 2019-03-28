@@ -12,7 +12,7 @@ page{
   <view>
 
 <view class="cu-custom" style="height:{{CustomBar}}px;">
-  <view class="cu-bar fixed bg-gradual-pink" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
+  <view class="cu-bar fixed bg-gradual-green" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
     <navigator class='action' open-type="navigateBack" delta="1" hover-class="none">
       <text class='icon-back'></text> 
       我点赞的文章
@@ -62,6 +62,7 @@ page{
       StatusBar:0,
       CustomBar:0,
       Custom:0,
+      page:0,
       articles:[]
     }
 
@@ -79,6 +80,37 @@ page{
         this.CustomBar= wepy.$instance.globalData.CustomBar
         this.Custom= wepy.$instance.globalData.Custom
         this.articles = await commApi.GetLikeArticles(1)
+        this.page = 2;
+        this.$apply()
+    }
+    
+
+    
+    async onReachBottom(){
+      wepy.showToast({
+          title: "数据加载中",
+          icon: "loading",
+          duration: 500
+      });
+      let articles = await commApi.GetLikeArticles(this.page)
+      if(articles.length){
+          this.page ++
+          this.articles = [...this.articles,...articles]
+      }else{
+          wepy.showToast({
+              title: "到底了",
+              icon: "none",
+              duration: 1000
+          });
+      }
+      this.$apply()
+    }
+        
+    // 下拉刷新
+    async onPullDownRefresh() {
+        this.articles = await commApi.GetLikeArticles(1)
+        this.page = 2;
+        wepy.stopPullDownRefresh()
         this.$apply()
     }
 
