@@ -153,7 +153,7 @@
         return {
             title: '所有专题',
             // title: '我觉得不错的文章，分享给你，快来看看吧。',
-            path: '/pages/topic/index?pid=' + wepy.$instance.globalData.uid,
+            path: '/pages/topic/index?formid=' + wepy.$instance.globalData.uid,
             success: function(res) {
                 // 转发成功
                 console.log(res)

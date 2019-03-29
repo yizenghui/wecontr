@@ -15,14 +15,18 @@ export default class http {
           const {code} = await wepy.login()
           const {data} = await wepy.request({ url: wepy.$instance.globalData.baseUrl + '/gettoken', data: { code: code } })
           wepy.$instance.globalData.token = data.token
+          wepy.$instance.globalData.uid = data.uid
           wepy.setStorageSync('token', data.token)
+          wepy.setStorageSync('uid', data.uid)
         }
       }else{
         const {code} = await wepy.login()
         // localhost:8009
         const {data} = await wepy.request({ url: wepy.$instance.globalData.baseUrl + '/gettoken', data: { code: code } })
         wepy.$instance.globalData.token = data.token
+        wepy.$instance.globalData.uid = data.uid
         wepy.setStorageSync('token', data.token)
+        wepy.setStorageSync('uid', data.uid)
       }
     }
 
@@ -41,7 +45,9 @@ export default class http {
         const {code} = await wepy.login()
         const {data} = await wepy.request({ url: wepy.$instance.globalData.baseUrl + '/gettoken', data: { code: code } })
         wepy.$instance.globalData.token = data.token
+        wepy.$instance.globalData.uid = data.uid
         wepy.setStorageSync('token', data.token)
+        wepy.setStorageSync('uid', data.uid)
 
         const res2 = await wepy.request(param)
 

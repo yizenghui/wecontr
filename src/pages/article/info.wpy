@@ -221,7 +221,7 @@
         return {
             title: this.article.title,
             // title: '我觉得不错的文章，分享给你，快来看看吧。',
-            path: '/pages/article/info?id='+this.id+'&pid=' + wepy.$instance.globalData.uid,
+            path: '/pages/article/info?id='+this.id+'&formid=' + wepy.$instance.globalData.uid,
             success: function(res) {
                 // 转发成功
                 console.log(res)

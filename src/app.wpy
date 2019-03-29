@@ -215,25 +215,34 @@ export default class extends wepy.app {
     if (token) {
       header['Authorization'] = 'Bearer ' + token
     }
+    
+    const formid = wepy.$instance.globalData.formid
+    if (formid) {
+      header['Formid'] = formid
+    }
     return header
   }
 
   globalData = {
     session: '',
-    uid: 0,
+    uid: 0,//用户分享时使用
+    formid: 0,//从分享处来使用
     token: '',
     // baseUrl: 'http://wxcms.cc:626/api', 
-    baseUrl: 'https://wxcms.readfollow.com/api', 
-    // baseUrl: 'http://wxcms.oo/api', 
+    // baseUrl: 'https://wxcms.readfollow.com/api', 
+    baseUrl: 'http://wxcms.oo/api', 
     userInfo: null
   
   }
   
   async onLaunch (p) {
+    console.log(p)
     let e = await wepy.getSystemInfo()
     wepy.$instance.globalData.StatusBar =  e.statusBarHeight;
     wepy.$instance.globalData.CustomBar =   e.platform == 'android' ? e.statusBarHeight + 50 : e.statusBarHeight + 45;
     wepy.$instance.globalData.Custom = wx.getMenuButtonBoundingClientRect();
+    wepy.$instance.globalData.uid = await wepy.getStorageSync('uid')
+    wepy.$instance.globalData.formid = p.query.formid //记录用户来源
   }
 
 }
