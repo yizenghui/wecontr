@@ -115,6 +115,21 @@ page{
       this.$apply()
     }
 
+    onShareAppMessage(res) {
+        return {
+            title: this.topic.name,
+            // title: '觉得这个专题的文章不错，分享给你，快来看看吧。',
+            path: '/pages/topic/list?id='+this.id+'&pid=' + wepy.$instance.globalData.uid,
+            success: function(res) {
+                // 转发成功
+                console.log(res)
+            },
+            fail: function(res) {
+                console.log(res)
+                // 转发失败
+            }
+        }
+    }
 
   }
 

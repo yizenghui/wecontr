@@ -220,10 +220,11 @@ export default class extends wepy.app {
 
   globalData = {
     session: '',
+    uid: 0,
     token: '',
     // baseUrl: 'http://wxcms.cc:626/api', 
-    // baseUrl: 'https://wxcms.readfollow.com/api', 
-    baseUrl: 'http://wxcms.oo/api', 
+    baseUrl: 'https://wxcms.readfollow.com/api', 
+    // baseUrl: 'http://wxcms.oo/api', 
     userInfo: null
   
   }

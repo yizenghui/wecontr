@@ -26,7 +26,8 @@ page{
 
     </view>
     <view class='action'>
-      <button class='cu-btn round line-white' bindtap="showModal" data-target="menuModal">签到</button>
+      <button class='cu-btn round line-white' @tap="sign()" wx:if="{{!user.task.sign_at}}">签到</button>
+      <button class='cu-btn round line-gray' wx:if="{{user.task.sign_at}}">已签到</button>
     </view>
   </view>
 </view> <!---->
@@ -41,7 +42,7 @@ page{
   <view class="cu-dialog padding" catchtap>
     <view class="cu-bar">
       <view class='action'>
-        <text class='icon-title text-orange '></text> 获取头像、昵称等用户公开信息
+        <text class='icon-title text-orange'></text> 获取头像、昵称等用户公开信息
       </view>
       <view class='action'>
         <button class='cu-btn bg-green shadow'  open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo">授权</button>
@@ -54,12 +55,12 @@ page{
   <view class='flex flex-sub flex-direction solid-right'>
     <view class="text-xxl text-orange">{{user.total_point}}</view>
     <view class="margin-top-sm">
-      <text class='icon-attentionfill'></text> 总积分</view>
+      <text class='icon-selection'></text> 总积分</view>
   </view>
   <view class='flex flex-sub flex-direction solid-right'>
-    <view class="text-xxl text-blue">200+</view>
+    <view class="text-xxl text-blue">{{user.point}}</view>
     <view class="margin-top-sm">
-      <text class='icon-favorfill'></text> 当前排名</view>
+      <text class='icon-pay'></text> 剩余积分</view>
   </view>
   <view class='flex flex-sub flex-direction'>
     <view class="text-xxl text-green">+{{user.task.total}}</view>
@@ -115,6 +116,12 @@ page{
     </navigator>
   </view>
   <!-- <view class="cu-item arrow">
+    <navigator class='content' url='/pages/user/task' hover-class='none'>
+      <text class='icon-formfill text-green'></text>
+      <text class='text-grey'>积分日志</text>
+    </navigator>
+  </view>
+  <view class="cu-item arrow">
     <navigator class='content' url='../test/list' hover-class='none'>
       <text class='icon-post text-orange'></text>
       <text class='text-grey'>我要投稿</text>
@@ -158,10 +165,30 @@ page{
           console.log('to',to)
           wepy.navigateTo({url:to});
       },
-      click(){},
+      click(){
+        
+      },
+      async sign(){
+         wepy.showToast({
+            title: "签到中...",
+            icon:"loading",
+            duration: 500
+          });
+        let data = await commApi.UserSign()
+        if(data.message){
+          wepy.showToast({ title: data.message, icon:"none", duration: 2000 });
+        }else{
+          wepy.showToast({ title: '签到成功', icon:"none", duration: 500 });
+          
+          this.user = data
+          // this.user.total_point = data.total_point
+        }
+        console.log('sign data', data)
+        this.$apply()
+      },
       async login(){
         let auth = await wepy.getSetting()
-        if (auth.authSetting['scope.userInfo']) {
+        if ( auth.authSetting['scope.userInfo'] ) {
           // 已授权
           let user = await wepy.getUserInfo()
           this.user.avatar = user.userInfo.avatarUrl
@@ -198,6 +225,12 @@ page{
         this.$apply()
     }
 
+    // 下拉刷新
+    async onPullDownRefresh() {
+        this.user = await commApi.GetMe() // 获取当前用户
+        wepy.stopPullDownRefresh()
+        this.$apply()
+    }
 
 
   }

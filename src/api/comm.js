@@ -97,12 +97,16 @@ export default class comm extends base {
     return await this.get(`${this.baseUrl}/orders/${order_id}`);
   }
 
-
   // 获取当前登录用户信息
   static async GetMe() {
     return await this.get(`${this.baseUrl}/getme`);
   }
   
+  // 用户签到
+  static async UserSign() {
+    return await this.get(`${this.baseUrl}/action/sign`);
+  }
+
   // 用积分兑换指定商品
   static async BuyGoods(goods_id, num) {
     return  await this.get(`${this.baseUrl}/buygoods`, {goods_id: goods_id, num,num});

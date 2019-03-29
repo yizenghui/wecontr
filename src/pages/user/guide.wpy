@@ -70,6 +70,7 @@ page{
       click(item){
         if(item.wxto){
           wepy.navigateTo({url:item.wxto});
+          wepy.switchTab({url:item.wxto});
         }
       },
     }

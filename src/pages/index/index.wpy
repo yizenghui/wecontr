@@ -112,6 +112,22 @@ page{
         this.$apply()
     }
 
+    
+    onShareAppMessage(res) {
+        return {
+            title: '很赞的小程序，分享给你，快来试试吧!',
+            path: '/pages/index/index?pid=' + wepy.$instance.globalData.uid,
+            success: function(res) {
+                // 转发成功
+                console.log(res)
+            },
+            fail: function(res) {
+                console.log(res)
+                // 转发失败
+            }
+        }
+    }
+
   }
 
 </script>
