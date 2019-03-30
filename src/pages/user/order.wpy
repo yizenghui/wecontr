@@ -53,6 +53,7 @@ page{
   </view>
 </view>
 
+    <view wx:if="{{loadstatus}}" class="cu-load bg-gray {{loadstatus==1?'loading':'over'}}"></view>
 
 </view>
 </template>
@@ -75,6 +76,7 @@ page{
       CustomBar:0,
       Custom:0,
       page:0,
+      loadstatus:1,
       gifttips:false,
       showPointTips:false,
       user:[],
@@ -119,7 +121,7 @@ page{
       },
     }
 
-    async onLoad(query) {
+    async onLoad() {
       
         this.StatusBar= wepy.$instance.globalData.StatusBar
         this.CustomBar= wepy.$instance.globalData.CustomBar
@@ -130,35 +132,42 @@ page{
         }
         this.orders = await commApi.GetOrders(1)
         this.page = 2;
+        if(this.orders.length){
+          this.loadstatus = 0
+        }else{
+          this.loadstatus = 2
+        }
         this.$apply()
     }
 
     
     async onReachBottom(){
-      wepy.showToast({
-          title: "数据加载中",
-          icon: "loading",
-          duration: 500
-      });
+      this.loadstatus = 1
+      this.$apply()
       let orders = await commApi.GetOrders(this.page)
       if(orders.length){
-          this.page ++
-          this.orders = [...this.orders,...orders]
-      }else{
-          wepy.showToast({
-              title: "到底了",
-              icon: "none",
-              duration: 1000
-          });
+        this.page ++
+        this.orders = [...this.orders,...orders]
+        this.loadstatus = 0
+      }else{ 
+        this.loadstatus = 2
       }
       this.$apply()
     }
         
     // 下拉刷新
     async onPullDownRefresh() {
+        this.loadstatus = 1
+        this.orders = []
+        this.$apply()
         this.orders = await commApi.GetOrders(1)
         this.page = 2;
         wepy.stopPullDownRefresh()
+        if(this.orders.length){
+          this.loadstatus = 0
+        }else{
+          this.loadstatus = 2
+        }
         this.$apply()
     }
 

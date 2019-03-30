@@ -40,7 +40,7 @@ page{
         </view>
       </view>
     </view>
-
+    <view wx:if="{{loadstatus}}" class="cu-load bg-gray {{loadstatus==1?'loading':'over'}}"></view>
 </view>
 </template>
 
@@ -49,7 +49,7 @@ page{
   import commApi from '../../api/comm'
   export default class Index extends wepy.page {
     config = {
-      navigationBarTitleText: '自律帝',
+      navigationBarTitleText: '自律的人最优秀',
     }
 
 
@@ -59,6 +59,8 @@ page{
 
     data = {
       isCard:true,
+      loadstatus:0,
+      showLoad:false,
       StatusBar:0,
       CustomBar:0,
       page:1,
@@ -73,7 +75,6 @@ page{
       click(){},
     }
 
-
     async onLoad(query) {
         this.swipers = await commApi.GetSwipers()
         this.StatusBar= wepy.$instance.globalData.StatusBar
@@ -83,39 +84,38 @@ page{
         this.$apply()
     }
 
+
     
     async onReachBottom(){
-      wepy.showToast({
-          title: "数据加载中",
-          icon: "loading",
-          duration: 500
-      });
+      this.loadstatus = 1
+      this.$apply()
       let articles = await commApi.GetRecommendedArticles(this.page)
       if(articles.length){
           this.page ++
           this.articles = [...this.articles,...articles]
+          this.loadstatus = 0
       }else{
-          wepy.showToast({
-              title: "到底了",
-              icon: "none",
-              duration: 1000
-          });
+        this.loadstatus = 2
       }
       this.$apply()
     }
         
     // 下拉刷新
     async onPullDownRefresh() {
-        this.articles = await commApi.GetRecommendedArticles(1)
-        this.page = 2;
-        wepy.stopPullDownRefresh()
-        this.$apply()
+      wepy.stopPullDownRefresh()
+      this.loadstatus = 1
+      this.articles = []
+      this.$apply()
+      this.articles = await commApi.GetRecommendedArticles(1)
+      this.page = 2;
+      this.loadstatus = 0
+      this.$apply()
     }
 
     
     onShareAppMessage(res) {
         return {
-            title: '很赞的小程序，分享给你，快来试试吧!',
+            title: '每天花10分钟阅读，生活从此开始改变！',
             path: '/pages/index/index?formid=' + wepy.$instance.globalData.uid,
             success: function(res) {
                 // 转发成功
@@ -127,6 +127,7 @@ page{
             }
         }
     }
+
 
   }
 

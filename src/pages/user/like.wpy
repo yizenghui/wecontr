@@ -41,6 +41,7 @@ page{
   </view>
 </view>
 
+    <view wx:if="{{loadstatus}}" class="cu-load bg-gray {{loadstatus==1?'loading':'over'}}"></view>
 
 </view>
 </template>
@@ -58,6 +59,7 @@ page{
 
 
     data = {
+      loadstatus:1,
       isCard:true,
       StatusBar:0,
       CustomBar:0,
@@ -81,36 +83,43 @@ page{
         this.Custom= wepy.$instance.globalData.Custom
         this.articles = await commApi.GetLikeArticles(1)
         this.page = 2;
+        if(this.articles.length){
+          this.loadstatus = 0
+        }else{
+          this.loadstatus = 2
+        }
         this.$apply()
     }
     
 
     
     async onReachBottom(){
-      wepy.showToast({
-          title: "数据加载中",
-          icon: "loading",
-          duration: 500
-      });
+      this.loadstatus = 1
+      this.$apply()
       let articles = await commApi.GetLikeArticles(this.page)
       if(articles.length){
           this.page ++
           this.articles = [...this.articles,...articles]
+          this.loadstatus = 0
       }else{
-          wepy.showToast({
-              title: "到底了",
-              icon: "none",
-              duration: 1000
-          });
+          this.loadstatus = 2
       }
       this.$apply()
     }
         
     // 下拉刷新
     async onPullDownRefresh() {
+        wepy.stopPullDownRefresh()
+        this.loadstatus = 1
+        this.articles = []
+        this.$apply()
         this.articles = await commApi.GetLikeArticles(1)
         this.page = 2;
-        wepy.stopPullDownRefresh()
+        if(this.articles.length){
+          this.loadstatus = 0
+        }else{
+          this.loadstatus = 2
+        }
         this.$apply()
     }
 

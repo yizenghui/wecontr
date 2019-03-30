@@ -74,9 +74,10 @@
           </view>
         </view>
       </view>
-      
     </view>
+    
     <view class='cu-tabbar-height'></view>
+    <view wx:if="{{loadstatus}}" class="cu-load bg-gray {{loadstatus==1?'loading':'over'}}"></view>
 </view>
 </template>
 
@@ -94,6 +95,7 @@
 
 
     data = {
+      loadstatus:1,
       StatusBar:0,
       CustomBar:0,
       Custom:0,
@@ -117,35 +119,34 @@
       this.Custom= wepy.$instance.globalData.Custom
       this.topics = await commApi.GetTopics(1)
       this.page = 2
+      this.loadstatus = 0
       this.$apply()
     }
 
     
     async onReachBottom(){
-      wepy.showToast({
-          title: "数据加载中",
-          icon: "loading",
-          duration: 500
-      });
+      this.loadstatus = 1
+      this.$apply()
       let topics = await commApi.GetTopics(this.page)
       if(topics.length){
           this.page ++
           this.topics = [...this.topics,...topics]
+          this.loadstatus = 0
       }else{
-          wepy.showToast({
-              title: "到底了",
-              icon: "none",
-              duration: 1000
-          });
+        this.loadstatus = 2
       }
       this.$apply()
     }
         
     // 下拉刷新
     async onPullDownRefresh() {
+        wepy.stopPullDownRefresh()
+        this.loadstatus = 1
+        this.topics = []
+        this.$apply()
         this.topics = await commApi.GetTopics(1)
         this.page = 2;
-        wepy.stopPullDownRefresh()
+        this.loadstatus = 0
         this.$apply()
     }
 
@@ -166,5 +167,4 @@
     }
 
   }
-
 </script>

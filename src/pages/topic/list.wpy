@@ -1,6 +1,6 @@
 <style lang="less">
 page{
-  padding-bottom: 100rpx;
+  // padding-bottom: 100rpx;
 }
 .cu-bar .content image{
   height: 60rpx;
@@ -39,7 +39,7 @@ page{
     </view>
   </view>
 </view>
-
+<view wx:if="{{loadstatus}}" class="cu-load bg-gray {{loadstatus==1?'loading':'over'}}"></view>
 </view>
 </template>
 
@@ -60,6 +60,7 @@ page{
       StatusBar:0,
       CustomBar:0,
       Custom:0,
+      loadstatus:1,
       id:0,
       page:1,
       topic:[],
@@ -83,35 +84,37 @@ page{
       this.topic = await commApi.GetTopicInfo(this.id)
       this.articles = await commApi.GetTopicArticles(this.id,1)
       this.page = 2;
+      if(this.articles.length){
+        this.loadstatus = 0 
+      }else{
+        this.loadstatus = 2
+      }
       this.$apply()
     }
 
     async onReachBottom(){
-      
-      wepy.showToast({
-          title: "数据加载中",
-          icon: "loading",
-          duration: 500
-      });
+      this.loadstatus = 1 
+      this.$apply()
       let articles = await commApi.GetTopicArticles(this.id,this.page)
       if(articles.length){
-          this.page ++
-          this.articles = [...this.articles,...articles]
+        this.page ++
+        this.articles = [...this.articles,...articles]
+        this.loadstatus = 0 
       }else{
-          wepy.showToast({
-              title: "数据到底了",
-              icon: "none",
-              duration: 1000
-          });
+        this.loadstatus = 2
       }
       this.$apply()
     }
         
     // 下拉刷新
     async onPullDownRefresh() {
+      wepy.stopPullDownRefresh()
+      this.loadstatus = 1 
+      this.articles = []
+      this.$apply()
       this.articles = await commApi.GetTopicArticles(this.id,1)
       this.page = 2;
-      wepy.stopPullDownRefresh()
+      this.loadstatus = 0 
       this.$apply()
     }
 

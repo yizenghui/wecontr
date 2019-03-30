@@ -31,11 +31,11 @@ page{
     </view>
   </view>
 </view> <!---->
-<swiper class="screen-swiper round-dot" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500">
-  <swiper-item wx:for="{{4}}" wx:key>
-    <image src="https://image.weilanwl.com/img/4x3-{{index+1}}.jpg" mode='aspectFill'></image>
-  </swiper-item>
-</swiper>
+  <swiper wx:if="{{swipers.length}}" class="screen-swiper round-dot" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500">
+    <swiper-item wx:for="{{swipers}}" wx:key   @tap="goto({{item.wxto}})">
+      <image src="{{item.cover}}" mode='aspectFill'></image>
+    </swiper-item>
+  </swiper>
 
 
 <view class="cu-modal {{showLogin?'show':''}}" bindtap='hideModal'>

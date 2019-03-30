@@ -55,6 +55,7 @@ page {
 
 
     data = {
+      loadstatus:1,
       isCard:true,
       StatusBar:0,
       CustomBar:0,

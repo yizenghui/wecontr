@@ -62,6 +62,7 @@ page{
   </view>
 </view>
 
+    <view wx:if="{{loadstatus}}" class="cu-load bg-gray {{loadstatus==1?'loading':'over'}}"></view>
 
 <view class="cu-modal {{showPointTips?'show':''}}">
   <view class="cu-dialog">
@@ -149,6 +150,7 @@ page{
       StatusBar:0,
       CustomBar:0,
       Custom:0,
+      loadstatus:1,
       gifttips:false,
       showPointTips:false,
       user:[],
@@ -204,36 +206,43 @@ page{
         }
         this.page = 2;
         this.goodses = await commApi.GetGoodses(1)
+        
+        if(this.goodses.length){
+          this.loadstatus = 0
+        }else{
+          this.loadstatus = 2
+        }
         this.$apply()
     }
 
 
     
     async onReachBottom(){
-      wepy.showToast({
-          title: "数据加载中",
-          icon: "loading",
-          duration: 500
-      });
+      this.loadstatus = 1
+      this.$apply()
       let goodses = await commApi.GetGoodses(this.page)
       if(goodses.length){
           this.page ++
           this.goodses = [...this.goodses,...goodses]
+          this.loadstatus = 0
       }else{
-          wepy.showToast({
-              title: "到底了",
-              icon: "none",
-              duration: 1000
-          });
+          this.loadstatus = 2
       }
       this.$apply()
     }
         
     // 下拉刷新
     async onPullDownRefresh() {
+        this.loadstatus = 1
+        this.$apply()
         this.goodses = await commApi.GetGoodses(1)
         this.page = 2;
         wepy.stopPullDownRefresh()
+        if(this.goodses.length){
+          this.loadstatus = 0
+        }else{
+          this.loadstatus = 2
+        }
         this.$apply()
     }
 

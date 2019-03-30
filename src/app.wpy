@@ -229,8 +229,8 @@ export default class extends wepy.app {
     formid: 0,//从分享处来使用
     token: '',
     // baseUrl: 'http://wxcms.cc:626/api', 
-    // baseUrl: 'https://wxcms.readfollow.com/api', 
-    baseUrl: 'http://wxcms.oo/api', 
+    baseUrl: 'https://wxcms.readfollow.com/api', 
+    // baseUrl: 'http://wxcms.oo/api', 
     userInfo: null
   
   }
