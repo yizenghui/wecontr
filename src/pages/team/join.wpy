@@ -42,7 +42,7 @@ page{
 <view class="padding flex flex-direction">
   <button wx:if="{{!team.can_join}}" @tap="create" class='cu-btn bg-red margin-tb-sm lg'>邀请好友组队</button>
 
-  <button wx:if="{{team.can_join}}" @tap="create" class='cu-btn bg-red margin-tb-sm lg'>加入队伍</button>
+  <button wx:if="{{team.can_join}}" @tap="join" class='cu-btn bg-red margin-tb-sm lg'>加入队伍</button>
   <!-- <button class='cu-btn bg-grey lg'>寻找队伍</button> -->
 </view>
 
