@@ -1,0 +1,136 @@
+<style lang="less">
+page{
+  // padding-bottom: 100rpx;
+}
+.cu-bar .content image{
+  height: 60rpx;
+  width: 240rpx;
+}
+
+</style>
+<template>
+  <view class=" bg-white ">
+
+
+
+<view class="cu-custom" style="height:{{CustomBar}}px;">
+  <view class="cu-bar fixed bg-gradual-green" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
+    <navigator class='action' open-type="navigateBack" delta="1" hover-class="none">
+      <text class='icon-back'></text> 
+      我的队伍
+    </navigator>
+    <view class='action'>
+      <!-- 专栏：自我提供 -->
+    </view>
+  </view>
+</view>
+
+
+
+<view class="cu-bar bg-white margin-top">
+  <view class='action'>
+    <text class='icon-title text-blue'></text>我的队伍
+  </view>
+</view>
+<view class='padding bg-white '>
+  <view class="cu-avatar round lg margin-left" wx:for="{{users}}" wx:key style="background-image:url({{item.avatar}});">
+    <view wx:if="{{user.id==item.id}}" class="cu-tag badge icon-activityfill bg-blue"></view>
+  </view>
+</view>
+
+
+<view class="padding flex flex-direction">
+  <button wx:if="{{!team}}" @tap="create" class='cu-btn bg-red margin-tb-sm lg'>创建队伍</button>
+
+  <button wx:if="{{team}}" @tap="create" class='cu-btn bg-red margin-tb-sm lg'>邀请好友组队</button>
+  <!-- <button class='cu-btn bg-grey lg'>寻找队伍</button> -->
+</view>
+
+<view class="padding">
+  {{team.intro}}
+</view>
+
+</view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import commApi from '../../api/comm'
+  export default class Footprint extends wepy.page {
+    config = {
+      navigationBarTitleText: '我的足迹',
+    }
+
+    components = {
+    };
+
+    data = {
+      StatusBar:0,
+      CustomBar:0,
+      Custom:0,
+      user:[]
+    }
+
+    computed = {
+      team(){
+        if(this.user.team) return this.user.team
+        return false;
+      },
+      users(){
+        if(this.user.team && this.user.team.users) return this.user.team.users
+        return false;
+      }
+    }
+
+    methods = {
+      goto(to){
+          wepy.navigateTo({url:to});
+      },
+      click(){},
+      async create(){
+        let data = await commApi.CreateTeam()
+        if(data.messge){
+
+        }else{
+          this.user = data
+        }
+      },
+    }
+
+    async onLoad(query) {
+        this.StatusBar= wepy.$instance.globalData.StatusBar
+        this.CustomBar= wepy.$instance.globalData.CustomBar
+        this.Custom= wepy.$instance.globalData.Custom
+        this.user = await commApi.GetUserTeam()
+        this.$apply()
+    }
+
+
+
+    onShareAppMessage(res) {
+        return {
+            title: '快来加入我们的队伍，一起学习吧',
+            path: '/pages/team/join?id='+this.team.id+'formid=' + wepy.$instance.globalData.uid,
+            success: function(res) {
+                // 转发成功
+                console.log(res)
+            },
+            fail: function(res) {
+                console.log(res)
+                // 转发失败
+            }
+        }
+    }
+
+    
+        
+    // 下拉刷新
+    async onPullDownRefresh() {    
+      this.user = await commApi.GetUserTeam()
+      wepy.stopPullDownRefresh()
+      this.$apply()
+    }
+
+  }
+
+</script>

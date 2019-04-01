@@ -21,6 +21,26 @@ export default class comm extends base {
     return await this.get(`${this.baseUrl}/user/tasklogs`);
   }
   
+  // 获取用户组队情况
+  static async GetUserTeam() {
+    return await this.get(`${this.baseUrl}/team/getme`);
+  }
+  
+  // 获取用户组队情况
+  static async CreateTeam() {
+    return await this.get(`${this.baseUrl}/team/create`);
+  }
+
+  // 获取组队信息
+  static async GetTeam(team_id) {
+    return await this.get( `${this.baseUrl}/team/show`, {team_id:team_id} );
+  }
+
+  // 加入队伍
+  static async JoinTeam(team_id) {
+    return await this.get( `${this.baseUrl}/team/join`, {team_id:team_id} );
+  }
+
   // 查看用户积分日志
   static async GetUserLogs(page) {
     return await this.get(`${this.baseUrl}/user/pointlog`, {page: page});
