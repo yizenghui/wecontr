@@ -36,7 +36,9 @@
   <view wx:for="1" wx:key class="cu-item shadow">
     <view class="title" style="font-size:36rpx;">{{article.title}}</view>
     <view class="content">
-      <view><block wx:if="{{article.author}}">稿源：{{article.author}}</block></view>
+      <view>
+        <block wx:if="{{article.author_id}}">{{article.author.name}}</block>
+      </view>
     </view>
     <view class="content">
       <view class="desc">
@@ -117,7 +119,7 @@
   import commApi from '../../api/comm'
   export default class Index extends wepy.page {
     config = {
-      navigationBarTitleText: '每天自律打卡',
+      navigationBarTitleText: '文章详细',
       "usingComponents": {
         "wemark": "../plugins/wemark/wemark"
       }
