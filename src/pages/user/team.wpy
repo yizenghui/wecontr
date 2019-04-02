@@ -27,14 +27,14 @@ page{
 
 
 
-<view class="cu-bar bg-white margin-top">
+<!-- <view class="cu-bar bg-white margin-top">
   <view class='action'>
     <text class='icon-title text-blue'></text>我的队伍
   </view>
-</view>
+</view> -->
 <view class='padding bg-white '>
   <view class="cu-avatar round lg margin-left" wx:for="{{users}}" wx:key style="background-image:url({{item.avatar}});">
-    <view wx:if="{{user.id==item.id}}" class="cu-tag badge icon-activityfill bg-blue"></view>
+    <view wx:if="{{team.user_id==item.id}}" class="cu-tag badge icon-activityfill bg-blue"></view>
   </view>
 </view>
 
@@ -42,7 +42,7 @@ page{
 <view class="padding flex flex-direction">
   <button wx:if="{{!team}}" @tap="create" class='cu-btn bg-red margin-tb-sm lg'>创建队伍</button>
 
-  <button wx:if="{{team}}" @tap="create" class='cu-btn bg-red margin-tb-sm lg'>邀请好友组队</button>
+  <button wx:if="{{team}}" class='cu-btn bg-red margin-tb-sm lg' openType="share">邀请好友组队</button>
   <!-- <button class='cu-btn bg-grey lg'>寻找队伍</button> -->
 </view>
 
@@ -89,11 +89,13 @@ page{
       click(){},
       async create(){
         let data = await commApi.CreateTeam()
-        if(data.messge){
+        if(data.message){
 
         }else{
           this.user = data
+          this.$apply()
         }
+
       },
     }
 
