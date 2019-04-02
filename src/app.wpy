@@ -151,6 +151,8 @@ export default class extends wepy.app {
       'pages/user/guide',
       'pages/user/sign',
       'pages/user/task',
+      'pages/user/team',
+      'pages/team/join',
       'pages/user/pointlog',
       'pages/user/exchange',
       'pages/topic/list',

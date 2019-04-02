@@ -40,6 +40,13 @@ page{
         </view>
       </view>
     </view>
+    
+  <view class='cu-load load-modal' wx:if="{{loadModal}}"> 
+      <!-- <view class='icon-emojifill text-orange'></view> -->
+      <image src='/images/logo.png' class='png' mode='aspectFit'></image>
+      <view class='gray-text'>加载中...</view>
+  </view>
+
     <view wx:if="{{loadstatus}}" class="cu-load bg-gray {{loadstatus==1?'loading':'over'}}"></view>
 </view>
 </template>
@@ -59,6 +66,7 @@ page{
 
     data = {
       isCard:true,
+      loadModal:true,
       loadstatus:0,
       showLoad:false,
       StatusBar:0,
@@ -79,8 +87,10 @@ page{
         this.swipers = await commApi.GetSwipers()
         this.StatusBar= wepy.$instance.globalData.StatusBar
         this.CustomBar= wepy.$instance.globalData.CustomBar
+        this.$apply()
         this.articles = await commApi.GetRecommendedArticles(1)
         this.page = 2;
+        this.loadModal = false
         this.$apply()
     }
 

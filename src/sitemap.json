@@ -1,0 +1,28 @@
+{
+  "rules": [
+    {
+      "action": "allow",
+      "page": "/pages/index/index"
+    },
+    {
+      "action": "allow",
+      "page": "/pages/topic/index"
+    },
+    {
+      "action": "allow",
+      "page": "/pages/article/info",
+      "params": [
+        "id"
+      ],
+      "matching": "exact"
+    },
+    {
+      "action": "allow",
+      "page": "/pages/topic/list",
+      "params": [
+        "id"
+      ],
+      "matching": "exact"
+    },
+  ]
+}
