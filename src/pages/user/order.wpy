@@ -23,7 +23,7 @@ page{
   </view>
 </view>
 
-<view class="cu-bar bg-white ">
+<view class="cu-bar bg-white" wx:if="{{orders.length}}">
   <view class='action'>
     <text class='icon-title text-green'></text>
     <text>兑换卷请尽早使用，以免过期作废。</text>
