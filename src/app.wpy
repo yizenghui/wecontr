@@ -157,8 +157,6 @@ export default class extends wepy.app {
       'pages/user/exchange',
       'pages/topic/list',
       'pages/article/info',
-      'pages/home/home',
-      'pages/auth/auth',
     ],
     
     window: {

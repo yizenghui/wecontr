@@ -12,6 +12,7 @@ page{
   <view class=" bg-white ">
 
 
+<!-- <image src='/images/componentBg.png' mode='widthFix' class='response'></image> -->
 
 <view class="cu-custom" style="height:{{CustomBar}}px;">
   <view class="cu-bar fixed bg-gradual-green" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
@@ -20,18 +21,18 @@ page{
       加入队伍
     </navigator>
     <view class='action'>
-      <!-- 专栏：自我提供 -->
     </view>
   </view>
 </view>
 
 
 
-<view class="cu-bar bg-white margin-top">
+<view class="cu-bar bg-white solid-bottom margin-top">
   <view class='action'>
-    <text class='icon-title text-blue'></text>加入队伍
+    <text class='icon-title text-blue'></text>队伍成员
   </view>
 </view>
+
 <view class='padding bg-white '>
   <view class="cu-avatar round lg margin-left" wx:for="{{users}}" wx:key style="background-image:url({{item.avatar}});">
     <view wx:if="{{team.user_id==item.id}}" class="cu-tag badge icon-activityfill bg-blue"></view>
@@ -49,6 +50,21 @@ page{
 <view class="padding">
   {{team.intro}}
 </view>
+
+
+<view class="cu-bar bg-white solid-bottom margin-top">
+  <view class='action'>
+    <text class='icon-title text-green'></text>组队规则介绍
+  </view>
+</view>
+
+<view class='padding bg-white'>
+  <view class='text-left padding'>创建的队伍后不能解散，加入了队伍后不能退出。</view>
+  <view class='text-left padding'>队伍含队长共五人，组满五人为组队成功。</view>
+  <view class='text-left padding'>组队成功后，奖励由系统自动发放给每个队员。</view>
+  <view class='text-left padding'>组队奖励仅当天有效，队伍第二天自动解散。</view>
+</view>
+
 
 </view>
 </template>
