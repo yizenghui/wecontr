@@ -51,6 +51,15 @@ page{
   {{team.intro}}
 </view>
 
+<view class="cu-bar bg-white solid-bottom margin-top">
+  <view class='action'>
+    <text class='icon-title text-green'></text>组队奖励
+  </view>
+</view>
+
+<view class='padding bg-white'>
+  <view class='text-left padding'>队伍满员后，当天阅读、点赞可获得双倍积分奖励。</view>
+</view>
 
 <view class="cu-bar bg-white solid-bottom margin-top">
   <view class='action'>

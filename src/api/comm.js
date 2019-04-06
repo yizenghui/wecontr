@@ -35,6 +35,11 @@ export default class comm extends base {
   static async GetTeam(team_id) {
     return await this.get( `${this.baseUrl}/team/show`, {team_id:team_id} );
   }
+  
+  // 搜索队伍信息
+  static async SearchTeam(team_id) {
+    return await this.get( `${this.baseUrl}/team/search`, {team_id:team_id} );
+  }
 
   // 加入队伍
   static async JoinTeam(team_id) {

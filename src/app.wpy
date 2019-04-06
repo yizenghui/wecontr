@@ -236,7 +236,7 @@ export default class extends wepy.app {
   }
   
   async onLaunch (p) {
-    console.log(p)
+    // console.log(p)
     let e = await wepy.getSystemInfo()
     wepy.$instance.globalData.StatusBar =  e.statusBarHeight;
     wepy.$instance.globalData.CustomBar =   e.platform == 'android' ? e.statusBarHeight + 50 : e.statusBarHeight + 45;
