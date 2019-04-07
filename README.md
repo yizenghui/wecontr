@@ -24,6 +24,7 @@
 
 ## wxcms使用了以下开源项目进行开发
 
-* wepy
-* colorUI
-* wemark
+* [wepy](https://github.com/Tencent/wepy)
+* [colorUI](https://github.com/weilanwl/ColorUI)
+* [wemark](https://github.com/TooBug/wemark)
+ 
