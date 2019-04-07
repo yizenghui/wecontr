@@ -28,3 +28,6 @@
 * [colorUI](https://github.com/weilanwl/ColorUI)
 * [wemark](https://github.com/TooBug/wemark)
  
+
+## 其它声明
+本项目供个人学习、参考，商用需获得本人授权。
