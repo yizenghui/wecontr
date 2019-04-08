@@ -38,7 +38,7 @@ page{
   </swiper>
 
 
-<view class="cu-modal {{showLogin?'show':''}}" bindtap='hideModal'>
+<view class="cu-modal {{showLogin?'show':''}}" @tap='hideModal'>
   <view class="cu-dialog padding" catchtap>
     <view class="cu-bar">
       <view class='action'>
@@ -202,6 +202,11 @@ page{
           this.showLogin = true
         }
         this.$apply()
+      },
+
+      hideModal(){
+        
+          this.showLogin = false
       },
 
       async bindGetUserInfo(e) {

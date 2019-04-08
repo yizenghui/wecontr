@@ -13,7 +13,7 @@ page{
 
     <view class='cu-custom'>
       <view class="cu-bar fixed bg-shadeTop" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
-        <view class='content' style='top:{{StatusBar}}px;'>自律帝</view>
+        <!-- <view class='content' style='top:{{StatusBar}}px;'>自律帝</view> -->
       </view>
     </view>
     <swiper wx:if="{{swipers.length}}" class="screen-swiper round-dot" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500">
