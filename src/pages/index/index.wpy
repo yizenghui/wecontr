@@ -126,7 +126,7 @@ page{
     onShareAppMessage(res) {
         return {
             title: '每天花10分钟阅读，生活从此开始改变！',
-            path: '/pages/index/index?formid=' + wepy.$instance.globalData.uid,
+            path: '/pages/index/index?fromid=' + wepy.$instance.globalData.uid,
             success: function(res) {
                 // 转发成功
                 console.log(res)

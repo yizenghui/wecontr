@@ -135,7 +135,7 @@ page{
     onShareAppMessage(res) {
         return {
             title: '快来加入我们的队伍，一起学习吧',
-            path: '/pages/team/join?id='+this.team.id+'formid=' + wepy.$instance.globalData.uid,
+            path: '/pages/team/join?id='+this.team.id+'fromid=' + wepy.$instance.globalData.uid,
             success: function(res) {
                 // 转发成功
                 console.log(res)

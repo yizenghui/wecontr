@@ -216,9 +216,9 @@ export default class extends wepy.app {
       header['Authorization'] = 'Bearer ' + token
     }
     
-    const formid = wepy.$instance.globalData.formid
-    if (formid) {
-      header['Formid'] = formid
+    const fromid = wepy.$instance.globalData.fromid
+    if (fromid) {
+      header['Fromid'] = fromid
     }
     return header
   }
@@ -226,7 +226,7 @@ export default class extends wepy.app {
   globalData = {
     session: '',
     uid: 0,//用户分享时使用
-    formid: 0,//从分享处来使用
+    fromid: 0,//从分享处来使用
     token: '',
     // baseUrl: 'http://wxcms.cc:626/api', 
     // baseUrl: 'http://wxcms.oo/api', 
@@ -242,7 +242,7 @@ export default class extends wepy.app {
     wepy.$instance.globalData.CustomBar =   e.platform == 'android' ? e.statusBarHeight + 50 : e.statusBarHeight + 45;
     wepy.$instance.globalData.Custom = wx.getMenuButtonBoundingClientRect();
     wepy.$instance.globalData.uid = await wepy.getStorageSync('uid')
-    wepy.$instance.globalData.formid = p.query.formid //记录用户来源
+    wepy.$instance.globalData.fromid = p.query.fromid //记录用户来源
   }
 
 }

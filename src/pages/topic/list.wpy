@@ -14,9 +14,13 @@ page{
 
 <view class="cu-custom" style="height:{{CustomBar}}px;">
   <view class="cu-bar fixed bg-gradual-green" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
-    <navigator class='action' open-type="navigateBack" delta="1" hover-class="none">
+    <navigator wx:if="{{!fromid}}" class='action' open-type="navigateBack" delta="1" hover-class="none">
       <text class='icon-back'></text> 
       {{topic.name}}
+    </navigator>
+     <navigator wx:if="{{fromid}}" class='action' url="/pages/index/index" open-type="switchTab" hover-class="none">
+      <text class='icon-back'></text> 
+      返回首页
     </navigator>
     <view class='action'>
     </view>
@@ -60,6 +64,7 @@ page{
       StatusBar:0,
       CustomBar:0,
       Custom:0,
+      fromid:0,
       loadstatus:1,
       id:0,
       page:1,
@@ -78,6 +83,7 @@ page{
 
     async onLoad(query) {
       this.id = query.id
+      this.fromid = query.fromid
       this.StatusBar= wepy.$instance.globalData.StatusBar
       this.CustomBar= wepy.$instance.globalData.CustomBar
       this.Custom= wepy.$instance.globalData.Custom
@@ -122,7 +128,7 @@ page{
         return {
             title: this.topic.name,
             // title: '觉得这个专题的文章不错，分享给你，快来看看吧。',
-            path: '/pages/topic/list?id='+this.id+'&formid=' + wepy.$instance.globalData.uid,
+            path: '/pages/topic/list?id='+this.id+'&fromid=' + wepy.$instance.globalData.uid,
             success: function(res) {
                 // 转发成功
                 console.log(res)
