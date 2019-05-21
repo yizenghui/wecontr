@@ -27,35 +27,62 @@ page{
   </view>
 </view>
 
-<view class="cu-card article no-card}}">
-  <view wx:for="{{articles}}" wx:key class="cu-item shadow"  @tap="goto({{item.wxto}})">
-    <view class="title">{{item.title}}</view>
-    <view class="content">
-      <image wx:if="{{item.cover}}" src="{{item.cover}}" mode="aspectFill"></image>
-      <view class="desc">
-        <view class='text-content' wx:if="{{item.intro}}"> {{item.intro}}</view>
-        <view class="text-gray">
-            <text class="icon-attentionfill"></text> {{item.view}}
-            <text class="icon-appreciatefill"></text> {{item.liked}}
-            <text class="icon-messagefill"></text> {{item.commented}}
+<Ad1 position="7" :ads.sync="ads"/>
+
+    <view  wx:if="articles1" class="cu-card article {{isCard?'no-card':''}}">
+      <view wx:for="{{articles1}}" wx:key class="cu-item shadow"  @tap="goto({{item.wxto}})">
+        <view class="title">{{item.title}}</view>
+        <view class="content">
+          <image wx:if="{{item.cover}}" src="{{item.cover}}" mode="aspectFill"></image>
+          <view class="desc">
+            <view class='text-content' wx:if="{{item.intro}}"> {{item.intro}}</view>
+            <view class="text-gray">
+                <text class="icon-attentionfill"></text> {{item.view}}
+                <text class="icon-appreciatefill"></text> {{item.liked}}
+                <!-- <text class="icon-messagefill"></text> {{item.commented}} -->
+            </view>
+          </view>
         </view>
       </view>
     </view>
-  </view>
-</view>
+    
+    <Ad2 wx:if="{{articles2.length>0}}"  position="8" :ads.sync="ads"/>
+
+    
+    <view wx:if="{{articles2.length>0}}"  class="cu-card article {{isCard?'no-card':''}}">
+      <view wx:for="{{articles2}}" wx:key class="cu-item shadow"  @tap="goto({{item.wxto}})">
+        <view class="title">{{item.title}}</view>
+        <view class="content">
+          <image wx:if="{{item.cover}}" src="{{item.cover}}" mode="aspectFill"></image>
+          <view class="desc">
+            <view class='text-content' wx:if="{{item.intro}}"> {{item.intro}}</view>
+            <view class="text-gray">
+                <text class="icon-attentionfill"></text> {{item.view}}
+                <text class="icon-appreciatefill"></text> {{item.liked}}
+                <!-- <text class="icon-messagefill"></text> {{item.commented}} -->
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    
 <view wx:if="{{loadstatus}}" class="cu-load bg-gray {{loadstatus==1?'loading':'over'}}"></view>
+
 </view>
 </template>
 
 <script>
   import wepy from 'wepy'
   import commApi from '../../api/comm'
+  import ad from '../../components/ad'
   export default class Index extends wepy.page {
     config = {
       navigationBarTitleText: '专题文章列表',
     }
 
     components = {
+      Ad1:ad,
+      Ad2:ad,
     };
 
 
@@ -70,9 +97,31 @@ page{
       page:1,
       topic:[],
       articles: [],
+      ads: [],
     }
 
 
+    computed = {
+        articles1 () {
+          var list = []
+          this.articles.forEach((v,k)=>{
+            if(k<=8){
+              list = [...list,v]
+            }
+          })
+          return  list
+        },
+        
+        articles2 () {
+          var list = []
+          this.articles.forEach((v,k)=>{
+            if(k>8){
+              list = [...list,v]
+            }
+          })
+          return  list
+        }
+    };
     methods = {
       goto(to){
           console.log('to',to)
@@ -87,6 +136,7 @@ page{
       this.StatusBar= wepy.$instance.globalData.StatusBar
       this.CustomBar= wepy.$instance.globalData.CustomBar
       this.Custom= wepy.$instance.globalData.Custom
+      this.ads = await commApi.GetAds()
       this.topic = await commApi.GetTopicInfo(this.id)
       this.articles = await commApi.GetTopicArticles(this.id,1)
       this.page = 2;
@@ -124,21 +174,15 @@ page{
       this.$apply()
     }
 
+
     onShareAppMessage(res) {
         return {
-            title: this.topic.name,
-            // title: '觉得这个专题的文章不错，分享给你，快来看看吧。',
-            path: '/pages/topic/list?id='+this.id+'&fromid=' + wepy.$instance.globalData.uid,
-            success: function(res) {
-                // 转发成功
-                console.log(res)
-            },
-            fail: function(res) {
-                console.log(res)
-                // 转发失败
-            }
+            title: this.topic.share_title?this.topic.share_title:this.topic.name,
+            imageUrl:this.topic.share_cover?this.topic.share_cover:this.topic.cover,
+            path: '/pages/topic/list?id='+this.id+'&fromid=' + wepy.$instance.globalData.uid
         }
     }
+
 
   }
 

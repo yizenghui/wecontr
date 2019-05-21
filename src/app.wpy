@@ -139,6 +139,7 @@ import 'wepy-async-function'
 
 export default class extends wepy.app {
   config = {
+    "requiredBackgroundModes": ["audio"],
     pages: [
       // 'pages/html',
       'pages/index/index',
@@ -157,20 +158,28 @@ export default class extends wepy.app {
       'pages/user/exchange',
       'pages/topic/list',
       'pages/article/info',
+      'pages/poster/index',
+      'pages/search/index',
+      'pages/jump/index',
     ],
     
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#fff',
-      navigationBarTitleText: '自律帝',
+      navigationBarTitleText: 'Read Follow demo',
       navigationBarTextStyle: 'white',
       navigationStyle: "custom",
       enablePullDownRefresh: true,
     },
-
-
+    // "plugins": {
+    //   "tencentvideo": {
+    //     "version": "1.3.0",
+    //     "provider": "wxa75efa648b60994b"
+    //   }
+    // },
+    "usingComponents": {},
     "tabBar": {
-      "custom": false,
+      "custom": true,
       "color": "#aaa",
       "selectedColor": "#39b54a",
       "borderStyle": "black",
@@ -210,10 +219,14 @@ export default class extends wepy.app {
   }
   createAuthHeader () {
     const token = wepy.$instance.globalData.token
+    const api_token = wepy.$instance.globalData.api_token
     const header = {}
     header['Accept'] = 'application/json'
     if (token) {
       header['Authorization'] = 'Bearer ' + token
+    }
+    if (api_token) {
+      header['Api-token'] =  api_token
     }
     
     const fromid = wepy.$instance.globalData.fromid
@@ -225,12 +238,21 @@ export default class extends wepy.app {
 
   globalData = {
     session: '',
+    ads: [],
+    carousels: [],
     uid: 0,//用户分享时使用
     fromid: 0,//从分享处来使用
     token: '',
-    // baseUrl: 'http://wxcms.cc:626/api', 
-    // baseUrl: 'http://wxcms.oo/api', 
-    baseUrl: 'https://wxcms.readfollow.com/api', 
+    default_search: '',
+    index_share_title: '',
+    index_share_cover: '',
+    topic_share_title: '',
+    topic_share_cover: '',
+    api_token: '0RPJhqvW6gMp',
+    // baseUrl: 'http://cms.cc:626/api/v1', 
+    // baseUrl: 'http://wxcmsmanage.oo/api/v1',
+    baseUrl: 'https://readfollow.com/api/v1', 
+    // baseUrl: 'https://wxcms.readfollow.com/api', 
     userInfo: null
   
   }

@@ -1,6 +1,29 @@
 <style lang="less">
+.my-audio{
+    position: fixed;
+    bottom:0rpx;
+    left:0rpx;
+    z-index:2;
+}
 
+.posterbox{
+    width: 600rpx;
+    height: 600rpx;
+    margin:  5rem auto;
+    z-index: 99;
+}
+.saveBtn{
+    width: 60%;
+    margin:  0 auto;
+}
+.closeMask{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 8;
+    background-color:rgba(0, 0, 0, 0.8);
 
+}
 </style>
 <template>
   <view>
@@ -29,6 +52,7 @@
   </view>
 </view>
 
+<Ad1 position="3" :ads.sync="ads"/>
 
 <view class='cu-load load-modal' wx:if="{{!article.title}}"> 
     <!-- <view class='icon-emojifill text-orange'></view> -->
@@ -39,11 +63,29 @@
 <view wx:if="{{article.title}}" class="cu-card article {{isCard?'no-card':''}}">
   <view wx:for="1" wx:key class="cu-item shadow">
     <view class="title" style="font-size:36rpx;">{{article.title}}</view>
-    <view class="content">
+    <!-- <view class="content">
       <view>
         <block wx:if="{{article.author_id}}">{{article.author.name}}</block>
       </view>
+    </view> -->
+    <view class="cu-bar bg-white">
+      <view class='action'>
+        <block wx:if="{{article.author_id}}">{{article.author.name}}</block>
+      </view>
+      <view class='action'>
+        
+        <button class="cu-btn bg-white" open-type='share'>
+        分享<text class='icon-forward lg text-gray'></text>
+        </button>
+      </view>
+      
     </view>
+        
+    <!-- <txv-video vid="{{article.video}}" wx:if="{{article.video}}" playerid="{{article.video}}"></txv-video> -->
+
+    
+    <player  wx:if="{{playurl}}" :url.sync="playurl" :title.sync="playtitle" />
+      
     <view class="content">
       <view class="desc">
         
@@ -59,6 +101,9 @@
         
     <view class="cu-bar bg-white margin-top text-right">
       <view class='action'>
+        <button class="cu-btn bg-white" @tap="poster({{article.id}})" >
+          朋友圈<text class='icon-forward lg text-gray'></text>
+        </button>
       </view>
       <view class='action' wx:if="{{userlikearticle}}" @tap="unlikearticle({{article.id}})">
         <text class='icon-appreciatefill lg text-gray'></text> 已赞  {{article.liked}}
@@ -68,9 +113,14 @@
       </view>
     </view>
 
+
+
   </view>
   
+
+
 </view>
+
 
 
 <!-- 
@@ -114,6 +164,7 @@
 </view> -->
 
 
+<Ad2 position="4" :ads.sync="ads"/>
 
 </view>
 </template>
@@ -121,14 +172,23 @@
 <script>
   import wepy from 'wepy'
   import commApi from '../../api/comm'
+  import ad from '../../components/ad'
+  import player from '../../components/player'
   export default class Index extends wepy.page {
     config = {
       navigationBarTitleText: '文章详细',
       "usingComponents": {
-        "wemark": "../plugins/wemark/wemark"
+        "wemark": "../plugins/wemark/wemark",
+        // "txv-video": "plugin://tencentvideo/video",
       }
     }
 
+
+    components = {
+      Ad1:ad,
+      Ad2:ad,
+      player:player,
+    };
 
     data = {
       loadModal:true,
@@ -140,17 +200,22 @@
       id:'',
       article:[],
       likeusers:[],
+      ads:[],
       content: "",
+      playurl: "",
+      playtitle: "",
       userlikearticle:false,
       isloadcomment:false,
     }
-
     methods = {
       tips(intro){
           wepy.showModal({
               content: intro,
               showCancel: false
           });
+      }, 
+      poster(id){
+          wx.navigateTo({url:"/pages/poster/index?id="+id})
       },
       async likearticle(id){
         wepy.showToast({
@@ -159,8 +224,32 @@
           duration: 500
         });
         let state = await commApi.LikeArticleAction(id)
+        if(state.message){
+           wepy.showToast({
+            title: state.message,
+            icon: "none",
+            duration: 500
+          });
+        }
         this.userlikearticle = true;
         this.article.liked ++
+        this.$apply()
+      },
+      async getarticleposter(id){
+        wepy.showToast({
+          title: "数据加载中",
+          icon: "loading",
+          duration: 500
+        });
+        let state = await commApi.GetArticlePoster(id,wepy.$instance.globalData.uid)
+        if(state.message){
+           wepy.showToast({
+            title: state.message,
+            icon: "none",
+            duration: 500
+          });
+        }
+        // todo
         this.$apply()
       },
       async unlikearticle(id){
@@ -170,6 +259,13 @@
           duration: 500
         });
         let state = await commApi.UnLikeArticleAction(id)
+        if(state.message){
+           wepy.showToast({
+            title: state.message,
+            icon: "none",
+            duration: 500
+          });
+        }
         this.userlikearticle = false;
         this.article.liked --
         this.$apply()
@@ -187,8 +283,11 @@
       this.StatusBar= wepy.$instance.globalData.StatusBar
       this.CustomBar= wepy.$instance.globalData.CustomBar
       this.Custom= wepy.$instance.globalData.Custom
+      this.ads = await commApi.GetAds()
       this.article = await commApi.GetArticleInfo(query.id)
       this.content = this.article.body
+      this.playurl = this.article.audio
+      this.playtitle = this.article.title
       this.userlikearticle = this.article.userlikearticle
       // this.likeusers = await commApi.GetArticleLikeUsers(query.id)
       
@@ -204,7 +303,14 @@
         // 首次拉到底初始化评论功能(延迟加载评论)
         if(!this.isloadcomment){
           // 记录用户已经阅读该文章(首次拉到底时执行)
-          commApi.ViewAction(this.id)
+          let state = await commApi.ViewAction(this.id)
+          if(state.message){
+            wepy.showToast({
+              title: state.message,
+              icon: "none",
+              duration: 500
+            });
+          }
         }
         this.isloadcomment = true
         this.$apply()
@@ -225,21 +331,16 @@
       wepy.stopPullDownRefresh()
     }
 
+
+
     onShareAppMessage(res) {
         return {
-            title: this.article.title,
-            // title: '我觉得不错的文章，分享给你，快来看看吧。',
-            path: '/pages/article/info?id='+this.id+'&fromid=' + wepy.$instance.globalData.uid,
-            success: function(res) {
-                // 转发成功
-                console.log(res)
-            },
-            fail: function(res) {
-                console.log(res)
-                // 转发失败
-            }
+            title: this.article.share_title?this.article.share_title:this.article.title,
+            imageUrl:this.article.share_cover?this.article.share_cover:this.article.cover,
+            path: '/pages/article/info?id='+this.id+'&fromid=' + wepy.$instance.globalData.uid
         }
     }
+
     
   }
 

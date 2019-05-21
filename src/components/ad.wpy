@@ -1,0 +1,130 @@
+<style type="less">
+</style>
+<template>
+<view>
+  
+<view class="text-center padding-xs"  wx:if="{{spreads.length}}">
+
+
+
+    <repeat wx:for="{{spreads}}" wx:key>
+      <block wx:if="{{item.genre==0}}">
+        
+        <view @tap="click({{item}})" wx:if="{{!item.cover}}" class="padding radius shadow bg-white" >
+          <view>
+          {{item.text}}
+          </view>
+        </view>
+
+        <view @tap="click({{item}})" wx:if="{{item.cover}}" class="padding-xl radius shadow-blur bg-green bg-img" style="background-image:url({{item.cover}});">
+          <view>
+          {{item.text?item.text:''}}
+          </view>
+        </view>
+
+      </block>
+
+
+      <block wx:if="{{item.genre== 1 ||item.genre==4 || item.genre==7}}">
+        <!-- 1,4,7 图片类型的-->
+        <view @tap="click({{item}})" class="padding-xl radius shadow-blur bg-green bg-img" style="background-image:url({{item.cover}});">
+          <view>
+          {{item.text?item.text:''}}
+          </view>
+        </view>
+      </block>
+
+      <block wx:if="{{item.genre== 3 ||item.genre==6 || item.genre==9}}">
+        <!-- 3,6,9 todo 图文类的-->
+         <view @tap="click({{item}})" wx:if="{{item.cover}}" class="padding-xl radius shadow-blur bg-green bg-img" style="background-image:url({{item.cover}});">
+          <view>
+          {{item.text?item.text:''}}
+          </view>
+        </view>
+      </block>
+
+      <block wx:if="{{item.genre== 2 ||item.genre==5 || item.genre==8}}">
+        <!-- 2,5,8 文字类型的-->
+        <view @tap="click({{item}})" class="padding radius shadow bg-white" >
+          <view>
+          {{item.text}}
+          </view>
+        </view>
+        
+      </block>
+
+
+    </repeat>
+
+
+
+</view>
+
+</view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import commApi from '../api/comm'
+
+  export default class Ad extends wepy.component {
+    props = {
+      position: String
+    }
+    data = {
+      ads: [],
+    }
+
+    methods = {
+      async  click(item){
+        console.log('click(item)',item)
+
+        // todo 
+        if(item.genre==1 ||item.genre==2 ||item.genre==3){ //1图片链接、2文字链接、3图文链接
+
+          if(item.url){
+            wepy.navigateTo({url:item.url});
+            wepy.switchTo({url:item.url});
+          }
+        }else if( item.genre==4 || item.genre==5 || item.genre==6 ){  // 4图片海报 5文字海报 6图文海报
+          if(item.poster){
+              wx.previewImage({
+                current: item.poster, // 海报
+                urls: [item.poster]
+              })
+            }
+        }else if( item.genre==7 || item.genre==8 || item.genre==9 ){  // 7图片跳小程序 8文字跳小程序 9图文跳小程序
+          wx.navigateToMiniProgram({
+            appId: item.gotoapp,
+            path: item.url,
+            extraData: {
+              from: wepy.$instance.globalData.appid
+            },
+            envVersion: 'develop',
+            success(res) {
+              // 打开成功
+            }
+          })
+        }else{
+          // todo
+        }
+      },
+    }
+    async onLoad () {
+      // console.log('onLoadonLoad',this.position,this.ads)
+      // this.ads = await commApi.GetAds()
+      // this.$apply()
+    }  // 在Page和Component共用的生命周期函数
+
+    computed = {
+        spreads () {
+          var list = []
+          this.ads.forEach((v)=>{
+            if(this.position == v.position){
+              list = [...list,v]
+            }
+          })
+          return  list
+        }
+    };
+  }
+</script>

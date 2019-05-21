@@ -1,0 +1,88 @@
+<style lang="less">
+.my-audio{
+    position: fixed;
+    bottom:0rpx;
+    left:0rpx;
+    z-index:2;
+}
+
+.posterbox{
+    width: 600rpx;
+    height: 600rpx;
+    margin:  5rem auto;
+    z-index: 99;
+}
+.saveBtn{
+    width: 60%;
+    margin:  0 auto;
+}
+.closeMask{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 8;
+    background-color:rgba(0, 0, 0, 0.8);
+
+}
+</style>
+<template>
+<view>
+
+</view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '欢迎页'
+    }
+
+
+
+    data = {
+    }
+    
+
+    methods = {
+      
+    }
+
+    onLoad(query) {
+      wepy.showLoading({
+          title: "加载中",
+          mask: true
+      });
+      if(!query.scene){ 
+        wx.redirectTo({
+          url: '/pages/index/index'
+        })
+        wx.switchTab({
+          url: '/pages/index/index'
+        })
+      }else{
+        var url = wepy.$instance.globalData.baseUrl+'/qrcode/jump/'+query.scene
+        wx.request({
+          url: url, // 仅为示例，并非真实的接口地址
+          data: {},
+          header: {
+            'content-type': 'application/json' // 默认值
+          },
+          success(res) {
+            wx.redirectTo({
+              url: res.data.page
+            })
+            wx.switchTab({
+              url: res.data.page
+            })
+          }
+        })
+      }
+    }
+
+
+
+    
+  }
+
+</script>

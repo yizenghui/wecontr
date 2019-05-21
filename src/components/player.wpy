@@ -1,0 +1,212 @@
+<style type="less">
+.icon-musicfill{
+  font-size: 48rpx;
+}
+.flex-slider{
+flex:1;
+}
+</style>
+<template>
+<view>
+  <view class="bg-white padding">
+     
+    <view class="flex  align-center">
+      <!-- <view class='margin-xs radius'>
+        <text  class='icon-musicfill text-gray'></text>
+      </view> -->
+      <view class='basis-xl flex-slider radius'>
+        <slider bindchange="slider2change" step="1"  min="0"  value="{{currentTime}}" max="{{duration}}"/>
+      </view>
+    </view>
+
+    <view class="grid col-5 text-center" >
+      <view class="padding">{{curTime}}</view>
+      <view class="padding" @tap="fast_rewind()"> <text class='text-xl icon-backwardfill text-gray'></text> </view>
+      <view class="padding" @tap="audioPlay()">
+        <text wx:if="{{!isplay}}" class='text-xl icon-playfill text-gray'></text>
+        <text wx:if="{{isplay}}" class='text-xl icon-stop text-gray'></text>
+      </view>
+      <view class="padding" @tap="fast_forward()"> <text class='text-xl icon-play_forward_fill text-gray'></text> </view>
+      <view class="padding">{{endTime}}</view>
+    </view>
+  </view>
+
+    
+</view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import commApi from '../api/comm'
+
+  export default class Player extends wepy.component {
+    props = {
+      title: String,
+      url: String,
+      poster: String,
+      author: String,
+    }
+    data = {
+      bgm:null,
+      playurl:'',
+      currentTime: 0,
+      currentDot: 0,
+      autoplay: 0,
+      duration: 0,
+      isplay:false,
+      isloading:true,
+    }
+
+    methods = {
+      slider2change:function (e) {
+        var e = e.detail.value
+        this.bgm.seek(e)
+      },
+      fast_forward:function () {
+        if( (this.duration-this.currentTime) > 15 ) this.bgm.seek(this.currentTime+15)
+      },
+      fast_rewind:function () {
+        if(this.currentTime>15) this.bgm.seek(this.currentTime-15)
+      },
+      //播放暂停
+      audioPlay: function () {
+        this.isloading = false
+        if(!this.palyurl) this.palyurl = this.url
+        if(this.isplay){
+          this.bgm.pause()
+        }else{
+          if( !this.bgm.title || this.bgm.title != this.title ) this.bgm.title = this.title
+          if( !this.bgm.src || this.bgm.src != this.palyurl ){
+            this.currentTime = 0
+            this.bgm.src = this.palyurl
+          } 
+          this.bgm.play()
+        }
+      }
+    }
+    async onLoad () {
+      var that = this
+
+
+
+      // that.bgm.autoplay = true
+      that.bgm = wx.getBackgroundAudioManager()
+      that.bgm.onTimeUpdate(function () { //setInterval setTimeout
+        if( that.bgm.src && that.bgm.src == that.palyurl ){ // 播放当前音频才更新时间
+          that.isplay = true
+          that.currentTime = parseInt(that.bgm.currentTime)
+          that.$apply()
+        }
+      })
+      that.bgm.onStop(function () {
+        that.isplay = false
+        that.$apply()
+      })
+      that.bgm.onPlay(function () {
+        that.isplay = true
+        that.$apply()
+      })
+      that.bgm.onEnded(function () {
+        that.isplay = false
+        // 播放完成后，如果 bgm src、title 被清除了，重新设置一下
+        if( !that.bgm.src ) that.bgm.src = that.palyurl
+        if( !that.bgm.title ) that.bgm.title = that.title
+        that.isloading = true
+        // that.bgm.pause() 
+        that.$apply()
+      })
+      that.bgm.onPause(function () { 
+        that.isplay = false
+        that.$apply()
+      })
+      
+      that.bgm.onCanplay(function () {
+        // that.duration = parseInt(that.bgm.duration)
+        // if(that.isloading) that.bgm.pause() 
+        // that.isplay = false
+        that.$apply()
+      })
+      
+      that.$apply()
+    } 
+
+    watch = {
+      title(val){
+        this.bgm.title = val
+      },
+      url(val){
+        if(val==""||val ==null)return;
+        var that = this
+        that.palyurl = val
+        // 通过音频实例获取背景音乐长度
+        var bgmac =  wx.createInnerAudioContext()
+        if( that.bgm.src && that.bgm.src == that.palyurl ){ // 播放当前音频才更新时间
+          // console.log('that.bgm',that.bgm,that.bgm.src , that.bgm.src ,that.palyurl ,'url',that.url)
+            that.currentTime = parseInt(that.bgm.currentTime) 
+            that.duration = parseInt(that.bgm.duration)
+        }
+        bgmac.title = '~~~BGM'
+        bgmac.src = val
+
+        
+        if(!that.duration){
+          var timer = setInterval(function () {
+            if(bgmac.duration){ // 获取到音频长度后注销实例
+              that.duration = parseInt(bgmac.duration)
+              clearTimeout(timer)
+              bgmac.destroy()
+              that.$apply()
+            }
+          },100)
+        }
+      }
+    }
+    computed = {
+      
+      curTime(){
+        if(this.duration){
+          var curTime = this.currentTime;
+          if( this.bgm.src && this.bgm.src != this.palyurl ){ // 播放当前音频才更新时间
+            this.currentTime = 0;
+            curTime = 0;
+          }
+          if (curTime < 10) {
+                curTime = '00:0' + curTime;
+            }
+            if (curTime >= 10) {
+              if (curTime >= 60) {
+                var c = parseInt(curTime / 60)
+                var d = curTime % 60
+                if (d < 10) {
+                  d = '0' + d;
+                }
+                if ( c < 10) {
+                    c = '0' +  c;
+                }
+                curTime = c + ':' + d;
+              } else {
+                curTime = '00:' + curTime;
+              }
+            } 
+          return curTime
+        }
+        return '00:00';
+      },
+      endTime(){
+        if(this.duration){
+          var endTime = this.duration
+          var a = parseInt(endTime / 60);
+          var b = endTime % 60;
+          if (b < 10) {
+            b = '0' + b;
+          }
+          if (a < 10) {
+            a = '0' + a;
+          }
+          endTime = a + ':' + b;
+          return endTime;
+        }
+        return '00:00';
+      }
+    };
+  }
+</script>

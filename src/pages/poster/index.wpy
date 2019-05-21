@@ -1,0 +1,171 @@
+<style lang="less">
+.my-audio{
+    position: fixed;
+    bottom:0rpx;
+    left:0rpx;
+    z-index:2;
+}
+
+.posterbox{
+    width: 600rpx;
+    height: 600rpx;
+    margin:  5rem auto;
+    z-index: 99;
+}
+.saveBtn{
+    width: 60%;
+    margin:  0 auto;
+}
+.closeMask{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 8;
+    background-color:rgba(0, 0, 0, 0.8);
+
+}
+</style>
+<template>
+  <view>
+<view class="cu-custom" style="height:{{CustomBar}}px;">
+  <view class="cu-bar fixed bg-gradual-green" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
+    <navigator  class='action' open-type="navigateBack" delta="1" hover-class="none">
+      <text class='icon-back'></text> 
+      生成分享图
+    </navigator>
+    <view class='action'>
+      <!-- 专栏：自我提供 -->
+    </view>
+  </view>
+</view>
+
+
+  <Ad1 wx:if="{{shareImage}}" position="13" :ads.sync="ads"/>
+
+  <view class='padding text-center'>
+      <image src="{{shareImage}}" mode="widthFix"></image>
+      <canvasdrawer :painting.sync="painting" @getImage.user="eventGetImage"></canvasdrawer>
+    </view>
+  <view class="padding">
+    <button wx:if="{{shareImage}}" class='cu-btn block bg-red margin-tb-sm lg' @tap="eventSave">保存分享图</button>
+  </view>
+
+
+    <Ad2 wx:if="{{shareImage}}" position="14" :ads.sync="ads"/>
+
+</view>
+
+
+
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import commApi from '../../api/comm'
+  import ad from '../../components/ad'
+  import canvasdrawer from "../../components/canvasdrawer/canvasdrawer";
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '生成分享图'
+    }
+
+
+    components = {
+      canvasdrawer,
+      Ad1:ad,
+      Ad2:ad,
+    };
+
+    data = {
+      loadModal:true,
+      isCard:true,
+      StatusBar:0,
+      CustomBar:0,
+      Custom:0,
+      fromid:0,
+      id:'',
+      article:[],
+      likeusers:[],
+      ads:[],
+      content: "",
+      userlikearticle:false,
+      isloadcomment:false,
+      shareImage:'',
+      painting: null,
+      showposter: false,
+    }
+    event = {
+      getImage (e) {
+        //   console.log('getImage',e) 
+          wepy.showToast({
+              title: e,
+              icon: "success",
+              duration: 2000
+          });
+      }
+    }
+
+    async buildPoster(){
+      if(this.shareImage == ''){
+        wepy.showLoading({
+            title: "生成中",
+            mask: true
+        });
+        let poster = await commApi.GetArticlePoster(this.id)
+        this.painting = poster
+      }
+      this.showposter = true;
+      this.$apply();
+    }
+
+    methods = {
+      
+        async eventSave() {
+            // 保存图片至本地
+            const res = await wepy.saveImageToPhotosAlbum({
+                filePath: this.shareImage
+            });
+            if (res.errMsg === "saveImageToPhotosAlbum:ok") {
+                wepy.showToast({
+                    title: "分享图已保存到相册",
+                    icon: "success",
+                    duration: 2000
+                });
+            }
+        },
+
+        eventGetImage(event) {
+            wepy.hideLoading();
+            const { tempFilePath, errMsg } = event;
+            if (errMsg === "canvasdrawer:ok"){
+                this.shareImage = tempFilePath;
+            }else{
+                wepy.showToast({
+                    title: errMsg,
+                    icon: "success",
+                    duration: 2000
+                });
+            }
+        },
+
+    }
+
+    async onLoad(query) {
+      this.id = query.id
+      this.StatusBar= wepy.$instance.globalData.StatusBar
+      this.CustomBar= wepy.$instance.globalData.CustomBar
+      this.Custom= wepy.$instance.globalData.Custom
+      // let poster = await commApi.GetArticlePoster(this.id)
+      //  this.painting = poster
+      // console.log(poster)
+      this.ads = await commApi.GetAds()
+      this.buildPoster()
+      this.$apply()
+    }
+
+
+
+    
+  }
+
+</script>

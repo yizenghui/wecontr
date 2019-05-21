@@ -1,0 +1,42 @@
+<style type="less">
+</style>
+<template>
+<view class="cu-bar search bg-white">
+  <view class='search-form round'>
+    <text class="icon-search"></text>
+    <input type="text" placeholder="{{title}}" confirm-type="search"  bindinput="searchKeyInput"></input>
+  </view>
+  <view class='action'>
+    <button class='cu-btn bg-green shadow-blur round' @tap="search()">搜索</button>
+  </view>
+</view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import commApi from '../api/comm'
+
+  export default class Search extends wepy.component {
+    props = {
+      title: {
+        type:String,
+        default:'请输入关键字'
+      }
+    }
+    data = {
+      input: '',
+    }
+
+    methods = {
+      async search(){
+        let searchKey = this.input? this.input:this.title
+        if( searchKey ){
+            wepy.navigateTo({url:'/pages/search/index?q='+encodeURIComponent(searchKey)});
+        }
+      },
+      
+      searchKeyInput(e) {
+        this.input = e.detail.value
+      },
+    }
+  }
+</script>

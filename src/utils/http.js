@@ -16,17 +16,26 @@ export default class http {
           const {data} = await wepy.request({ url: wepy.$instance.globalData.baseUrl + '/gettoken', data: { code: code } })
           wepy.$instance.globalData.token = data.token
           wepy.$instance.globalData.uid = data.uid
-          wepy.setStorageSync('token', data.token)
-          wepy.setStorageSync('uid', data.uid)
+          wepy.$instance.globalData.default_search = data.default_search
+          wepy.$instance.globalData.index_share_title = data.index_share_title
+          wepy.$instance.globalData.index_share_cover = data.index_share_cover
+          wepy.$instance.globalData.topic_share_title = data.topic_share_title
+          wepy.$instance.globalData.topic_share_cover = data.topic_share_cover
+          // wepy.setStorageSync('token', data.token)
+          // wepy.setStorageSync('uid', data.uid)
         }
       }else{
         const {code} = await wepy.login()
-        // localhost:8009
         const {data} = await wepy.request({ url: wepy.$instance.globalData.baseUrl + '/gettoken', data: { code: code } })
         wepy.$instance.globalData.token = data.token
         wepy.$instance.globalData.uid = data.uid
-        wepy.setStorageSync('token', data.token)
-        wepy.setStorageSync('uid', data.uid)
+        wepy.$instance.globalData.default_search = data.default_search
+        wepy.$instance.globalData.index_share_title = data.index_share_title
+        wepy.$instance.globalData.index_share_cover = data.index_share_cover
+        wepy.$instance.globalData.topic_share_title = data.topic_share_title
+        wepy.$instance.globalData.topic_share_cover = data.topic_share_cover
+        // wepy.setStorageSync('token', data.token)
+        // wepy.setStorageSync('uid', data.uid)
       }
     }
 
@@ -46,9 +55,13 @@ export default class http {
         const {data} = await wepy.request({ url: wepy.$instance.globalData.baseUrl + '/gettoken', data: { code: code } })
         wepy.$instance.globalData.token = data.token
         wepy.$instance.globalData.uid = data.uid
-        wepy.setStorageSync('token', data.token)
-        wepy.setStorageSync('uid', data.uid)
-
+        wepy.$instance.globalData.default_search = data.default_search
+        wepy.$instance.globalData.index_share_title = data.index_share_title
+        wepy.$instance.globalData.index_share_cover = data.index_share_cover
+        wepy.$instance.globalData.topic_share_title = data.topic_share_title
+        wepy.$instance.globalData.topic_share_cover = data.topic_share_cover
+        // wepy.setStorageSync('token', data.token)
+        // wepy.setStorageSync('uid', data.uid)
         const res2 = await wepy.request(param)
 
         if (this.isSuccess(res2)) {

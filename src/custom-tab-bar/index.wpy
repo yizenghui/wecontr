@@ -1,0 +1,59 @@
+<template>
+<view class="cu-bar tabbar bg-white shadow">
+  <view class="action" wx:for="{{list}}" wx:key="index" data-path="{{item.pagePath}}" data-index="{{index}}" @tap="switchTab()">
+    <view class='icon-cu-image'>
+      <image src="{{selected === index ? item.selectedIconPath : item.iconPath}}" class="{{selected === index ? 'animation' : 'animation'}}"></image>
+    </view>
+    <view class="{{selected === index ? 'text-green' : 'text-gray'}}">{{item.text}}</view>
+  </view>
+</view>
+</template>
+
+<script>
+
+Component({
+  options: {
+    addGlobalClass: true,
+  },
+  data: {
+    selected: 0,
+    list: [
+         {
+          pagePath: "/pages/index/index",
+          iconPath: "/images/tabbar/basics.png",
+          selectedIconPath: "/images/tabbar/basics_cur.png",
+          text: "推荐"
+        },
+        {
+          pagePath: "/pages/topic/index",
+          iconPath: "/images/tabbar/component.png",
+          selectedIconPath: "/images/tabbar/component_cur.png",
+          text: "专题"
+        },
+        {
+          pagePath: "/pages/user/index",
+          iconPath: "/images/tabbar/about.png",
+          selectedIconPath: "/images/tabbar/about_cur.png",
+          text: "我的"
+        }
+    ]
+  },
+   methods: {
+    switchTab(e) {
+      const data = e.currentTarget.dataset
+      const url = data.path
+      // this.setData({
+      //   selected: data.index
+      // })
+      wx.switchTab({url})
+    }
+  },
+  pageLifetimes: {
+  },
+})
+export default class Index {
+  config = {
+    component: true
+  }
+}
+</script>

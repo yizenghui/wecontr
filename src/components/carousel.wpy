@@ -1,0 +1,78 @@
+<style type="less">
+</style>
+<template>
+<view>
+    <swiper wx:if="{{swipers.length}}" class="screen-swiper round-dot" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500">
+      <swiper-item wx:for="{{swipers}}" wx:key    @tap="click({{item}})">
+        <image src="{{item.cover}}" mode='aspectFill'></image>
+      </swiper-item>
+    </swiper>
+</view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import commApi from '../api/comm'
+
+  export default class Carousel extends wepy.component {
+    props = {
+      position: String,
+      carousels: Array
+    }
+    data = {
+      // carousels: [],
+    }
+
+    methods = {
+      async click(item) {
+        // todo 
+        if(item.genre==1){ //1图片链接、2文字链接、3图文链接
+
+          if(item.url){
+            wepy.navigateTo({url:item.url});
+            wepy.switchTo({url:item.url});
+          }
+        }else if( item.genre==2 ){  // 4图片海报 5文字海报 6图文海报
+          if(item.poster){
+              wx.previewImage({
+                current: item.poster, // 海报
+                urls: [item.poster]
+              })
+            }
+        }else if( item.genre==3 ){  // 7图片跳小程序 8文字跳小程序 9图文跳小程序
+          wx.navigateToMiniProgram({
+            appId: item.gotoapp,
+            path: item.url,
+            extraData: {
+              from: wepy.$instance.globalData.appid
+            },
+            envVersion: 'develop',
+            success(res) {
+              // 打开成功
+            }
+          })
+        }else{
+          // todo
+        }
+      },
+    }
+    async onLoad () {
+      // console.log('onLoad',this.position)
+      // // this.carousels = await commApi.GetCarousels()
+      // this.$apply()
+    }  // 在Page和Component共用的生命周期函数
+
+    computed = {
+        swipers () {
+          var list = []
+          if(this.carousels){
+            this.carousels.forEach((v)=>{
+              if(this.position == v.position){
+                list = [...list,v]
+              }
+            })
+          }
+          return  list
+        }
+    };
+  }
+</script>

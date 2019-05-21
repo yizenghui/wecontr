@@ -31,12 +31,11 @@ page{
     </view>
   </view>
 </view> <!---->
-  <swiper wx:if="{{swipers.length}}" class="screen-swiper round-dot" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500">
-    <swiper-item wx:for="{{swipers}}" wx:key   @tap="goto({{item.wxto}})">
-      <image src="{{item.cover}}" mode='aspectFill'></image>
-    </swiper-item>
-  </swiper>
 
+<Carousel position="2" :carousels.sync="carousels" />
+
+
+<Ad1 position="9" :ads.sync="ads"/>
 
 <view class="cu-modal {{showLogin?'show':''}}" @tap='hideModal'>
   <view class="cu-dialog padding" catchtap>
@@ -135,21 +134,30 @@ page{
   </view>
 </view>
 
+<Ad2 position="10" :ads.sync="ads"/>
+
+<view class='padding'>
+  <view class='text-center text-grey'>readfollow.com 提供技术支持</view>
+</view>
 </view>
 </template>
 
 <script>
   import wepy from 'wepy'
   import commApi from '../../api/comm'
+  import carousel from '../../components/carousel'
+  import ad from '../../components/ad'
   export default class Index extends wepy.page {
     config = {
-      navigationBarTitleText: '每天自律打卡',
+      navigationBarTitleText: '每天自律打卡'
     }
 
 
     components = {
+      Carousel:carousel,
+      Ad1:ad,
+      Ad2:ad
     };
-
 
     data = {
       isCard:true,
@@ -157,7 +165,8 @@ page{
       StatusBar:0,
       CustomBar:0,
       user:[],
-      swipers:[],
+      carousels:[],
+      ads:[],
     }
 
     methods = {
@@ -219,14 +228,22 @@ page{
 
 
     async onShow() {
-        this.user = await commApi.GetMe() // 获取当前用户
+      if (typeof this.$wxpage.getTabBar === 'function' &&
+        this.$wxpage.getTabBar()) {
+        this.$wxpage.getTabBar().setData({
+        selected: 2
+        })
         this.$apply()
+      }
+      this.user = await commApi.GetMe() // 获取当前用户
+      this.$apply()
     }
 
     async onLoad() {
         this.StatusBar= wepy.$instance.globalData.StatusBar
         this.CustomBar= wepy.$instance.globalData.CustomBar
-        this.swipers = await commApi.GetUserSwipers()
+        this.ads = await commApi.GetAds()
+        this.carousels = await commApi.GetCarousels()
         this.$apply()
     }
 

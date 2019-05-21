@@ -149,10 +149,16 @@ page{
       },
       async showposter(order){
         // boss.wxid
-        wx.previewImage({
-          current: order.boss.qrcode, // 当前显示图片的http链接
-          urls: [order.boss.qrcode] // 需要预览的图片http链接列表
-        })
+        if(order.boss.qrcode){
+          wx.previewImage({
+            current: order.boss.qrcode, // 当前显示图片的http链接
+            urls: [order.boss.qrcode] // 需要预览的图片http链接列表
+          })
+        }else if(order.boss.wxid){
+          wepy.showModal({content: '请添加'+order.boss.wxid+'为好友', showCancel: false});
+        }else{
+          wepy.showModal({content: '请在商城处联系客服。', showCancel: false});
+        }
       },
     }
 

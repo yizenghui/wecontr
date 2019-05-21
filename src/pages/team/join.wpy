@@ -31,6 +31,9 @@ page{
   <view class='action'>
     <text class='icon-title text-blue'></text>队伍成员
   </view>
+  <view class='action'>
+    ID:{{team.id}}
+  </view>
 </view>
 
 <view class='padding bg-white '>
@@ -81,6 +84,7 @@ page{
 <script>
   import wepy from 'wepy'
   import commApi from '../../api/comm'
+  import ad from '../../components/ad'
   export default class Footprint extends wepy.page {
     config = {
       navigationBarTitleText: '加入队伍',
@@ -94,6 +98,7 @@ page{
       CustomBar:0,
       Custom:0,
       id:0,
+      ads:[],
       team:[]
     }
 
@@ -125,6 +130,7 @@ page{
         this.CustomBar= wepy.$instance.globalData.CustomBar
         this.Custom= wepy.$instance.globalData.Custom
         this.id = query.id
+        this.ads = await commApi.GetAds()
         this.team = await commApi.GetTeam(this.id)
         this.$apply()
     }

@@ -26,6 +26,7 @@ page{
 
 
 
+<Ad1 position="11" :ads.sync="ads"/>
 
 <!-- <view class="cu-bar bg-white margin-top">
   <view class='action'>
@@ -94,18 +95,23 @@ page{
   <view class='text-left padding'>组队奖励仅当天有效，队伍第二天自动解散。</view>
 </view>
 
+<Ad2 position="12" :ads.sync="ads"/>
 </view>
 </template>
 
 <script>
   import wepy from 'wepy'
   import commApi from '../../api/comm'
+  import ad from '../../components/ad'
   export default class Footprint extends wepy.page {
     config = {
       navigationBarTitleText: '我的足迹',
     }
 
+
     components = {
+      Ad1:ad,
+      Ad2:ad,
     };
 
     data = {
@@ -113,6 +119,7 @@ page{
       CustomBar:0,
       Custom:0,
       user:[],
+      ads:[],
       show_search:false,
       team_focus:false,
       search_team_id:'',
@@ -183,6 +190,7 @@ page{
         this.CustomBar= wepy.$instance.globalData.CustomBar
         this.Custom= wepy.$instance.globalData.Custom
         this.user = await commApi.GetUserTeam()
+        this.ads = await commApi.GetAds()
         this.$apply()
     }
 

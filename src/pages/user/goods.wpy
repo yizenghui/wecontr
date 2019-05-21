@@ -23,6 +23,8 @@ page{
   </view>
 </view>
 
+<Carousel position="3" :carousels.sync="carousels" />
+
 <view class="cu-card case {{isCard?'no-card':''}}">
   <view wx:for="{{goodses}}" wx:key class="cu-item shadow">
     <view class='image'>
@@ -136,12 +138,14 @@ page{
 <script>
   import wepy from 'wepy'
   import commApi from '../../api/comm'
+  import carousel from '../../components/carousel'
   export default class Goods extends wepy.page {
     config = {
       navigationBarTitleText: '我的足迹',
     }
 
     components = {
+      Carousel:carousel
     };
 
 
@@ -154,6 +158,7 @@ page{
       gifttips:false,
       showPointTips:false,
       user:[],
+      carousels:[],
       goodses:[]
     }
 
@@ -173,7 +178,7 @@ page{
       },
       async buy(item){
         // todo 提醒用户确认兑换
-        var tips = `兑换《${item.name}》需消耗${item.point}积分，确认要兑换吗?`
+        var tips = `${item.point}积分兑换《${item.name}》?`
         let res = await wepy.showModal({
             title: '提醒',
             content: tips,
@@ -185,7 +190,7 @@ page{
           if(data.message){
             let res = await wepy.showModal({content: data.message, showCancel: false});
           }else if(data.id){
-            let res = await wepy.showModal({content: '兑换成功，请在点击《我的礼品》后根据引导进行领取！', showCancel: false});
+            let res = await wepy.showModal({content: '兑换成功，请在我的兑换卷查看使用！', showCancel: false});
             this.gifttips = true
             this.user.point - item.point
             this.user.current_point - item.current_point
@@ -200,6 +205,8 @@ page{
         this.StatusBar= wepy.$instance.globalData.StatusBar
         this.CustomBar= wepy.$instance.globalData.CustomBar
         this.Custom= wepy.$instance.globalData.Custom
+        
+        this.carousels = await commApi.GetCarousels()
         this.user = await commApi.GetMe() // 获取当前用户
         if(this.user.lock_at){
           // todo 用户被锁定了，不允许操作

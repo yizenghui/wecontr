@@ -1,4 +1,5 @@
 /* eslint-disable padded-blocks */
+import wepy from 'wepy'
 import base from './base'
 
 /**
@@ -73,6 +74,31 @@ export default class comm extends base {
     return await this.get(`${this.baseUrl}/getswipers`);
   }
   
+  // 获取所有轮播数据
+  static async GetCarousels() {
+    if(wepy.$instance.globalData.carousels.length) return wepy.$instance.globalData.carousels;
+    let carousels = await this.get(`${this.baseUrl}/carousels`);
+    wepy.$instance.globalData.carousels = carousels;
+    return carousels;
+  }
+  
+  // 获取所有广告数据
+  static async GetAds() {
+    if(wepy.$instance.globalData.ads.length) return wepy.$instance.globalData.ads;
+    let ads = await this.get(`${this.baseUrl}/ads`);
+    wepy.$instance.globalData.ads = ads;
+    return ads;
+  }
+
+  // 点击广告数据
+  static async ClickAd(id) {
+    return await this.get(`${this.baseUrl}/action/adclick`, {id: id});
+  }
+  // 点击轮播数据
+  static async ClickCarousel(id) {
+    return await this.get(`${this.baseUrl}/action/carouselclick`, {id: id});
+  }
+
   // 获取用户首页轮播图
   static async GetUserSwipers() {
     return await this.get(`${this.baseUrl}/getuserswipers`);
@@ -91,13 +117,22 @@ export default class comm extends base {
   static async GetTopicArticles(topic_id,page) {
     return await this.get(`${this.baseUrl}/articles`, {page: page, topic:topic_id});
   }
+  // 获取专题文章列表
+  static async SearchArticles(keywork,page) {
+    return await this.get(`${this.baseUrl}/search`, {q: keywork, page:page});
+  }
+  
+  // 获得
+  static async GetArticlePoster(id) {
+    return await this.get(`${this.baseUrl}/poster/article/${id}`);
+  }
 
   // 获取推荐文章列表
   static async GetRecommendedArticles(page) {
     //
     return await this.get(`${this.baseUrl}/articles/recommend`, {page: page});
   }
-  
+
   // 获取关注过的文章列表
   static async GetFootprintArticles(page) {
     return await this.get(`${this.baseUrl}/user/footprint`, {page: page});

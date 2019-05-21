@@ -1,4 +1,7 @@
 <style lang="less">
+page{
+  padding-bottom: 100rpx;
+}
 .cu-bar .content image{
   height: 60rpx;
   width: 240rpx;
@@ -62,6 +65,7 @@
     </view>
 
 
+    <Ad1 position="5" :ads.sync="ads"/>
 
     <view class="cu-card">
       <view class="cu-item bg-img shadow-blur" style="background-image:url({{item.cover}})" @tap="goto({{item.wxto}})" wx:for="{{topics}}" wx:key>
@@ -78,19 +82,23 @@
     
     <view class='cu-tabbar-height'></view>
     <view wx:if="{{loadstatus}}" class="cu-load bg-gray {{loadstatus==1?'loading':'over'}}"></view>
+    <Ad2 position="6" :ads.sync="ads"/>
 </view>
 </template>
 
 <script>
   import wepy from 'wepy'
   import commApi from '../../api/comm'
+  import ad from '../../components/ad'
   export default class Index extends wepy.page {
     config = {
-      navigationBarTitleText: '所有专题',
+      navigationBarTitleText: '所有专题'
     }
 
 
     components = {
+      Ad1:ad,
+      Ad2:ad,
     };
 
 
@@ -100,6 +108,7 @@
       CustomBar:0,
       Custom:0,
       page:0,
+      ads:[],
       topics:[],
     }
 
@@ -113,10 +122,22 @@
 
     }
 
+
+     onShow() {
+      if (typeof this.$wxpage.getTabBar === 'function' &&
+        this.$wxpage.getTabBar()) {
+        this.$wxpage.getTabBar().setData({
+        selected: 1
+        })
+        // this.$apply() async
+      }
+    }
+
     async onLoad(query) {
       this.StatusBar= wepy.$instance.globalData.StatusBar
       this.CustomBar= wepy.$instance.globalData.CustomBar
       this.Custom= wepy.$instance.globalData.Custom
+      this.ads = await commApi.GetAds()
       this.topics = await commApi.GetTopics(1)
       this.page = 2
       this.loadstatus = 0
@@ -152,17 +173,9 @@
 
     onShareAppMessage(res) {
         return {
-            title: '所有专题',
-            // title: '我觉得不错的文章，分享给你，快来看看吧。',
-            path: '/pages/topic/index?fromid=' + wepy.$instance.globalData.uid,
-            success: function(res) {
-                // 转发成功
-                console.log(res)
-            },
-            fail: function(res) {
-                console.log(res)
-                // 转发失败
-            }
+            title: wepy.$instance.globalData.topic_share_title?wepy.$instance.globalData.topic_share_title:'分享小程序',
+            imageUrl: wepy.$instance.globalData.topic_share_cover,
+            path: '/pages/topic/index?fromid=' + wepy.$instance.globalData.uid
         }
     }
 

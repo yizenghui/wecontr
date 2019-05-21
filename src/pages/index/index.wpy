@@ -1,6 +1,6 @@
 <style lang="less">
 page{
-  // padding-bottom: 100rpx;
+  padding-bottom: 100rpx;
 }
 .cu-bar .content image{
   height: 60rpx;
@@ -16,16 +16,20 @@ page{
         <!-- <view class='content' style='top:{{StatusBar}}px;'>自律帝</view> -->
       </view>
     </view>
-    <swiper wx:if="{{swipers.length}}" class="screen-swiper round-dot" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500">
-      <swiper-item wx:for="{{swipers}}" wx:key   @tap="goto({{item.wxto}})">
+    <!-- <swiper wx:if="{{carousels.length}}" class="screen-swiper round-dot" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500">
+      <swiper-item wx:for="{{carousels}}" wx:key wx:if="{{item.position==1}}"   @tap="click({{item}})">
         <image src="{{item.cover}}" mode='aspectFill'></image>
       </swiper-item>
-    </swiper>
+    </swiper> -->
+    
+    <Carousel position="1" :carousels.sync="carousels"/>
 
+    <Search wx:if="{{default_search}}" :title.sync="default_search"/>
 
+    <Ad1 position="1" :ads.sync="ads"/>
 
-    <view class="cu-card article {{isCard?'no-card':''}}">
-      <view wx:for="{{articles}}" wx:key class="cu-item shadow"  @tap="goto({{item.wxto}})">
+    <view  wx:if="articles1" class="cu-card article {{isCard?'no-card':''}}">
+      <view wx:for="{{articles1}}" wx:key class="cu-item shadow"  @tap="goto({{item.wxto}})">
         <view class="title">{{item.title}}</view>
         <view class="content">
           <image wx:if="{{item.cover}}" src="{{item.cover}}" mode="aspectFill"></image>
@@ -41,6 +45,27 @@ page{
       </view>
     </view>
     
+    <Ad2 wx:if="{{articles2.length>0}}" position="2" :ads.sync="ads"/>
+
+    
+    <view wx:if="{{articles2.length>0}}"  class="cu-card article {{isCard?'no-card':''}}">
+      <view wx:for="{{articles2}}" wx:key class="cu-item shadow"  @tap="goto({{item.wxto}})">
+        <view class="title">{{item.title}}</view>
+        <view class="content">
+          <image wx:if="{{item.cover}}" src="{{item.cover}}" mode="aspectFill"></image>
+          <view class="desc">
+            <view class='text-content' wx:if="{{item.intro}}"> {{item.intro}}</view>
+            <view class="text-gray">
+                <text class="icon-attentionfill"></text> {{item.view}}
+                <text class="icon-appreciatefill"></text> {{item.liked}}
+                <!-- <text class="icon-messagefill"></text> {{item.commented}} -->
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+
   <view class='cu-load load-modal' wx:if="{{loadModal}}"> 
       <!-- <view class='icon-emojifill text-orange'></view> -->
       <image src='/images/logo.png' class='png' mode='aspectFit'></image>
@@ -48,19 +73,28 @@ page{
   </view>
 
     <view wx:if="{{loadstatus}}" class="cu-load bg-gray {{loadstatus==1?'loading':'over'}}"></view>
+
+    
 </view>
 </template>
 
 <script>
   import wepy from 'wepy'
   import commApi from '../../api/comm'
+  import carousel from '../../components/carousel'
+  import ad from '../../components/ad'
+  import search from '../../components/search'
   export default class Index extends wepy.page {
     config = {
-      navigationBarTitleText: '自律的人最优秀',
+      navigationBarTitleText: '微信小程序博客'
     }
 
 
     components = {
+      Carousel:carousel,
+      Search:search,
+      Ad1:ad,
+      Ad2:ad,
     };
 
 
@@ -72,29 +106,96 @@ page{
       StatusBar:0,
       CustomBar:0,
       page:1,
+      default_search:'',
       swipers: [],
+      ads: [],
+      carousels: [],
       articles: [],
     }
+
+    computed = {
+        articles1 () {
+          var list = []
+          this.articles.forEach((v,k)=>{
+            if(k<=8){
+              list = [...list,v]
+            }
+          })
+          return  list
+        },
+        
+        articles2 () {
+          var list = []
+          this.articles.forEach((v,k)=>{
+            if(k>8){
+              list = [...list,v]
+            }
+          })
+          return  list
+        }
+    };
 
     methods = {
       goto(to){
         if(to) wepy.navigateTo({url:to});
       },
-      click(){},
+      click(item){
+        // todo 
+        if(item.genre==1 ||item.genre==2 ||item.genre==3){ //1图片链接、2文字链接、3图文链接
+
+          if(item.url){
+            wepy.navigateTo({url:item.url});
+            wepy.switchTo({url:item.url});
+          }
+        }else if( item.genre==4 || item.genre==5 || item.genre==6 ){  // 4图片海报 5文字海报 6图文海报
+          if(item.poster){
+              wx.previewImage({
+                current: item.poster, // 海报
+                urls: [item.poster]
+              })
+            }
+        }else if( item.genre==7 || item.genre==8 || item.genre==9 ){  // 7图片跳小程序 8文字跳小程序 9图文跳小程序
+          wx.navigateToMiniProgram({
+            appId: item.gotoapp,
+            path: item.url,
+            extraData: {
+              from: wepy.$instance.globalData.appid
+            },
+            envVersion: 'develop',
+            success(res) {
+              // 打开成功
+            }
+          })
+        }else{
+          // todo
+        }
+                
+      },
     }
 
     async onLoad(query) {
-        this.swipers = await commApi.GetSwipers()
-        this.StatusBar= wepy.$instance.globalData.StatusBar
-        this.CustomBar= wepy.$instance.globalData.CustomBar
-        this.$apply()
-        this.articles = await commApi.GetRecommendedArticles(1)
-        this.page = 2;
-        this.loadModal = false
-        this.$apply()
+      this.StatusBar= wepy.$instance.globalData.StatusBar
+      this.CustomBar= wepy.$instance.globalData.CustomBar
+      this.carousels = await commApi.GetCarousels()
+      this.default_search = wepy.$instance.globalData.default_search
+      this.ads = await commApi.GetAds()
+      this.$apply()
+      this.articles = await commApi.GetRecommendedArticles(1)
+      this.page = 2;
+      this.loadModal = false
+      this.$apply()
     }
 
 
+     onShow(query) {
+      if (typeof this.$wxpage.getTabBar === 'function' &&
+        this.$wxpage.getTabBar()) {
+        this.$wxpage.getTabBar().setData({
+        selected: 0
+        })
+        // this.$apply() async
+      }
+    }
     
     async onReachBottom(){
       this.loadstatus = 1
@@ -125,16 +226,9 @@ page{
     
     onShareAppMessage(res) {
         return {
-            title: '每天花10分钟阅读，生活从此开始改变！',
-            path: '/pages/index/index?fromid=' + wepy.$instance.globalData.uid,
-            success: function(res) {
-                // 转发成功
-                console.log(res)
-            },
-            fail: function(res) {
-                console.log(res)
-                // 转发失败
-            }
+            title: wepy.$instance.globalData.index_share_title?wepy.$instance.globalData.index_share_title:'分享小程序',
+            imageUrl: wepy.$instance.globalData.index_share_cover,
+            path: '/pages/index/index?fromid=' + wepy.$instance.globalData.uid
         }
     }
 
