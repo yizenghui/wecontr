@@ -53,33 +53,53 @@ flex:1;
       autoplay: 0,
       duration: 0,
       isplay:false,
-      isloading:true,
+      isloading:true, //标记内容是否首次加载
     }
 
+    doplay(){
+      if( !this.bgm.title || this.bgm.title != this.title ) this.bgm.title = this.title
+      if( !this.bgm.src || this.bgm.src != this.palyurl ){
+        this.bgm.src = this.palyurl
+        this.bgm.seek(this.currentTime)
+      }
+    };
+
+    islocalplay(){
+      if( this.bgm.src && this.bgm.src == this.palyurl )
+        return true
+      return false
+    };
     methods = {
       slider2change:function (e) {
         var e = e.detail.value
-        this.bgm.seek(e)
+        if(this.islocalplay()){
+          this.bgm.seek(e)
+        }else{
+          this.currentTime = e
+        }
       },
       fast_forward:function () {
-        if( (this.duration-this.currentTime) > 15 ) this.bgm.seek(this.currentTime+15)
+
+        if(this.islocalplay()){
+          if( (this.duration-this.currentTime) > 15 ) this.bgm.seek(this.currentTime+15)
+        }else{
+          if( (this.duration-this.currentTime) > 15 ) this.currentTime += 15
+        }
       },
       fast_rewind:function () {
-        if(this.currentTime>15) this.bgm.seek(this.currentTime-15)
+         if(this.islocalplay()){ 
+            if(this.currentTime>15) this.bgm.seek(this.currentTime-15)
+         }else{
+            if(this.currentTime>15) this.currentTime-=15
+         }
       },
       //播放暂停
-      audioPlay: function () {
-        this.isloading = false
-        if(!this.palyurl) this.palyurl = this.url
+      audioPlay: async function () {
         if(this.isplay){
           this.bgm.pause()
         }else{
-          if( !this.bgm.title || this.bgm.title != this.title ) this.bgm.title = this.title
-          if( !this.bgm.src || this.bgm.src != this.palyurl ){
-            this.currentTime = 0
-            this.bgm.src = this.palyurl
-          } 
-          this.bgm.play()
+          this.isloading = false
+          this.doplay()
         }
       }
     }
@@ -91,8 +111,9 @@ flex:1;
       // that.bgm.autoplay = true
       that.bgm = wx.getBackgroundAudioManager()
       that.bgm.onTimeUpdate(function () { //setInterval setTimeout
-        if( that.bgm.src && that.bgm.src == that.palyurl ){ // 播放当前音频才更新时间
-          that.isplay = true
+        if(!that.isloading && that.islocalplay() ){ // 播放当前音频才更新时间
+          // console.log('onTimeUpdate',that.title)
+          if( that.isloading ) that.isplay = true
           that.currentTime = parseInt(that.bgm.currentTime)
           that.$apply()
         }
@@ -119,12 +140,12 @@ flex:1;
         that.$apply()
       })
       
-      that.bgm.onCanplay(function () {
+      // that.bgm.onCanplay(function () {
         // that.duration = parseInt(that.bgm.duration)
         // if(that.isloading) that.bgm.pause() 
         // that.isplay = false
-        that.$apply()
-      })
+        // that.$apply()
+      // })
       
       that.$apply()
     } 
@@ -137,18 +158,20 @@ flex:1;
         if(val==""||val ==null)return;
         var that = this
         that.palyurl = val
-        // 通过音频实例获取背景音乐长度
-        var bgmac =  wx.createInnerAudioContext()
-        if( that.bgm.src && that.bgm.src == that.palyurl ){ // 播放当前音频才更新时间
+        if( that.islocalplay() ){ // 播放当前音频才更新时间
           // console.log('that.bgm',that.bgm,that.bgm.src , that.bgm.src ,that.palyurl ,'url',that.url)
             that.currentTime = parseInt(that.bgm.currentTime) 
             that.duration = parseInt(that.bgm.duration)
+            that.isplay = true
+            that.isloading = false
+            that.$apply()
         }
-        bgmac.title = '~~~BGM'
-        bgmac.src = val
-
         
         if(!that.duration){
+          // 通过音频实例获取背景音乐长度
+          var bgmac =  wx.createInnerAudioContext()
+          bgmac.title = '~~~BGM'
+          bgmac.src = val
           var timer = setInterval(function () {
             if(bgmac.duration){ // 获取到音频长度后注销实例
               that.duration = parseInt(bgmac.duration)
@@ -165,10 +188,6 @@ flex:1;
       curTime(){
         if(this.duration){
           var curTime = this.currentTime;
-          if( this.bgm.src && this.bgm.src != this.palyurl ){ // 播放当前音频才更新时间
-            this.currentTime = 0;
-            curTime = 0;
-          }
           if (curTime < 10) {
                 curTime = '00:0' + curTime;
             }
