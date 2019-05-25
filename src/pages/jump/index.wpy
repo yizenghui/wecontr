@@ -28,6 +28,27 @@
 <template>
 <view>
 
+
+  
+<view wx:if="{{!loading}}" @tap="adgoto()" class="bg-img padding-top-xl flex align-end"  style="background-image: url('{{jumpbackground}}');height: {{height}}px;">
+  <view class="padding-xl text-white">
+    <!-- <view class="padding-xs text-xl">
+      钢铁之翼
+    </view>
+    <view class="padding-xs">
+      Only the guilty need fear me.
+    </view> -->
+    <view class="padding-xs" catchtap>
+      <view>
+        {{count}}秒后自动跳转...
+      </view>
+      <view @tap="goto()">
+        跳过
+      </view>
+    </view>
+  </view>
+</view>
+
 </view>
 </template>
 
@@ -41,43 +62,81 @@
 
 
     data = {
+      loading:true,
+      height:0,
+      width:0,
+      count:3,
+      jumppage:'',
+      jumpadpage:'',
+      jumpbackground:'',
+      timer2:null
     }
     
 
     methods = {
-      
-    }
-
-    onLoad(query) {
-      wepy.showLoading({
-          title: "加载中",
-          mask: true
-      });
-      if(!query.scene){ 
+      adgoto(){
+        clearInterval(this.timer2);
         wx.redirectTo({
-          url: '/pages/index/index'
+          url: this.jumpadpage
         })
         wx.switchTab({
-          url: '/pages/index/index'
+          url: this.jumpadpage
         })
-      }else{
-        var url = wepy.$instance.globalData.baseUrl+'/qrcode/jump/'+query.scene
+      },
+      jump(){
+        clearInterval(this.timer2);
+        wx.redirectTo({
+          url: this.jumppage
+        })
+        wx.switchTab({
+          url: this.jumppage
+        })
+      },
+    }
+
+    async onLoad(query) {
+
+      var that = this
+      that.jumppage =  '/pages/index/index'
+      if(query.scene){
         wx.request({
-          url: url, // 仅为示例，并非真实的接口地址
+          url: wepy.$instance.globalData.baseUrl+'/qrcode/jump/'+query.scene, // 获得接口参数
           data: {},
           header: {
             'content-type': 'application/json' // 默认值
           },
           success(res) {
-            wx.redirectTo({
-              url: res.data.page
-            })
-            wx.switchTab({
-              url: res.data.page
-            })
+            that.jumpbackground = res.data.background
+            that.jumpadpage = res.data.adpage
+            that.jumppage = res.data.page
           }
         })
       }
+
+
+      let e = await wepy.getSystemInfo()
+      that.height = e.windowHeight
+      that.width = e.windowWidth
+      that.loading = false
+      that.$apply()
+
+
+      var timer1 = setInterval(function () {
+        if (that.count == 1) {
+          clearInterval(timer1);
+        }
+        that.count--;
+        that.$apply()
+      }, 1000)
+
+      that.timer2 = setTimeout(function () { // 3秒钟后再跳转
+        wx.redirectTo({
+          url: that.jumppage
+        })
+        wx.switchTab({
+          url: that.jumppage
+        })
+      }, 3000)
     }
 
 

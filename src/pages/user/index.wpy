@@ -41,7 +41,7 @@ page{
   <view class="cu-dialog padding" catchtap>
     <view class="cu-bar">
       <view class='action'>
-        <text class='icon-title text-orange'></text> 获取头像、昵称等用户公开信息
+        <text class='icon-title text-orange'></text> 请求获取用户公开信息
       </view>
       <view class='action'>
         <button class='cu-btn bg-green shadow'  open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo">授权</button>
@@ -236,6 +236,9 @@ page{
         this.$apply()
       }
       this.user = await commApi.GetMe() // 获取当前用户
+      if(this.user.showlogin){
+        this.showLogin = true
+      }
       this.$apply()
     }
 

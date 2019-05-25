@@ -60,6 +60,20 @@
     <view class='gray-text'>加载中...</view>
 </view>
 
+
+<view class="cu-modal {{showlogin?'show':''}}" @tap='hideModal'>
+  <view class="cu-dialog padding" catchtap>
+    <view class="cu-bar">
+      <view class='action'>
+        <text class='icon-title text-orange'></text> 请求获取用户公开信息
+      </view>
+      <view class='action'>
+        <button class='cu-btn bg-green shadow'  open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo">授权</button>
+      </view>
+    </view>
+  </view>
+</view>
+
 <view wx:if="{{article.title}}" class="cu-card article {{isCard?'no-card':''}}">
   <view wx:for="1" wx:key class="cu-item shadow">
     <view class="title" style="font-size:36rpx;">{{article.title}}</view>
@@ -81,7 +95,7 @@
       
     </view>
         
-    <!-- <txv-video vid="{{article.video}}" wx:if="{{article.video}}" playerid="{{article.video}}"></txv-video> -->
+    <txv-video vid="{{article.video}}" wx:if="{{article.video}}" playerid="{{article.video}}"></txv-video>
 
     
     <player  wx:if="{{playurl}}" :url.sync="playurl" :title.sync="playtitle" />
@@ -179,7 +193,7 @@
       navigationBarTitleText: '文章详细',
       "usingComponents": {
         "wemark": "../plugins/wemark/wemark",
-        // "txv-video": "plugin://tencentvideo/video",
+        "txv-video": "plugin://tencentvideo/video",
       }
     }
 
@@ -206,6 +220,7 @@
       playtitle: "",
       userlikearticle:false,
       isloadcomment:false,
+      showlogin:false,
     }
     methods = {
       tips(intro){
@@ -217,23 +232,53 @@
       poster(id){
           wx.navigateTo({url:"/pages/poster/index?id="+id})
       },
+
+      hideModal(){
+        this.showlogin = false
+      },
+
+      async login(){
+        let auth = await wepy.getSetting()
+        if ( auth.authSetting['scope.userInfo'] ) {
+          // 已授权
+          let user = await wepy.getUserInfo()
+          this.user.avatar = user.userInfo.avatarUrl
+          commApi.AsyncUserData(user)
+          wepy.showToast({
+            title: "已同步用户数据",
+            icon:"none",
+            duration: 1000
+          });
+        }else{
+          this.showlogin = true
+        }
+        this.$apply()
+      },
+
       async likearticle(id){
-        wepy.showToast({
-          title: "数据加载中",
-          icon: "loading",
-          duration: 500
-        });
-        let state = await commApi.LikeArticleAction(id)
-        if(state.message){
-           wepy.showToast({
-            title: state.message,
-            icon: "none",
+
+        
+        if(wepy.$instance.globalData.showlogin){
+          this.showlogin = true
+          wepy.$instance.globalData.showlogin = false
+        }else{
+          wepy.showToast({
+            title: "数据加载中",
+            icon: "loading",
             duration: 500
           });
+          let state = await commApi.LikeArticleAction(id)
+          if(state.message){
+            wepy.showToast({
+              title: state.message,
+              icon: "none",
+              duration: 500
+            });
+          }
+          this.userlikearticle = true;
+          this.article.liked ++
+          this.$apply()
         }
-        this.userlikearticle = true;
-        this.article.liked ++
-        this.$apply()
       },
       async getarticleposter(id){
         wepy.showToast({
@@ -275,6 +320,12 @@
       },
       click(){},
 
+      async bindGetUserInfo(e) {
+        this.user.avatar = e.detail.userInfo.avatarUrl
+        this.showlogin = false
+        this.$apply()
+        commApi.AsyncUserData(e.detail)
+      }
     }
 
     async onLoad(query) {
