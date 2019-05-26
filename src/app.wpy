@@ -172,10 +172,10 @@ export default class extends wepy.app {
       enablePullDownRefresh: true,
     },
     "plugins": {
-      "tencentvideo": {
-        "version": "1.3.0",
-        "provider": "wxa75efa648b60994b"
-      }
+      // "tencentvideo": {
+      //   "version": "1.3.0",
+      //   "provider": "wxa75efa648b60994b"
+      // }
     },
     "usingComponents": {},
     "tabBar": {

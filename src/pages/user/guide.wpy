@@ -24,6 +24,9 @@ page{
   </view>
 </view>
 
+
+<Ad1 position="15" :ads.sync="ads"/>
+
 <view class="cu-list menu card-menu margin-top-xl margin-bottom-xl shadow-lg">
   
 
@@ -39,20 +42,26 @@ page{
 
 </view>
 
+<Ad2 position="16" :ads.sync="ads"/>
+
 </view>
 </template>
 
 <script>
   import wepy from 'wepy'
   import commApi from '../../api/comm'
+  import ad from '../../components/ad'
   export default class Guide extends wepy.page {
     config = {
-      navigationBarTitleText: '每天自律打卡',
+      navigationBarTitleText: '积分攻略',
     }
 
 
     components = {
+      Ad1:ad,
+      Ad2:ad,
     };
+
 
 
     data = {
@@ -60,6 +69,7 @@ page{
       StatusBar:0,
       CustomBar:0,
       tasks:[],
+      ads:[],
     }
 
     methods = {
@@ -80,6 +90,7 @@ page{
         this.StatusBar= wepy.$instance.globalData.StatusBar
         this.CustomBar= wepy.$instance.globalData.CustomBar
         this.tasks = await commApi.GetUserTasks() // 获取当前用户
+        this.ads = await commApi.GetAds()
         this.$apply()
     }
     // 下拉刷新

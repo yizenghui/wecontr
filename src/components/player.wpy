@@ -129,9 +129,10 @@ flex:1;
       that.bgm.onEnded(function () {
         that.isplay = false
         // 播放完成后，如果 bgm src、title 被清除了，重新设置一下
-        if( !that.bgm.src ) that.bgm.src = that.palyurl
-        if( !that.bgm.title ) that.bgm.title = that.title
-        that.isloading = true
+        // if( !that.bgm.src ) that.bgm.src = that.palyurl
+        // if( !that.bgm.title ) that.bgm.title = that.title
+        that.currentTime = 0
+        // that.isloading = true
         // that.bgm.pause() 
         that.$apply()
       })
@@ -141,10 +142,11 @@ flex:1;
       })
       
       // that.bgm.onCanplay(function () {
-        // that.duration = parseInt(that.bgm.duration)
-        // if(that.isloading) that.bgm.pause() 
-        // that.isplay = false
-        // that.$apply()
+      //   if(that.isloading){
+      //     that.bgm.pause()
+      //     that.isplay = false
+      //   }
+      //   that.$apply()
       // })
       
       that.$apply()
