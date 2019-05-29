@@ -26,8 +26,9 @@ page{
 
     </view>
     <view class='action'>
-      <button class='cu-btn round line-white' @tap="sign()" wx:if="{{!user.task.sign_at}}">签到</button>
-      <button class='cu-btn round line-gray' wx:if="{{user.task.sign_at}}">已签到</button>
+      <button class='cu-btn round line-white' @tap="showSign()" wx:if="{{!user.task.sign_at}}">签到</button>
+      <button class='cu-btn round line-white' @tap="showSign()" wx:elseif="{{!user.task.reward_at && videoAd}}">激励</button>
+      <button class='cu-btn round line-gray' wx:elseif="{{user.task.sign_at}}">已签到</button>
     </view>
   </view>
 </view> <!---->
@@ -37,7 +38,7 @@ page{
 
 <Ad1 position="9" :ads.sync="ads"/>
 
-<view class="cu-modal {{showLogin?'show':''}}" @tap='hideModal'>
+<view class="cu-modal {{showLogin?'show':''}}" @tap='hideLoginModal'>
   <view class="cu-dialog padding" catchtap>
     <view class="cu-bar">
       <view class='action'>
@@ -49,6 +50,21 @@ page{
     </view>
   </view>
 </view>
+
+
+<view class="cu-modal {{showSign?'show':''}}" @tap='hideSignModal'>
+  <view class="cu-dialog padding" catchtap>
+      <view class="flex">
+      <view class='flex-sub bg-grey padding-sm margin-xs radius' @tap="doSign()">
+        普通签到 +10
+      </view>
+      <view class='flex-sub bg-red padding-sm margin-xs radius' @tap="doRewardAndSign()">
+        激励签到 +20
+      </view>
+    </view>
+  </view>
+</view>
+
 
 <view class='padding flex text-center text-grey bg-white shadow-warp'>
   <view class='flex flex-sub flex-direction solid-right'>
@@ -162,14 +178,25 @@ page{
     data = {
       isCard:true,
       showLogin:false,
+      showSign:true,
       StatusBar:0,
       CustomBar:0,
+      completeReward:0,
+      completeRewardSign:0,
       user:[],
       carousels:[],
       ads:[],
       videoAd:null,
     }
 
+    watch = {
+      completeSign(val){
+        console.log('completeSign',val)
+      },
+      completeRewardSign(val){
+        console.log('completeRewardSign',val)
+      },
+    }
     methods = {
       goto(to){
           console.log('to',to)
@@ -179,7 +206,8 @@ page{
         
       },
 
-      async inspiresign(){ // 观看激励视频 
+      async doRewardAndSign(){ // 激励签到
+      var that = this
         let videoAd = this.videoAd 
         console.log('videoAd',videoAd)
         // 用户触发广告后，显示激励视频广告
@@ -193,66 +221,124 @@ page{
               })
           })
           
+          let res = await videoAd.onClose()
+          console.log('await onClose res',res)
           videoAd.onClose((res) => {
             console.log('onClose res',res)
-          })
-        }
-      }
 
-      async inspiresign(){ // 观看激励视频后签到
-        let videoAd = this.videoAd 
-        console.log('videoAd',videoAd)
-        // 用户触发广告后，显示激励视频广告
-        if (videoAd) {
-          videoAd.show().catch(() => {
-            // 失败重试
-            videoAd.load()
-              .then(() => videoAd.show())
-              .catch(err => {
-                console.log('激励视频 广告显示失败')
-              })
-          })
-          
-          videoAd.onClose((res) => {
-            console.log('onClose res',res)
+            that.completeRewardSign = 1
+            that.$apply()
+            // let data = await commApi.UserRewardAndSign()
+            // if(data.message){
+            //     wepy.showToast({ title: data.message, icon:"none", duration: 2000 });
+            // }else{
+            //     wepy.showToast({ title: '已获得奖励', icon:"none", duration: 500 });
+            //     this.user = data
+            // }
           })
         }
-      }
+      },
+
       
-      async sign(){
-        
+      async doReward(){
 
-        // 创建激励视频广告实例
-        if (wx.createRewardedVideoAd) {
-          let videoAd = wx.createRewardedVideoAd({
-            adUnitId: 'adunit-af7d0a78f1f9b557'
-          })
-          videoAd.onLoad(() => {})
-          videoAd.onError((err) => {})
+        let videoAd = this.videoAd 
+        console.log('videoAd',videoAd)
+        // 用户触发广告后，显示激励视频广告
+        if (videoAd) {
+          
           videoAd.onClose((res) => {
             console.log('onClose2 res',res)
+            // let data = await commApi.UserReward()
+            // if(data.message){
+            //     wepy.showToast({ title: data.message, icon:"none", duration: 2000 });
+            // }else{
+            //     wepy.showToast({ title: '激励成功', icon:"none", duration: 500 });
+            //     this.user = data
+            // }
           })
-          console.log('videoAd',videoAd)
 
-          // videoAd.onLoad(() => {
-          //   console.log('激励视频 广告加载成功')
-          // })
-
-          // videoAd.show()
-          // .then(() => console.log('激励视频 广告显示'))
-
-          videoAd.onError(err => {
-            console.log(err)
+          videoAd.show().catch(() => {
+            // 失败重试
+            videoAd.load()
+              .then(() => videoAd.show())
+              .catch(err => {
+                console.log('激励视频 广告显示失败')
+              })
           })
-          this.videoAd = videoAd
-
         }
+
+        // // 创建激励视频广告实例
+        // if (wx.createRewardedVideoAd) {
+        //   let videoAd = wx.createRewardedVideoAd({
+        //     adUnitId: 'adunit-af7d0a78f1f9b557'
+        //   })
+        //   videoAd.onLoad(() => {})
+        //   videoAd.onError((err) => {})
+        //   videoAd.onClose((res) => {
+        //     console.log('onClose2 res',res)
+        //     let data = await commApi.UserRewardAndSign()
+        //     if(data.message){
+        //         wepy.showToast({ title: data.message, icon:"none", duration: 2000 });
+        //     }else{
+        //         wepy.showToast({ title: '激励成功', icon:"none", duration: 500 });
+        //         this.user = data
+        //     }
+        //   })
+        //   console.log('videoAd',videoAd)
+
+        //   // videoAd.onLoad(() => {
+        //   //   console.log('激励视频 广告加载成功')
+        //   // })
+
+        //   // videoAd.show()
+        //   // .then(() => console.log('激励视频 广告显示'))
+
+        //   videoAd.onError(err => {
+        //     console.log(err)
+        //   })
+        //   this.videoAd = videoAd
+
+        // }
 
       },
 
 
-      async dosign(){
-        
+      async showSign(){
+        this.showSign = true
+        if (wx.createRewardedVideoAd) {
+        let videoAd = wx.createRewardedVideoAd({
+          adUnitId: 'adunit-af7d0a78f1f9b557'
+        })
+
+        videoAd.offClose(() => {})
+        videoAd.onLoad(() => {})
+        videoAd.onError((err) => {})
+        videoAd.onClose((res) => {})
+        console.log('videoAd',videoAd)
+
+        // videoAd.onLoad(() => {
+        //   console.log('激励视频 广告加载成功')
+        // })
+
+        // videoAd.show()
+        // .then(() => console.log('激励视频 广告显示'))
+
+        videoAd.onError(err => {
+          console.log(err)
+        })
+        this.videoAd = videoAd
+        }
+        this.$apply()
+      },
+
+      async doSign(){
+          wepy.showToast({
+            title: "签到中...",
+            icon:"loading",
+            duration: 500
+          });
+        return false;
          wepy.showToast({
             title: "签到中...",
             icon:"loading",
@@ -290,8 +376,11 @@ page{
         this.$apply()
       },
 
-      hideModal(){
+      hideLoginModal(){
           this.showLogin = false
+      },
+      hideSignModal(){
+          this.showSign = false
       },
 
       async bindGetUserInfo(e) {
@@ -301,6 +390,7 @@ page{
         commApi.AsyncUserData(e.detail)
       }
     }
+
 
 
     async onShow() {

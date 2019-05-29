@@ -167,6 +167,16 @@ export default class comm extends base {
     return await this.get(`${this.baseUrl}/action/sign`);
   }
 
+  // 用户签到
+  static async UserReward() {
+    return await this.get(`${this.baseUrl}/action/reward`);
+  }
+
+  // 用户签到
+  static async UserSignAndReward() {
+    return await this.get(`${this.baseUrl}/action/signandreward`);
+  }
+
   // 用积分兑换指定商品
   static async BuyGoods(goods_id, num) {
     return  await this.get(`${this.baseUrl}/buygoods`, {goods_id: goods_id, num,num});

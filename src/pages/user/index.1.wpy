@@ -1,0 +1,428 @@
+<style lang="less">
+page{
+  padding-bottom: 100rpx;
+}
+.cu-bar .content image{
+  height: 60rpx;
+  width: 240rpx;
+}
+
+</style>
+<template>
+  <view>
+
+
+<!-- <image src='/images/BasicsBg.png' mode='widthFix' class='png' style='width:100%;height:486rpx'></image> -->
+
+
+
+
+ <view class='cu-custom'>
+  <view class="cu-bar fixed bg-shadeTop" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
+    <view class="cu-avatar round" style="background-image:url({{user.avatar}});" @tap="login()"></view>
+
+    <view class='content' style='top:{{StatusBar}}px;'>
+      <!-- 易然自得 -->
+
+    </view>
+    <view class='action'>
+      <button class='cu-btn round line-white' @tap="showSign()" wx:if="{{!user.task.sign_at}}">签到</button>
+      <button class='cu-btn round line-gray' wx:if="{{user.task.sign_at}}">已签到</button>
+    </view>
+  </view>
+</view> <!---->
+
+<Carousel position="2" :carousels.sync="carousels" />
+
+
+<Ad1 position="9" :ads.sync="ads"/>
+
+<view class="cu-modal {{showLogin?'show':''}}" @tap='hideLoginModal'>
+  <view class="cu-dialog padding" catchtap>
+    <view class="cu-bar">
+      <view class='action'>
+        <text class='icon-title text-orange'></text> 请求获取用户公开信息
+      </view>
+      <view class='action'>
+        <button class='cu-btn bg-green shadow'  open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo">授权</button>
+      </view>
+    </view>
+  </view>
+</view>
+
+
+<view class="cu-modal {{showSign?'show':''}}" @tap='hideSignModal'>
+  <view class="cu-dialog padding" catchtap>
+      <view class="flex">
+      <view class='flex-sub bg-grey padding-sm margin-xs radius' @tap="doSign()">
+        普通签到 +10
+      </view>
+      <view class='flex-sub bg-red padding-sm margin-xs radius' @tap="doRewardAndSign()">
+        激励签到 +20
+      </view>
+    </view>
+  </view>
+</view>
+
+
+<view class='padding flex text-center text-grey bg-white shadow-warp'>
+  <view class='flex flex-sub flex-direction solid-right'>
+    <view class="text-xxl text-orange">{{user.total_point}}</view>
+    <view class="margin-top-sm">
+      <text class='icon-selection'></text> 总积分</view>
+  </view>
+  <view class='flex flex-sub flex-direction solid-right'>
+    <view class="text-xxl text-blue">{{user.point}}</view>
+    <view class="margin-top-sm">
+      <text class='icon-pay'></text> 剩余积分</view>
+  </view>
+  <view class='flex flex-sub flex-direction'>
+    <view class="text-xxl text-green">+{{user.task.total}}</view>
+    <view class="margin-top-sm">
+      <text class='icon-fork'></text> 今日积分</view>
+  </view>
+</view>
+
+
+
+<view class="cu-list menu card-menu margin-top-xl margin-bottom-xl shadow-lg">
+  
+  <view class="cu-item arrow">
+    <navigator class='content' url='/pages/user/guide' hover-class='none'>
+      <text class='icon-creativefill text-orange'></text>
+      <text class='text-grey'>积分攻略</text>
+    </navigator>
+  </view>
+  <view class="cu-item arrow">
+    <navigator class='content' url='/pages/user/like' hover-class='none'>
+      <text class='icon-appreciatefill text-red'></text>
+      <text class='text-grey'>我点赞的文章</text>
+    </navigator>
+  </view>
+  <!-- <view class="cu-item arrow">
+    <view class='content' bindtap="showQrcode">
+      <text class='icon-comment text-red'></text>
+      <text class='text-grey'>我的评论</text>
+    </view>
+  </view> -->
+  <view class="cu-item arrow">
+    <navigator class='content' url='/pages/user/footprint' hover-class='none'>
+      <text class='icon-footprint text-red'></text>
+      <text class='text-grey'>我的足迹</text>
+    </navigator>
+  </view>
+  <view class="cu-item arrow">
+    <navigator class='content' url='/pages/user/goods' hover-class='none'>
+      <text class='icon-shop text-red'></text>
+      <text class='text-grey'>积分商城</text>
+    </navigator>
+  </view>
+  <view class="cu-item arrow">
+    <navigator class='content' url='/pages/user/order' hover-class='none'>
+      <text class='icon-barcode text-red'></text>
+      <text class='text-grey'>我的兑换卷</text>
+    </navigator>
+  </view>
+  <view class="cu-item arrow">
+    <navigator class='content' url='/pages/user/pointlog' hover-class='none'>
+      <text class='icon-formfill text-green'></text>
+      <text class='text-grey'>积分记录</text>
+    </navigator>
+  </view>
+  <!-- <view class="cu-item arrow">
+    <navigator class='content' url='/pages/user/task' hover-class='none'>
+      <text class='icon-formfill text-green'></text>
+      <text class='text-grey'>积分日志</text>
+    </navigator>
+  </view>
+  <view class="cu-item arrow">
+    <navigator class='content' url='../test/list' hover-class='none'>
+      <text class='icon-post text-orange'></text>
+      <text class='text-grey'>我要投稿</text>
+    </navigator>
+  </view> -->
+  <view class="cu-item arrow">
+    <button class='cu-btn content' open-type='feedback'>
+      <text class='icon-writefill text-cyan'></text>
+      <text class='text-grey'>意见反馈</text>
+    </button>
+  </view>
+</view>
+
+<Ad2 position="10" :ads.sync="ads"/>
+
+<view class='padding'>
+  <view class='text-center text-grey'>readfollow.com 提供技术支持</view>
+</view>
+</view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import commApi from '../../api/comm'
+  import carousel from '../../components/carousel'
+  import ad from '../../components/ad'
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '每天自律打卡'
+    }
+
+
+    components = {
+      Carousel:carousel,
+      Ad1:ad,
+      Ad2:ad
+    };
+
+    data = {
+      isCard:true,
+      showLogin:false,
+      showSign:true,
+      StatusBar:0,
+      CustomBar:0,
+      completeReward:0,
+      completeRewardSign:0,
+      user:[],
+      carousels:[],
+      ads:[],
+      videoAd:null,
+    }
+
+    watch = {
+      completeSign(val){
+        console.log('completeSign',val)
+      },
+      completeRewardSign(val){
+        console.log('completeRewardSign',val)
+      },
+    }
+    methods = {
+      goto(to){
+          console.log('to',to)
+          wepy.navigateTo({url:to});
+      },
+      click(){
+        
+      },
+
+      async doRewardAndSign(){ // 激励签到
+      var that = this
+        let videoAd = this.videoAd 
+        console.log('videoAd',videoAd)
+        // 用户触发广告后，显示激励视频广告
+        if (videoAd) {
+          videoAd.show().catch(() => {
+            // 失败重试
+            videoAd.load()
+              .then(() => videoAd.show())
+              .catch(err => {
+                console.log('激励视频 广告显示失败')
+              })
+          })
+          
+          let res = await videoAd.onClose()
+          console.log('await onClose res',res)
+          videoAd.onClose((res) => {
+            console.log('onClose res',res)
+
+            that.completeRewardSign = 1
+            that.$apply()
+            // let data = await commApi.UserRewardAndSign()
+            // if(data.message){
+            //     wepy.showToast({ title: data.message, icon:"none", duration: 2000 });
+            // }else{
+            //     wepy.showToast({ title: '已获得奖励', icon:"none", duration: 500 });
+            //     this.user = data
+            // }
+          })
+        }
+      },
+
+      
+      async doReward(){
+
+        let videoAd = this.videoAd 
+        console.log('videoAd',videoAd)
+        // 用户触发广告后，显示激励视频广告
+        if (videoAd) {
+          
+          videoAd.onClose((res) => {
+            console.log('onClose2 res',res)
+            // let data = await commApi.UserReward()
+            // if(data.message){
+            //     wepy.showToast({ title: data.message, icon:"none", duration: 2000 });
+            // }else{
+            //     wepy.showToast({ title: '激励成功', icon:"none", duration: 500 });
+            //     this.user = data
+            // }
+          })
+
+          videoAd.show().catch(() => {
+            // 失败重试
+            videoAd.load()
+              .then(() => videoAd.show())
+              .catch(err => {
+                console.log('激励视频 广告显示失败')
+              })
+          })
+        }
+
+        // // 创建激励视频广告实例
+        // if (wx.createRewardedVideoAd) {
+        //   let videoAd = wx.createRewardedVideoAd({
+        //     adUnitId: 'adunit-af7d0a78f1f9b557'
+        //   })
+        //   videoAd.onLoad(() => {})
+        //   videoAd.onError((err) => {})
+        //   videoAd.onClose((res) => {
+        //     console.log('onClose2 res',res)
+        //     let data = await commApi.UserRewardAndSign()
+        //     if(data.message){
+        //         wepy.showToast({ title: data.message, icon:"none", duration: 2000 });
+        //     }else{
+        //         wepy.showToast({ title: '激励成功', icon:"none", duration: 500 });
+        //         this.user = data
+        //     }
+        //   })
+        //   console.log('videoAd',videoAd)
+
+        //   // videoAd.onLoad(() => {
+        //   //   console.log('激励视频 广告加载成功')
+        //   // })
+
+        //   // videoAd.show()
+        //   // .then(() => console.log('激励视频 广告显示'))
+
+        //   videoAd.onError(err => {
+        //     console.log(err)
+        //   })
+        //   this.videoAd = videoAd
+
+        // }
+
+      },
+
+
+      async showSign(){
+        this.showSign = true
+        if (wx.createRewardedVideoAd) {
+        let videoAd = wx.createRewardedVideoAd({
+          adUnitId: 'adunit-af7d0a78f1f9b557'
+        })
+
+        videoAd.offClose(() => {})
+        videoAd.onLoad(() => {})
+        videoAd.onError((err) => {})
+        videoAd.onClose((res) => {})
+        console.log('videoAd',videoAd)
+
+        // videoAd.onLoad(() => {
+        //   console.log('激励视频 广告加载成功')
+        // })
+
+        // videoAd.show()
+        // .then(() => console.log('激励视频 广告显示'))
+
+        videoAd.onError(err => {
+          console.log(err)
+        })
+        this.videoAd = videoAd
+        }
+        this.$apply()
+      },
+
+      async doSign(){
+          wepy.showToast({
+            title: "签到中...",
+            icon:"loading",
+            duration: 500
+          });
+        return false;
+         wepy.showToast({
+            title: "签到中...",
+            icon:"loading",
+            duration: 500
+          });
+        let data = await commApi.UserSign()
+        if(data.message){
+          wepy.showToast({ title: data.message, icon:"none", duration: 2000 });
+        }else{
+          wepy.showToast({ title: '签到成功', icon:"none", duration: 500 });
+          
+          this.user = data
+          // this.user.total_point = data.total_point
+        }
+        console.log('sign data', data)
+        this.$apply()
+      },
+
+
+      async login(){
+        let auth = await wepy.getSetting()
+        if ( auth.authSetting['scope.userInfo'] ) {
+          // 已授权
+          let user = await wepy.getUserInfo()
+          this.user.avatar = user.userInfo.avatarUrl
+          commApi.AsyncUserData(user)
+          wepy.showToast({
+            title: "已同步用户数据",
+            icon:"none",
+            duration: 1000
+          });
+        }else{
+          this.showLogin = true
+        }
+        this.$apply()
+      },
+
+      hideLoginModal(){
+          this.showLogin = false
+      },
+      hideSignModal(){
+          this.showSign = false
+      },
+
+      async bindGetUserInfo(e) {
+        this.user.avatar = e.detail.userInfo.avatarUrl
+        this.showLogin = false
+        this.$apply()
+        commApi.AsyncUserData(e.detail)
+      }
+    }
+
+
+
+    async onShow() {
+      if (typeof this.$wxpage.getTabBar === 'function' &&
+        this.$wxpage.getTabBar()) {
+        this.$wxpage.getTabBar().setData({
+        selected: 2
+        })
+        this.$apply()
+      }
+      this.user = await commApi.GetMe() // 获取当前用户
+      if(this.user.showlogin){
+        this.showLogin = true
+      }
+      this.$apply()
+    }
+
+    async onLoad() {
+        this.StatusBar= wepy.$instance.globalData.StatusBar
+        this.CustomBar= wepy.$instance.globalData.CustomBar
+        this.ads = await commApi.GetAds()
+        this.carousels = await commApi.GetCarousels()
+        this.$apply()
+    }
+
+    // 下拉刷新
+    async onPullDownRefresh() {
+        this.user = await commApi.GetMe() // 获取当前用户
+        wepy.stopPullDownRefresh()
+        this.$apply()
+    }
+
+
+  }
+
+</script>
