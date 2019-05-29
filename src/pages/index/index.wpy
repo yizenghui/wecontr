@@ -84,6 +84,8 @@ page{
   import carousel from '../../components/carousel'
   import ad from '../../components/ad'
   import search from '../../components/search'
+  
+
   export default class Index extends wepy.page {
     config = {
       navigationBarTitleText: '微信小程序博客'
@@ -111,6 +113,7 @@ page{
       ads: [],
       carousels: [],
       articles: [],
+      videoAd:null,
     }
 
     computed = {
@@ -137,7 +140,21 @@ page{
 
     methods = {
       goto(to){
-        if(to) wepy.navigateTo({url:to});
+        let videoAd = this.videoAd 
+        console.log('videoAd',videoAd)
+        // 用户触发广告后，显示激励视频广告
+        if (videoAd) {
+          videoAd.show().catch(() => {
+            // 失败重试
+            videoAd.load()
+              .then(() => videoAd.show())
+              .catch(err => {
+                console.log('激励视频 广告显示失败')
+              })
+          })
+        }
+
+        // if(to) wepy.navigateTo({url:to});
       },
       click(item){
         // todo 
@@ -174,6 +191,36 @@ page{
     }
 
     async onLoad(query) {
+
+
+      // 在页面onLoad回调事件中创建激励视频广告实例
+      if (wx.createRewardedVideoAd) {
+        let videoAd = wx.createRewardedVideoAd({
+          adUnitId: 'adunit-af7d0a78f1f9b557'
+        })
+        videoAd.onLoad(() => {})
+        videoAd.onError((err) => {})
+        videoAd.onClose((res) => {
+           console.log('onClose res',res)
+        })
+        console.log('videoAd',videoAd)
+
+        videoAd.onLoad(() => {
+          console.log('激励视频 广告加载成功')
+        })
+
+        videoAd.show()
+        .then(() => console.log('激励视频 广告显示'))
+
+        videoAd.onError(err => {
+          console.log(err)
+        })
+        this.videoAd = videoAd
+
+      }
+
+
+
       this.StatusBar= wepy.$instance.globalData.StatusBar
       this.CustomBar= wepy.$instance.globalData.CustomBar
       this.carousels = await commApi.GetCarousels()
