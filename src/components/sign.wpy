@@ -164,7 +164,7 @@
             that.$apply()
           })
           videoAd.onClose((res) => {})
-          console.log('videoAd',videoAd)
+          // console.log('videoAd',videoAd)
           this.videoAd = videoAd
       }
     }
