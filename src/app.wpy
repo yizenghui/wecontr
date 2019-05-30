@@ -249,7 +249,7 @@ export default class extends wepy.app {
     topic_share_title: '',
     topic_share_cover: '',
     api_token: '0RPJhqvW6gMp',
-    showlogin: false, // 展示登录
+    show_login: false, // 展示登录
     // baseUrl: 'http://cms.cc:626/api/v1', 
     // baseUrl: 'http://wxcmsmanage.oo/api/v1',
     baseUrl: 'https://readfollow.com/api/v1', 

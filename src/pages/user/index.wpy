@@ -26,9 +26,9 @@ page{
 
     </view>
     <view class='action'>
-      <button class='cu-btn round line-white' @tap="showSign()" wx:if="{{!user.task.sign_at}}">签到</button>
-      <button class='cu-btn round line-white' @tap="showSign()" wx:elseif="{{!user.task.reward_at && videoAd}}">激励</button>
-      <button class='cu-btn round line-gray' wx:elseif="{{user.task.sign_at}}">已签到</button>
+      <button class='cu-btn round line-white' @tap="showSign()" wx:if="{{today_sign}}">签到</button>
+      <button class='cu-btn round line-white' @tap="showSign()" wx:if="{{!today_sign && today_reward}}">激励</button>
+      <button class='cu-btn round line-gray' wx:if="{{today_signed}}">已签到</button>
     </view>
   </view>
 </view> <!---->
@@ -38,7 +38,7 @@ page{
 
 <Ad1 position="9" :ads.sync="ads"/>
 
-<view class="cu-modal {{showLogin?'show':''}}" @tap='hideLoginModal'>
+<view class="cu-modal {{show_login?'show':''}}" @tap='hideLoginModal'>
   <view class="cu-dialog padding" catchtap>
     <view class="cu-bar">
       <view class='action'>
@@ -51,19 +51,6 @@ page{
   </view>
 </view>
 
-
-<view class="cu-modal {{showSign?'show':''}}" @tap='hideSignModal'>
-  <view class="cu-dialog padding" catchtap>
-      <view class="flex">
-      <view class='flex-sub bg-grey padding-sm margin-xs radius' @tap="doSign()">
-        普通签到 +10
-      </view>
-      <view class='flex-sub bg-red padding-sm margin-xs radius' @tap="doRewardAndSign()">
-        激励签到 +20
-      </view>
-    </view>
-  </view>
-</view>
 
 
 <view class='padding flex text-center text-grey bg-white shadow-warp'>
@@ -150,6 +137,8 @@ page{
   </view>
 </view>
 
+
+<Sign :show.sync="showSign"  :canSign.sync="today_sign"  :canReward.sync="today_reward"/>
 <Ad2 position="10" :ads.sync="ads"/>
 
 <view class='padding'>
@@ -163,200 +152,119 @@ page{
   import commApi from '../../api/comm'
   import carousel from '../../components/carousel'
   import ad from '../../components/ad'
+  import sign from '../../components/sign'
   export default class Index extends wepy.page {
     config = {
-      navigationBarTitleText: '每天自律打卡'
+      navigationBarTitleText: '用户主页'
     }
 
 
     components = {
       Carousel:carousel,
       Ad1:ad,
+      Sign:sign,
       Ad2:ad
     };
 
     data = {
-      isCard:true,
-      showLogin:false,
-      showSign:true,
+      show_login:false,
+      showSign:false,
       StatusBar:0,
       CustomBar:0,
-      completeReward:0,
-      completeRewardSign:0,
       user:[],
       carousels:[],
       ads:[],
       videoAd:null,
+      today_sign:false,
+      today_reward:false,
+      today_signed:false,
     }
 
-    watch = {
-      completeSign(val){
-        console.log('completeSign',val)
-      },
-      completeRewardSign(val){
-        console.log('completeRewardSign',val)
-      },
+    
+    
+    async doSign(){
+      let data = await commApi.UserSign()
+      // console.log('doSign',data)
+      if(data.message){
+        wepy.showToast({ title: data.message, icon:"none", duration: 2000 });
+      }else{
+        wepy.showToast({ title: '签到成功', icon:"none", duration: 500 });
+        this.user = data
+          
+        if(!!this.user.task){
+          this.today_sign = !this.user.task.sign_at
+          this.today_reward = !this.user.task.reward_at
+          this.today_signed = this.user.task.sign_at && this.user.task.reward_at
+        }
+
+      }
+      this.$apply()
     }
+
+    async doRewardAndSign(){
+      let data = await commApi.UserRewardAndSign()
+      if(data.message){
+        wepy.showToast({ title: data.message, icon:"none", duration: 2000 });
+      }else{
+        wepy.showToast({ title: '激励签到成功', icon:"none", duration: 500 });
+        this.user = data
+          
+        if(!!this.user.task){
+          this.today_sign = !this.user.task.sign_at
+          this.today_reward = !this.user.task.reward_at
+          this.today_signed = this.user.task.sign_at && this.user.task.reward_at
+        }
+
+      }
+      this.$apply()
+    }
+
+    async doReward(){
+      let data = await commApi.UserReward()
+      if(data.message){
+        wepy.showToast({ title: data.message, icon:"none", duration: 2000 });
+      }else{
+        wepy.showToast({ title: '激励成功', icon:"none", duration: 500 });
+        this.user = data
+        
+        if(!!this.user.task){
+          this.today_sign = !this.user.task.sign_at
+          this.today_reward = !this.user.task.reward_at
+          this.today_signed = this.user.task.sign_at && this.user.task.reward_at
+        }
+
+      }
+      this.$apply()
+    }
+    watch = {
+      
+    }
+    events = {
+        'rewardAndSignFn': (res) => {
+          this.doRewardAndSign()
+          this.showSign = false
+        },
+        'rewardFn': (res) => {
+          this.doReward()
+          this.showSign = false
+        },
+        'signFn': () => {
+          this.doSign()
+        },
+        'hideFn': () => {
+            this.showSign = false
+        }
+    };
     methods = {
       goto(to){
           console.log('to',to)
           wepy.navigateTo({url:to});
       },
-      click(){
-        
-      },
-
-      async doRewardAndSign(){ // 激励签到
-      var that = this
-        let videoAd = this.videoAd 
-        console.log('videoAd',videoAd)
-        // 用户触发广告后，显示激励视频广告
-        if (videoAd) {
-          videoAd.show().catch(() => {
-            // 失败重试
-            videoAd.load()
-              .then(() => videoAd.show())
-              .catch(err => {
-                console.log('激励视频 广告显示失败')
-              })
-          })
-          
-          let res = await videoAd.onClose()
-          console.log('await onClose res',res)
-          videoAd.onClose((res) => {
-            console.log('onClose res',res)
-
-            that.completeRewardSign = 1
-            that.$apply()
-            // let data = await commApi.UserRewardAndSign()
-            // if(data.message){
-            //     wepy.showToast({ title: data.message, icon:"none", duration: 2000 });
-            // }else{
-            //     wepy.showToast({ title: '已获得奖励', icon:"none", duration: 500 });
-            //     this.user = data
-            // }
-          })
-        }
-      },
-
-      
-      async doReward(){
-
-        let videoAd = this.videoAd 
-        console.log('videoAd',videoAd)
-        // 用户触发广告后，显示激励视频广告
-        if (videoAd) {
-          
-          videoAd.onClose((res) => {
-            console.log('onClose2 res',res)
-            // let data = await commApi.UserReward()
-            // if(data.message){
-            //     wepy.showToast({ title: data.message, icon:"none", duration: 2000 });
-            // }else{
-            //     wepy.showToast({ title: '激励成功', icon:"none", duration: 500 });
-            //     this.user = data
-            // }
-          })
-
-          videoAd.show().catch(() => {
-            // 失败重试
-            videoAd.load()
-              .then(() => videoAd.show())
-              .catch(err => {
-                console.log('激励视频 广告显示失败')
-              })
-          })
-        }
-
-        // // 创建激励视频广告实例
-        // if (wx.createRewardedVideoAd) {
-        //   let videoAd = wx.createRewardedVideoAd({
-        //     adUnitId: 'adunit-af7d0a78f1f9b557'
-        //   })
-        //   videoAd.onLoad(() => {})
-        //   videoAd.onError((err) => {})
-        //   videoAd.onClose((res) => {
-        //     console.log('onClose2 res',res)
-        //     let data = await commApi.UserRewardAndSign()
-        //     if(data.message){
-        //         wepy.showToast({ title: data.message, icon:"none", duration: 2000 });
-        //     }else{
-        //         wepy.showToast({ title: '激励成功', icon:"none", duration: 500 });
-        //         this.user = data
-        //     }
-        //   })
-        //   console.log('videoAd',videoAd)
-
-        //   // videoAd.onLoad(() => {
-        //   //   console.log('激励视频 广告加载成功')
-        //   // })
-
-        //   // videoAd.show()
-        //   // .then(() => console.log('激励视频 广告显示'))
-
-        //   videoAd.onError(err => {
-        //     console.log(err)
-        //   })
-        //   this.videoAd = videoAd
-
-        // }
-
-      },
-
 
       async showSign(){
         this.showSign = true
-        if (wx.createRewardedVideoAd) {
-        let videoAd = wx.createRewardedVideoAd({
-          adUnitId: 'adunit-af7d0a78f1f9b557'
-        })
-
-        videoAd.offClose(() => {})
-        videoAd.onLoad(() => {})
-        videoAd.onError((err) => {})
-        videoAd.onClose((res) => {})
-        console.log('videoAd',videoAd)
-
-        // videoAd.onLoad(() => {
-        //   console.log('激励视频 广告加载成功')
-        // })
-
-        // videoAd.show()
-        // .then(() => console.log('激励视频 广告显示'))
-
-        videoAd.onError(err => {
-          console.log(err)
-        })
-        this.videoAd = videoAd
-        }
         this.$apply()
       },
-
-      async doSign(){
-          wepy.showToast({
-            title: "签到中...",
-            icon:"loading",
-            duration: 500
-          });
-        return false;
-         wepy.showToast({
-            title: "签到中...",
-            icon:"loading",
-            duration: 500
-          });
-        let data = await commApi.UserSign()
-        if(data.message){
-          wepy.showToast({ title: data.message, icon:"none", duration: 2000 });
-        }else{
-          wepy.showToast({ title: '签到成功', icon:"none", duration: 500 });
-          
-          this.user = data
-          // this.user.total_point = data.total_point
-        }
-        console.log('sign data', data)
-        this.$apply()
-      },
-
 
       async login(){
         let auth = await wepy.getSetting()
@@ -366,26 +274,23 @@ page{
           this.user.avatar = user.userInfo.avatarUrl
           commApi.AsyncUserData(user)
           wepy.showToast({
-            title: "已同步用户数据",
+            title: "已同步数据",
             icon:"none",
             duration: 1000
           });
         }else{
-          this.showLogin = true
+          this.show_login = true
         }
         this.$apply()
       },
 
       hideLoginModal(){
-          this.showLogin = false
-      },
-      hideSignModal(){
-          this.showSign = false
+          this.show_login = false
       },
 
       async bindGetUserInfo(e) {
         this.user.avatar = e.detail.userInfo.avatarUrl
-        this.showLogin = false
+        this.show_login = false
         this.$apply()
         commApi.AsyncUserData(e.detail)
       }
@@ -402,9 +307,15 @@ page{
         this.$apply()
       }
       this.user = await commApi.GetMe() // 获取当前用户
-      if(this.user.showlogin){
-        this.showLogin = true
+      if(this.user.show_login){
+        this.show_login = true
       }
+      if(!!this.user.task){
+        this.today_sign = !this.user.task.sign_at
+        this.today_reward = !this.user.task.reward_at
+        this.today_signed = this.user.task.sign_at && this.user.task.reward_at
+      }
+
       this.$apply()
     }
 

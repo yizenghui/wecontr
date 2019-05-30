@@ -65,7 +65,7 @@ page{
 </view>
 
 
-<view class="cu-modal {{showlogin?'show':''}}" @tap='hideModal'>
+<view class="cu-modal {{show_login?'show':''}}" @tap='hideModal'>
   <view class="cu-dialog padding" catchtap>
     <view class="cu-bar">
       <view class='action'>
@@ -248,7 +248,7 @@ page{
       playtitle: "",
       userlikearticle:false,
       isloadcomment:false,
-      showlogin:false,
+      show_login:false,
     }
     methods = {
       goto(to){
@@ -265,7 +265,7 @@ page{
       },
 
       hideModal(){
-        this.showlogin = false
+        this.show_login = false
       },
 
       async login(){
@@ -281,7 +281,7 @@ page{
             duration: 1000
           });
         }else{
-          this.showlogin = true
+          this.show_login = true
         }
         this.$apply()
       },
@@ -289,9 +289,9 @@ page{
       async likearticle(id){
 
         
-        if(wepy.$instance.globalData.showlogin){
-          this.showlogin = true
-          wepy.$instance.globalData.showlogin = false
+        if(wepy.$instance.globalData.show_login){
+          this.show_login = true
+          wepy.$instance.globalData.show_login = false
         }else{
           wepy.showToast({
             title: "数据加载中",
@@ -353,7 +353,7 @@ page{
 
       async bindGetUserInfo(e) {
         this.user.avatar = e.detail.userInfo.avatarUrl
-        this.showlogin = false
+        this.show_login = false
         this.$apply()
         commApi.AsyncUserData(e.detail)
       }

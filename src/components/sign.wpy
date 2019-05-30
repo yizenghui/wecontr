@@ -1,0 +1,188 @@
+<style type="less">
+</style>
+<template>
+<view>
+  
+<view class="cu-modal {{show?'show':''}}" @tap='hideModal'>
+  <view class="cu-dialog padding" catchtap>
+      <view class="flex">
+      <view wx:if="{{todayCanSign}}" class='flex-sub bg-grey padding-sm margin-xs radius' @tap="doSign()">
+        普通签到 +{{signAction}}
+      </view>
+      <view  wx:if="{{todayCanRewardSign}}" class='flex-sub bg-red padding-sm margin-xs radius' @tap="doRewardAndSign()">
+        激励签到 +{{signAction+rewardAction}}
+      </view>
+      <view wx:if="{{todayCanReward}}"  class='flex-sub bg-red padding-sm margin-xs radius' @tap="doReward()">
+        激励 +{{rewardAction}}
+      </view>
+
+      
+      <view wx:if="{{!todayCanSign && !todayCanReward && !todayCanRewardSign}}"  class='flex-sub bg-grey padding-sm margin-xs radius' @tap='hideModal'>
+        我明天一定会再来的~~~
+      </view>
+    </view>
+  </view>
+</view>
+
+</view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import commApi from '../api/comm'
+
+  export default class Sign extends wepy.component {
+    props = {
+      signAction:{ //签到行为得分
+        type:Number,
+        default:10,
+      },
+      rewardAction:{ //激励行为等分
+        type:Number,
+        default:10,
+      },
+      canSign:{ //可以签到
+        type:Boolean,
+        default:false,
+      },
+      canReward:{ //可以激励
+        type:Boolean,
+        default:false,
+      },
+      show:{ //显示插件
+        type:Boolean,
+        default:false,
+      },
+      rewardStatus:{ // 可以激励
+        type:Boolean,
+        default:true,
+      },
+      unitid:{ // 激励广告id
+        type:String,
+        default:'adunit-af7d0a78f1f9b557',
+      }
+    }
+    data = {
+      videoAd: null,
+      videoAdLoaded: false, // 激励视频加载完成
+      completeReward:0, // 完成激励 组件标志
+    }
+
+    watch = {
+    }
+
+    methods = {
+      
+      async doRewardAndSign(){ // 激励签到
+        var that = this
+        let videoAd = this.videoAd 
+        // console.log('videoAd',videoAd)
+        // 用户触发广告后，显示激励视频广告
+        if (videoAd) {
+          videoAd.offClose() //取消旧的绑定
+          videoAd.onClose((res) => {
+            if (res && res.isEnded) {
+              // 正常播放结束，可以下发游戏奖励
+              that.completeReward = true
+              that.signed = true
+              that.$emit('rewardAndSignFn', res)
+              that.$apply()
+            } else {
+              // 播放中途退出，不下发游戏奖励
+              wepy.showToast({ title: '未获得奖励！', icon:"none", duration: 1000 });
+            }
+          })
+
+          videoAd.show().catch(() => {
+            // 失败重试
+            videoAd.load()
+              .then(() => videoAd.show())
+              .catch(err => {
+                that.rewardStatus = false
+                wepy.showToast({ title: '广告显示失败', icon:"none", duration: 500 });
+              })
+          })
+        }
+      },
+
+      // 观看激励式视频
+      async doReward(){
+        var that = this
+        let videoAd = this.videoAd 
+        // console.log('videoAd',videoAd)
+        // 用户触发广告后，显示激励视频广告
+        if (videoAd) {
+          videoAd.offClose() //取消旧的绑定
+          videoAd.onClose((res) => {
+            if (res && res.isEnded) {
+              // 正常播放结束，可以下发游戏奖励
+              that.completeReward = true
+              that.$emit('rewardFn', res)
+              that.$apply()
+            } else {
+              // 播放中途退出，不下发游戏奖励
+              wepy.showToast({ title: '未获得奖励！', icon:"none", duration: 500 });
+            }
+          })
+
+          videoAd.show().catch(() => {
+            // 失败重试
+            videoAd.load()
+              .then(() => videoAd.show())
+              .catch(err => {
+                that.rewardStatus = 0
+                wepy.showToast({ title: '广告显示失败', icon:"none", duration: 500 });
+              })
+          })
+        }
+      },
+
+
+      async doSign(){
+        var that = this
+        that.signed = true
+        that.$emit('signFn', true)
+        that.$apply()
+      },
+
+
+      hideModal(){
+        this.$emit('hideFn')
+      },
+    }
+    async onLoad () {
+      var that = this
+      if (wx.createRewardedVideoAd && that.rewardStatus && that.unitid) {
+          let videoAd = wx.createRewardedVideoAd({
+            adUnitId: that.unitid
+          })
+          videoAd.onLoad(() => {
+            that.videoAdLoaded = true
+            that.$apply()
+          })
+          videoAd.onError((err) => {
+            that.videoAdLoaded = false
+            that.$apply()
+          })
+          videoAd.onClose((res) => {})
+          console.log('videoAd',videoAd)
+          this.videoAd = videoAd
+      }
+    }
+
+    computed = {
+        todayCanSign () {
+          return  this.canSign
+        },
+        todayCanRewardSign () {
+          return  this.canSign && this.canReward  && this.rewardStatus && this.videoAdLoaded &&  !this.completeReward
+        },
+        todayCanReward () {
+          return  !this.canSign && this.canReward && this.rewardStatus && this.videoAdLoaded &&  !this.completeReward
+        },
+        
+        todayCanRewardOrSign () {
+          return this.signed || ( this.rewardStatus && this.videoAdLoaded && !this.completeReward)
+        },
+    };
+  }
+</script>

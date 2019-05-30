@@ -37,7 +37,7 @@ page{
 
 <Ad1 position="9" :ads.sync="ads"/>
 
-<view class="cu-modal {{showLogin?'show':''}}" @tap='hideLoginModal'>
+<view class="cu-modal {{show_login?'show':''}}" @tap='hideLoginModal'>
   <view class="cu-dialog padding" catchtap>
     <view class="cu-bar">
       <view class='action'>
@@ -176,7 +176,7 @@ page{
 
     data = {
       isCard:true,
-      showLogin:false,
+      show_login:false,
       showSign:true,
       StatusBar:0,
       CustomBar:0,
@@ -370,21 +370,21 @@ page{
             duration: 1000
           });
         }else{
-          this.showLogin = true
+          this.show_login = true
         }
         this.$apply()
       },
 
       hideLoginModal(){
-          this.showLogin = false
+          this.show_login = false
       },
       hideSignModal(){
-          this.showSign = false
+          this.show_login = false
       },
 
       async bindGetUserInfo(e) {
         this.user.avatar = e.detail.userInfo.avatarUrl
-        this.showLogin = false
+        this.show_login = false
         this.$apply()
         commApi.AsyncUserData(e.detail)
       }
@@ -401,8 +401,8 @@ page{
         this.$apply()
       }
       this.user = await commApi.GetMe() // 获取当前用户
-      if(this.user.showlogin){
-        this.showLogin = true
+      if(this.user.show_login){
+        this.show_login = true
       }
       this.$apply()
     }

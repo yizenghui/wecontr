@@ -21,7 +21,7 @@ export default class http {
           wepy.$instance.globalData.index_share_cover = data.index_share_cover
           wepy.$instance.globalData.topic_share_title = data.topic_share_title
           wepy.$instance.globalData.topic_share_cover = data.topic_share_cover
-          wepy.$instance.globalData.showlogin = data.showlogin
+          wepy.$instance.globalData.show_login = data.show_login
           // wepy.setStorageSync('token', data.token)
           // wepy.setStorageSync('uid', data.uid)
         }
@@ -35,7 +35,7 @@ export default class http {
         wepy.$instance.globalData.index_share_cover = data.index_share_cover
         wepy.$instance.globalData.topic_share_title = data.topic_share_title
         wepy.$instance.globalData.topic_share_cover = data.topic_share_cover
-        wepy.$instance.globalData.showlogin = data.showlogin
+        wepy.$instance.globalData.show_login = data.show_login
         // wepy.setStorageSync('token', data.token)
         // wepy.setStorageSync('uid', data.uid)
       }
@@ -62,7 +62,7 @@ export default class http {
         wepy.$instance.globalData.index_share_cover = data.index_share_cover
         wepy.$instance.globalData.topic_share_title = data.topic_share_title
         wepy.$instance.globalData.topic_share_cover = data.topic_share_cover
-        wepy.$instance.globalData.showlogin = data.showlogin
+        wepy.$instance.globalData.show_login = data.show_login
         // wepy.setStorageSync('token', data.token)
         // wepy.setStorageSync('uid', data.uid)
         const res2 = await wepy.request(param)
