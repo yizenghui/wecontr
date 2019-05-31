@@ -188,7 +188,7 @@ page{
       if(data.message){
         wepy.showToast({ title: data.message, icon:"none", duration: 2000 });
       }else{
-        wepy.showToast({ title: '签到成功', icon:"none", duration: 500 });
+        wepy.showToast({ title: '签到成功', icon:"none", duration: 1000 });
         this.user = data
           
         if(!!this.user.task){
@@ -202,11 +202,11 @@ page{
     }
 
     async doRewardAndSign(){
-      let data = await commApi.UserRewardAndSign()
+      let data = await commApi.UserSignAndReward()
       if(data.message){
         wepy.showToast({ title: data.message, icon:"none", duration: 2000 });
       }else{
-        wepy.showToast({ title: '激励签到成功', icon:"none", duration: 500 });
+        wepy.showToast({ title: '激励签到成功', icon:"none", duration: 1000 });
         this.user = data
           
         if(!!this.user.task){
@@ -224,7 +224,7 @@ page{
       if(data.message){
         wepy.showToast({ title: data.message, icon:"none", duration: 2000 });
       }else{
-        wepy.showToast({ title: '激励成功', icon:"none", duration: 500 });
+        wepy.showToast({ title: '激励成功', icon:"none", duration: 1000 });
         this.user = data
         
         if(!!this.user.task){
