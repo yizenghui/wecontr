@@ -51,7 +51,7 @@ page{
     <Ad2 wx:if="{{articles2.length>0}}" position="2" :ads.sync="ads"/>
 
     <view wx:if="{{articles2.length>0 && adshow}}" class="adContainer">
-        <ad binderror="adClose" bindclose="adClose" unit-id="adunit-3e9e2dd1975a9985"></ad>
+        <ad binderror="adClose" bindclose="adClose" unit-id="{{banner_adid}}"></ad>
     </view>
     <view wx:if="{{articles2.length>0}}"  class="cu-card article {{isCard?'no-card':''}}">
       <view wx:for="{{articles2}}" wx:key class="cu-item shadow"  @tap="goto({{item.wxto}})">
@@ -115,6 +115,7 @@ page{
       CustomBar:0,
       page:1,
       default_search:'',
+      banner_adid:'',
       swipers: [],
       ads: [],
       carousels: [],
@@ -186,6 +187,9 @@ page{
 
     async onLoad(query) {
 
+
+
+
       this.StatusBar= wepy.$instance.globalData.StatusBar
       this.CustomBar= wepy.$instance.globalData.CustomBar
       this.carousels = await commApi.GetCarousels()
@@ -195,6 +199,7 @@ page{
       this.articles = await commApi.GetRecommendedArticles(1)
       this.page = 2;
       this.loadModal = false
+      this.banner_adid =  wepy.$instance.globalData.banner_adid
       this.$apply()
     }
 

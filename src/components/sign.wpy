@@ -169,6 +169,28 @@
       }
     }
 
+    watch ={
+      unitid(val){
+        var that = this
+        if (wx.createRewardedVideoAd && that.rewardStatus && val) {
+            let videoAd = wx.createRewardedVideoAd({
+              adUnitId: val
+            })
+            videoAd.onLoad(() => {
+              that.videoAdLoaded = true
+              that.$apply()
+            })
+            videoAd.onError((err) => {
+              that.videoAdLoaded = false
+              that.$apply()
+            })
+            videoAd.onClose((res) => {})
+            // console.log('videoAd',videoAd)
+            this.videoAd = videoAd
+        }
+      }
+    }
+
     computed = {
         todayCanSign () {
           return  this.canSign

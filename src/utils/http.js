@@ -22,6 +22,10 @@ export default class http {
           wepy.$instance.globalData.topic_share_title = data.topic_share_title
           wepy.$instance.globalData.topic_share_cover = data.topic_share_cover
           wepy.$instance.globalData.show_login = data.show_login
+          wepy.$instance.globalData.sign_action = data.sign_action
+          wepy.$instance.globalData.reward_action = data.reward_action
+          wepy.$instance.globalData.banner_adid = data.banner_adid
+          wepy.$instance.globalData.reward_adid = data.reward_adid
           // wepy.setStorageSync('token', data.token)
           // wepy.setStorageSync('uid', data.uid)
         }
@@ -36,6 +40,10 @@ export default class http {
         wepy.$instance.globalData.topic_share_title = data.topic_share_title
         wepy.$instance.globalData.topic_share_cover = data.topic_share_cover
         wepy.$instance.globalData.show_login = data.show_login
+        wepy.$instance.globalData.sign_action = data.sign_action
+        wepy.$instance.globalData.reward_action = data.reward_action
+        wepy.$instance.globalData.banner_adid = data.banner_adid
+        wepy.$instance.globalData.reward_adid = data.reward_adid
         // wepy.setStorageSync('token', data.token)
         // wepy.setStorageSync('uid', data.uid)
       }
@@ -63,6 +71,10 @@ export default class http {
         wepy.$instance.globalData.topic_share_title = data.topic_share_title
         wepy.$instance.globalData.topic_share_cover = data.topic_share_cover
         wepy.$instance.globalData.show_login = data.show_login
+        wepy.$instance.globalData.sign_action = data.sign_action
+        wepy.$instance.globalData.reward_action = data.reward_action
+        wepy.$instance.globalData.banner_adid = data.banner_adid
+        wepy.$instance.globalData.reward_adid = data.reward_adid
         // wepy.setStorageSync('token', data.token)
         // wepy.setStorageSync('uid', data.uid)
         const res2 = await wepy.request(param)

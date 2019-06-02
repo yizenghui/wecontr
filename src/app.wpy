@@ -237,6 +237,7 @@ export default class extends wepy.app {
   }
 
   globalData = {
+    api_token: '0RPJhqvW6gMp',
     session: '',
     ads: [],
     carousels: [],
@@ -248,11 +249,14 @@ export default class extends wepy.app {
     index_share_cover: '',
     topic_share_title: '',
     topic_share_cover: '',
-    api_token: '0RPJhqvW6gMp',
+    sign_action: 0, //签到得分
+    reward_action: 0,//激励得分
+    banner_adid: '',//  banner广告id
+    reward_adid: '',// 激励视频id
     show_login: false, // 展示登录
     // baseUrl: 'http://cms.cc:626/api/v1', 
-    // baseUrl: 'http://wxcmsmanage.oo/api/v1',
-    baseUrl: 'https://readfollow.com/api/v1', 
+    baseUrl: 'http://wxcms.oo/api/v1',
+    // baseUrl: 'https://readfollow.com/api/v1', 
     // baseUrl: 'https://wxcms.readfollow.com/api', 
     userInfo: null
   
