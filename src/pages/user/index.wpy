@@ -27,7 +27,7 @@ page{
     </view>
     <view class='action'>
       <button class='cu-btn round line-white' @tap="showSign()" wx:if="{{today_sign}}">签到</button>
-      <button class='cu-btn round line-white' @tap="showSign()" wx:if="{{!today_sign && today_reward}}">激励</button>
+      <button class='cu-btn round line-white' @tap="showSign()" wx:if="{{!today_sign && today_reward && reward_action}}">激励</button>
       <button class='cu-btn round line-gray' wx:if="{{today_signed}}">已签到</button>
     </view>
   </view>
@@ -331,7 +331,6 @@ page{
         this.sign_action = wepy.$instance.globalData.sign_action
         this.reward_action = wepy.$instance.globalData.reward_action
         this.reward_adid = wepy.$instance.globalData.reward_adid
-        console.log('reward_adid',this.reward_adid)
         this.$apply()
     }
 

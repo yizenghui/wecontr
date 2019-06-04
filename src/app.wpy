@@ -173,7 +173,7 @@ export default class extends wepy.app {
     },
     "plugins": {
       // "tencentvideo": {
-      //   "version": "1.3.0",
+      //   "version": "1.3.3",
       //   "provider": "wxa75efa648b60994b"
       // }
     },
