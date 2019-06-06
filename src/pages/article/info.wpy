@@ -99,7 +99,7 @@ page{
       
     </view>
         
-    <!-- <txv-video vid="{{article.video}}" wx:if="{{article.video}}" playerid="{{article.video}}"></txv-video> -->
+    <txv-video vid="{{article.video}}" wx:if="{{article.video}}" playerid="{{article.video}}"></txv-video>
 
     
     <player  wx:if="{{playurl}}" :url.sync="playurl" :title.sync="playtitle" />
@@ -221,7 +221,7 @@ page{
       navigationBarTitleText: '文章详细',
       "usingComponents": {
         "wemark": "../plugins/wemark/wemark",
-        // "txv-video": "plugin://tencentvideo/video",
+        "txv-video": "plugin://tencentvideo/video",
       }
     }
 

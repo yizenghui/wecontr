@@ -4,7 +4,7 @@
 
 1. 注册小程序 获取 AppID(小程序ID)  AppSecret(小程序密钥)
 
-2. 登录后台获取api token (假设是`wRZJFqYAvbRk` ) 链接： https://readfollow.com/tenancy/auth/setting#tab-form-2  并设置 AppID，AppSecret
+2. 登录后台获取api token (假设是`wRZJFqYAvbRk` ) 链接： https://readfollow.com/admin/auth/setting#tab-form-2  并设置 AppID，AppSecret
 
 3. 替换 dist/app.js 中的 api_token (用文本编辑器打开搜索'api\_token') `api_token:"0RPJhqvW6gMp", `中的`0RPJhqvW6gMp`替换为你的api token`wRZJFqYAvbRk`
 
@@ -19,16 +19,14 @@
 
 
 ### 后台操作：
-后台地址 https://readfollow.com/tenancy
+后台地址 https://readfollow.com/admin
 
 1. 添加专题， 需要背景图、名称和描述
 2. 添加作者， 只有名字也可以
-3. 添加文章， 标题、描述、封面、正文等 正文使用markdown语法，请自行摸索。 注1
+3. 添加文章， 标题、描述、封面、正文等 正文使用markdown语法，请自行摸索。 
 4. 添加轮播， 首页和后台都务必添加至少一个
 
 
-
-注1：推荐文章11以上访问量需要才会在首页显示，可在专题页面找到
 
 
 
@@ -54,7 +52,7 @@
 `api_token: '0RPJhqvW6gMp',`
 
 
-修改`0RPJhqvW6gMp`为由 https://readfollow.com/tenancy/auth/setting#tab-form-2 所获得的 api token
+修改`0RPJhqvW6gMp`为由 https://readfollow.com/admin/auth/setting#tab-form-2 所获得的 api token
 
 
 开发者工具导入项目
