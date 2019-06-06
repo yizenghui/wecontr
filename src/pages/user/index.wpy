@@ -27,7 +27,7 @@ page{
     </view>
     <view class='action'>
       <button class='cu-btn round line-white' @tap="showSign()" wx:if="{{today_sign}}">签到</button>
-      <button class='cu-btn round line-white' @tap="showSign()" wx:if="{{!today_sign && today_reward}}">激励</button>
+      <button class='cu-btn round line-white' @tap="showSign()" wx:if="{{!today_sign && today_reward && reward_action}}">激励</button>
       <button class='cu-btn round line-gray' wx:if="{{today_signed}}">已签到</button>
     </view>
   </view>
@@ -138,7 +138,8 @@ page{
 </view>
 
 
-<Sign :show.sync="showSign"  :canSign.sync="today_sign"  :canReward.sync="today_reward"/>
+
+<Sign :show.sync="showSign"  :canSign.sync="today_sign"  :canReward.sync="today_reward"  :signAction.sync="sign_action"  :rewardAction.sync="reward_action" :unitid.sync="reward_adid"/>
 <Ad2 position="10" :ads.sync="ads"/>
 
 <view class='padding'>
@@ -174,6 +175,9 @@ page{
       user:[],
       carousels:[],
       ads:[],
+      reward_adid:'',
+      sign_action:0,
+      reward_action:0,
       videoAd:null,
       today_sign:false,
       today_reward:false,
@@ -324,6 +328,9 @@ page{
         this.CustomBar= wepy.$instance.globalData.CustomBar
         this.ads = await commApi.GetAds()
         this.carousels = await commApi.GetCarousels()
+        this.sign_action = wepy.$instance.globalData.sign_action
+        this.reward_action = wepy.$instance.globalData.reward_action
+        this.reward_adid = wepy.$instance.globalData.reward_adid
         this.$apply()
     }
 
