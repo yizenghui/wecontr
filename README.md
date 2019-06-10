@@ -15,20 +15,17 @@
 
 
 
-### 预览地址：
 
-![小程序二维码](https://wx1.wechatrank.com/base64img/20190407111539.jpeg)
+# 测试
+ > 如果你需要测试 https://readfollow.com/admin   帐号 test 123456 后台添加修改内容， 
+ 
+ ![测试号二维码](/screenshot/wxcmsdemo.jpg)
+ 
+ > 运营相关设置在 https://readfollow.com/admin/auth/setting
 
-## 界面截图
+## 快速接入
+[文档](GUIDE.md)
 
-![首页](/screenshot/1.jpg)
-![专题首页](/screenshot/2.jpg)
-![专题列表](/screenshot/3.jpg)
-![文章详情页](/screenshot/4.jpg)
-![用户首页](/screenshot/5.jpg)
-![积分商城](/screenshot/6.jpg)
-![我的兑换卷](/screenshot/7.jpg)
-![文章生成海报](/screenshot/8.jpg)
 
 ## wxcms使用了以下开源项目进行开发
 
