@@ -165,7 +165,7 @@ page{
 
 
 
-<!-- 
+
 <view class="cu-bar bg-white solid-bottom margin-top">
   <view class='action'>
     <text class='icon-title text-orange '></text> 精彩评论
@@ -203,7 +203,7 @@ page{
       </view>
     </view>
   </view>
-</view> -->
+</view><!--  -->
 
 
 <Ad2 position="4" :ads.sync="ads"/>

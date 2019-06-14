@@ -1,0 +1,320 @@
+<style lang="less">
+
+page{
+  padding-bottom: 100rpx;
+}
+.my-audio{
+    position: fixed;
+    bottom:0rpx;
+    left:0rpx;
+    z-index:2;
+}
+
+.posterbox{
+    width: 600rpx;
+    height: 600rpx;
+    margin:  5rem auto;
+    z-index: 99;
+}
+.saveBtn{
+    width: 60%;
+    margin:  0 auto;
+}
+.closeMask{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 8;
+    background-color:rgba(0, 0, 0, 0.8);
+
+}
+</style>
+<template>
+  <view>
+  <!-- <view class="cu-custom" style="height:{{CustomBar}}px;">
+  <view class="cu-bar fixed bg-gradual-pink" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
+    <navigator class='action border-custom' open-type="navigateBack" delta="1" hover-class="none" style='width:{{Custom.width}}px;height:{{Custom.height}}px;margin-left:calc(750rpx - {{Custom.right}}px)'>
+      <text class='icon-back'></text>
+      <text class='icon-homefill'></text>
+    </navigator>
+    <view class='content' style='top:{{StatusBar}}px;'>专栏文章</view>
+  </view>
+</view> -->
+<view class="cu-custom" style="height:{{CustomBar}}px;">
+  <view class="cu-bar fixed bg-gradual-green" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
+    <navigator wx:if="{{!fromid}}" class='action' open-type="navigateBack" delta="1" hover-class="none">
+      <text class='icon-back'></text> 
+      正文阅读
+    </navigator>
+     <navigator  wx:if="{{fromid}}" class='action' url="/pages/index/index" open-type="switchTab" hover-class="none">
+      <text class='icon-back'></text> 
+      返回首页
+    </navigator>
+    <view class='action'>
+      <!-- 专栏：自我提供 -->
+    </view>
+  </view>
+</view>
+
+<Ad1 position="3" :ads.sync="ads"/>
+
+<view class='cu-load load-modal' wx:if="{{!article.title}}"> 
+    <!-- <view class='icon-emojifill text-orange'></view> -->
+    <image src='/images/logo.png' class='png' mode='aspectFit'></image>
+    <view class='gray-text'>加载中...</view>
+</view>
+
+
+<view class="cu-modal {{show_login?'show':''}}" @tap='hideModal'>
+  <view class="cu-dialog padding" catchtap>
+    <view class="cu-bar">
+      <view class='action'>
+        <text class='icon-title text-orange'></text> 请求获取用户公开信息
+      </view>
+      <view class='action'>
+        <button class='cu-btn bg-green shadow'  open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo">授权</button>
+      </view>
+    </view>
+  </view>
+</view>
+
+
+  <view class="cu-bar input  tabbar border shop foot">
+    <view class="cu-avatar round" style="background-image:url(https://image.weilanwl.com/img/square-3.jpg);"></view>
+    
+    <input class='solid-bottom' maxlength="300" cursor-spacing="10"></input>
+    
+    <button class='cu-btn bg-green shadow-blur' @tap="newComment()">发布</button>
+  </view>
+</view>
+
+
+
+<view class="cu-bar bg-white solid-bottom margin-top">
+  <view class='action'>
+    <text class='icon-title text-orange '></text> 精彩评论
+  </view>
+  <view class='action'>
+    <button class='cu-btn bg-green shadow' bindtap="showModal" data-target="gridModal">写评论</button>
+  </view>
+</view>
+
+<view class="cu-card dynamic {{isCard?'no-card':''}}">
+
+  
+  <view wx:for="1" wx:key class="cu-item shadow">
+   
+    <view class="cu-list menu menu-avatar comment solids-top">
+      <view class="cu-item" wx:for="{{comments}}" wx:key>
+        <view class="cu-avatar round" style="background-image:url({{item.useravatar}});"></view>
+        <view class='content'>
+          <view class='text-grey'>{{item.username}}</view>
+          <view class='text-gray text-content text-df'>
+            {{item.comment}}
+          </view>
+           <view class='margin-top-sm flex justify-between'>
+            <view class='text-gray text-df'>{{item.comment_at}}</view>
+            <view>
+              <text class="icon-appreciate{{!isZan?'fill':''}} text-{{!isZan?'red':'gray'}}"></text>
+              <text class="icon-messagefill text-gray margin-left-sm"></text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:for="1" wx:key class="cu-item shadow">
+   
+    <view class="cu-list menu menu-avatar comment solids-top">
+      <view class="cu-item" wx:for="{{2}}" wx:key>
+        <view class="cu-avatar round" style="background-image:url(https://image.weilanwl.com/img/square-1.jpg);"></view>
+        <view class='content'>
+          <view class='text-grey'>猪皮蛋</view>
+          <view class='text-gray text-content text-df'>
+            我家铲屎官不舔毛，还抠脚！
+          </view>
+          <view class='bg-grey padding-sm radius margin-top-sm  text-sm' wx:if="{{index==1}}">
+            <view class="flex {{index!=0?'margin-top-sm':'' }}" wx:for="{{1}}" wx:key>
+              <view>张大大：</view>
+              <view class='flex-sub'>我家的铲屎官也不舔毛！我家的铲屎官也不舔毛！我家的铲屎官也不舔毛！我家的铲屎官也不舔毛！我家的铲屎官也不舔毛！</view>
+            </view>
+          </view>
+          <view class='margin-top-sm flex justify-between'>
+            <view class='text-gray text-df'>2018年12月4日</view>
+            <view>
+              <text class="icon-appreciate{{!isZan?'fill':''}} text-{{!isZan?'red':'gray'}}"></text>
+              <text class="icon-messagefill text-gray margin-left-sm"></text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view><!--  -->
+
+
+<Ad2 position="4" :ads.sync="ads"/>
+
+</view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import commApi from '../../api/comm'
+  import ad from '../../components/ad'
+  import player from '../../components/player'
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '文章详细',
+      "usingComponents": {
+        "wemark": "../plugins/wemark/wemark",
+        "txv-video": "plugin://tencentvideo/video",
+      }
+    }
+
+
+    components = {
+      Ad1:ad,
+      Ad2:ad,
+      player:player,
+    };
+
+    data = {
+      loadModal:true,
+      isCard:true,
+      StatusBar:0,
+      CustomBar:0,
+      Custom:0,
+      fromid:0,
+      id:'',
+      article:[],
+      likeusers:[],
+      comments:[],
+      ads:[],
+      content: "",
+      playurl: "",
+      playtitle: "",
+      userlikearticle:false,
+      isloadcomment:false,
+      show_login:false,
+    }
+    methods = {
+      goto(to){
+          wepy.navigateTo({url:to});
+      },
+      tips(intro){
+          wepy.showModal({
+              content: intro,
+              showCancel: false
+          });
+      }, 
+      poster(id){
+          wx.navigateTo({url:"/pages/poster/index?id="+id})
+      },
+
+      hideModal(){
+        this.show_login = false
+      },
+
+      async login(){
+        let auth = await wepy.getSetting()
+        if ( auth.authSetting['scope.userInfo'] ) {
+          // 已授权
+          let user = await wepy.getUserInfo()
+          this.user.avatar = user.userInfo.avatarUrl
+          commApi.AsyncUserData(user)
+          wepy.showToast({
+            title: "已同步用户数据",
+            icon:"none",
+            duration: 1000
+          });
+        }else{
+          this.show_login = true
+        }
+        this.$apply()
+      },
+
+      click(){},
+
+      async newComment(){
+        commApi.NewArticleComment(this.id,'测试评论',0)
+      },
+
+      async bindGetUserInfo(e) {
+        this.user.avatar = e.detail.userInfo.avatarUrl
+        this.show_login = false
+        this.$apply()
+        commApi.AsyncUserData(e.detail)
+      }
+    }
+
+    async onLoad(query) {
+      this.id = query.id
+      this.fromid = query.fromid
+      this.StatusBar= wepy.$instance.globalData.StatusBar
+      this.CustomBar= wepy.$instance.globalData.CustomBar
+      this.Custom= wepy.$instance.globalData.Custom
+      this.ads = await commApi.GetAds()
+      this.article = await commApi.GetArticleInfo(query.id)
+      this.comments = await commApi.GetArticleComments(query.id, 1)
+      this.content = this.article.body
+      this.playurl = this.article.audio
+      this.playtitle = this.article.title
+      this.userlikearticle = this.article.userlikearticle
+      // this.likeusers = await commApi.GetArticleLikeUsers(query.id)
+      
+      this.loadModal = false
+      //更新
+      this.$apply()
+    }
+
+
+
+    async onReachBottom(){
+      if(this.article.title){ //有文章内容才能触发
+        // 首次拉到底初始化评论功能(延迟加载评论)
+        if(!this.isloadcomment){
+          // 记录用户已经阅读该文章(首次拉到底时执行)
+          let state = await commApi.ViewAction(this.id)
+          if(state.message){
+            wepy.showToast({
+              title: state.message,
+              icon: "none",
+              duration: 500
+            });
+          }
+        }
+        this.isloadcomment = true
+        this.$apply()
+      }
+    }
+
+    // 下拉刷新
+    async onPullDownRefresh() {
+      this.article = [];
+      this.content = '';
+      this.loadModal = true
+      this.$apply()
+      this.article = await commApi.GetArticleInfo(this.id)
+      this.content = this.article.body
+      this.userlikearticle = this.article.userlikearticle
+      this.loadModal = false
+      this.$apply()
+      wepy.stopPullDownRefresh()
+    }
+
+
+
+    onShareAppMessage(res) {
+        return {
+            title: this.article.share_title?this.article.share_title:this.article.title,
+            imageUrl:this.article.share_cover?this.article.share_cover:this.article.cover,
+            path: '/pages/article/info?id='+this.id+'&fromid=' + wepy.$instance.globalData.uid
+        }
+    }
+
+    
+  }
+
+</script>

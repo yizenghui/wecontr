@@ -186,6 +186,16 @@ export default class comm extends base {
     return  await this.get(`${this.baseUrl}/articles/${article_id}`);
   }
 
+  // 获取文章评论
+  static async GetArticleComments(article_id,page) {
+    return  await this.get(`${this.baseUrl}/article/${article_id}/comments`,{page: page});
+  }
+  
+  // 获取文章评论
+  static async NewArticleComment( article_id, comment, rep_id ) {
+    return await this.post(`${this.baseUrl}/article/${article_id}/comment`,{comment: comment, rep_id: rep_id});
+  }
+
   // 获取喜欢此文章的用户列表
   static async GetArticleLikeUsers(article_id) {
     return  await this.get(`${this.baseUrl}/articles/${article_id}/likeusers`);
