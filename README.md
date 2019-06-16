@@ -10,7 +10,7 @@
 
 通过完成任务获得积分，积分在商城兑换成卷，添加客服微信好友后凭卷密令提现。
 
-管理后台: https://readfollow.com/tenancy
+管理后台: https://readfollow.com/admin
 帐号密码：test 123456
 
 
@@ -32,7 +32,10 @@
 * [wepy](https://github.com/Tencent/wepy)
 * [colorUI](https://github.com/weilanwl/ColorUI)
 * [wemark](https://github.com/TooBug/wemark)
+* [canvas绘制图片](https://github.com/simmzl/wepy_canvas_drawer)
  
 
-## 其它声明
-本项目供个人学习、参考，商用需获得本人授权。
+## 版权声明
+
+* 保留本人著作权，任何人可学习、自用、泛生副本。
+* 基于此代码二次发行并售卖则需要获得本人授权。
