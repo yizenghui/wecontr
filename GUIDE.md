@@ -32,7 +32,7 @@
 
 ## 关于发布
 
-必需匹配页面 pages/index/index 首页,  pages/jump/index  分享二维码跳转页 
+必需配置页面 pages/index/index 首页,  pages/jump/index  分享二维码跳转页 
 
 可选配置页面  pages/topic/index  所有专题页面
 
