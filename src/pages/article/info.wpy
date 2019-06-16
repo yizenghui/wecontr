@@ -28,6 +28,9 @@ page{
     background-color:rgba(0, 0, 0, 0.8);
 
 }
+.adContainer{
+  padding:20rpx 20rpx;
+}
 </style>
 <template>
   <view>
@@ -114,7 +117,6 @@ page{
           <view class='cu-tag bg-green light sm round'>戏精系列</view>
         </view> -->
       </view>
-      
     </view>
         
     <!-- <view class="cu-bar bg-white margin-top text-right">
@@ -206,6 +208,9 @@ page{
 </view> -->
 
 
+<view wx:if="{{article.author_id && article.author.banner_adid && adshow}}" class="adContainer">
+    <ad binderror="adClose" bindclose="adClose" unit-id="{{article.author.banner_adid}}"></ad>
+</view>
 <Ad2 position="4" :ads.sync="ads"/>
 
 </view>
@@ -233,6 +238,7 @@ page{
     };
 
     data = {
+      adshow:true,
       loadModal:true,
       isCard:true,
       StatusBar:0,
@@ -251,6 +257,9 @@ page{
       show_login:false,
     }
     methods = {
+      adClose(){
+        this.adshow = false
+      },
       goto(to){
           wepy.navigateTo({url:to});
       },
