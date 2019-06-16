@@ -3,7 +3,7 @@
 
 
 
-0. 获取并解压`dist.7ip`到你的本地
+0. 获取并解压`dist.zip`到你的本地
 
 1. 注册小程序 获取 AppID(小程序ID)  AppSecret(小程序密钥)
 
@@ -17,7 +17,7 @@
 
 	*	request合法域名 https://readfollow.com
 
-	*	downloadFile合法域名 https://wx1.wechatrank.com
+	*	downloadFile合法域名 https://wx1.wechatrank.com  https://readfollow.com
 
 
 
@@ -30,8 +30,11 @@
 4. 添加轮播， 首页和后台都务必添加至少一个
 
 
+## 关于发布
 
+必需匹配页面 pages/index/index 首页,  pages/jump/index  分享二维码跳转页 
 
+可选配置页面  pages/topic/index  所有专题页面
 
 
 ## 二次开发
