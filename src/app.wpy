@@ -255,8 +255,8 @@ export default class extends wepy.app {
     reward_adid: '',// 激励视频id
     show_login: false, // 展示登录
     // baseUrl: 'http://cms.cc:626/api/v1', 
-    // baseUrl: 'http://wxcms.oo/api/v1',
-    baseUrl: 'https://readfollow.com/api/v1', 
+    baseUrl: 'http://wxcms.oo/api/v1',
+    // baseUrl: 'https://readfollow.com/api/v1', 
     // baseUrl: 'https://wxcms.readfollow.com/api', 
     userInfo: null
   
