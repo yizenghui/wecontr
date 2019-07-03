@@ -112,6 +112,12 @@ page{
     </navigator>
   </view>
   <view class="cu-item arrow">
+    <navigator class='content' url='/pages/user/rank' hover-class='none'>
+      <text class='icon-rank text-green'></text>
+      <text class='text-grey'>排行榜</text>
+    </navigator>
+  </view>
+  <view class="cu-item arrow">
     <navigator class='content' url='/pages/user/pointlog' hover-class='none'>
       <text class='icon-formfill text-green'></text>
       <text class='text-grey'>积分记录</text>

@@ -1,0 +1,128 @@
+<style lang="less">
+page{
+  padding-bottom: 100rpx;
+}
+.cu-bar .content image{
+  height: 60rpx;
+  width: 240rpx;
+}
+
+.adContainer{
+  padding:20rpx 30rpx;
+}
+</style>
+<template>
+  <view>
+
+  <view class="cu-custom" style="height:{{CustomBar}}px;">
+    <view class="cu-bar fixed bg-gradual-green" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
+      <navigator class='action' open-type="navigateBack" delta="1" hover-class="none">
+        <text class='icon-back'></text> 
+        排行榜
+      </navigator>
+      <view class='action'>
+        <!-- 专栏：自我提供 -->
+      </view>
+    </view>
+  </view>
+
+
+<view class="cu-bar bg-white" wx:if="{{users.length}}">
+  <view class='action'>
+    <text class='icon-title text-green'></text>
+    <text>排行榜仅展示当天签到用户</text>
+  </view>
+</view>
+<view class="cu-list menu menu-avatar">
+  <view class="cu-item" wx:for="{{users}}">
+    <view class="cu-avatar round lg" style="background-image:url({{item.avatar}});"></view>
+    <view class='content'>
+      <view class='text-grey'>{{item.name}}</view>
+      <view class='text-gray text-sm'>{{item.city}}</view>
+    </view>
+    <view class='action'>
+      <view class='text-red '>{{item.total_point}}</view>
+    </view>
+  </view>
+
+</view>
+
+
+
+  <view wx:if="{{loadstatus}}" class="cu-load bg-gray {{loadstatus==1?'loading':'over'}}"></view>
+
+    
+</view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import commApi from '../../api/comm'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '排行榜'
+    }
+
+
+    components = {
+    };
+
+
+    data = {
+      loadModal:true,
+      loadstatus:1,
+      showLoad:false,
+      StatusBar:0,
+      CustomBar:0,
+      page:1,
+      users: [],
+    }
+
+    computed = {
+    };
+
+    methods = { 
+     
+    }
+
+    async onLoad(query) {
+      this.StatusBar= wepy.$instance.globalData.StatusBar
+      this.CustomBar= wepy.$instance.globalData.CustomBar
+      this.users = await commApi.GetRank(1)
+      this.loadstatus = 0
+      this.page = 2
+      this.$apply()
+    }
+    
+    async onReachBottom(){
+      this.loadstatus = 1
+      this.$apply()
+      let users = await commApi.GetRank(this.page)
+      if(users.length){
+          this.page ++
+          this.users = [...this.users,...users]
+          this.loadstatus = 0
+      }else{
+        this.loadstatus = 2
+      }
+      this.$apply()
+    }
+        
+    // 下拉刷新
+    async onPullDownRefresh() {
+      wepy.stopPullDownRefresh()
+      this.loadstatus = 1
+      this.users = []
+      this.$apply()
+      this.users = await commApi.GetRank(1)
+      this.page = 2;
+      this.loadstatus = 0
+      this.$apply()
+    }
+
+
+
+  }
+
+</script>

@@ -153,6 +153,7 @@ export default class extends wepy.app {
       'pages/user/sign',
       'pages/user/task',
       'pages/user/team',
+      'pages/user/rank',
       'pages/team/join',
       'pages/user/pointlog',
       'pages/user/exchange',
@@ -172,10 +173,10 @@ export default class extends wepy.app {
       enablePullDownRefresh: true,
     },
     "plugins": {
-      "tencentvideo": {
-        "version": "1.3.3",
-        "provider": "wxa75efa648b60994b"
-      }
+      // "tencentvideo": {
+      //   "version": "1.3.3",
+      //   "provider": "wxa75efa648b60994b"
+      // }
     },
     "usingComponents": {},
     "tabBar": {
@@ -255,8 +256,8 @@ export default class extends wepy.app {
     reward_adid: '',// 激励视频id
     show_login: false, // 展示登录
     // baseUrl: 'http://cms.cc:626/api/v1', 
-    baseUrl: 'http://wxcms.oo/api/v1',
-    // baseUrl: 'https://readfollow.com/api/v1', 
+    // baseUrl: 'http://wxcms.oo/api/v1',
+    baseUrl: 'https://readfollow.com/api/v1', 
     // baseUrl: 'https://wxcms.readfollow.com/api', 
     userInfo: null
   

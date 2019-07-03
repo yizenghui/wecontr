@@ -52,6 +52,12 @@ export default class comm extends base {
     return await this.get(`${this.baseUrl}/user/pointlog`, {page: page});
   }
   
+
+  // 查看用户积分日志
+  static async GetRank(page) {
+    return await this.get(`${this.baseUrl}/user/rank`, {page: page});
+  }
+
   // 用户点赞某个文章
   static async LikeArticleAction(article_id) {
     return await this.get(`${this.baseUrl}/action/likearticle`, {article_id: article_id});
@@ -193,6 +199,11 @@ export default class comm extends base {
   // 获取喜欢此文章的用户列表
   static async GetArticleLikeUsers(article_id) {
     return  await this.get(`${this.baseUrl}/articles/${article_id}/likeusers`);
+  }
+
+  // 获取激励此文章的用户列表
+  static async GetArticleRewardUsers(article_id,page = 1) {
+    return  await this.get(`${this.baseUrl}/articles/${article_id}/rewardusers`,{page:page});
   }
 
   // 获取今天签到用户
