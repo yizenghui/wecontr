@@ -19,7 +19,7 @@
 
 	*	downloadFile合法域名 https://wx1.wechatrank.com  https://readfollow.com
 
-
+6. 如遇插件未添加，请在小程序后台 设置 》 第三方 》添加插件 “腾讯视频”
 
 ### 后台操作：
 后台地址 https://readfollow.com/admin
