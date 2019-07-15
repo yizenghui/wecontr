@@ -49,8 +49,8 @@ page{
     </view>
     
     <Ad2 wx:if="{{articles2.length>0}}"  position="8" :ads.sync="ads"/>
-    <view wx:if="{{articles2.length>0 && adshow}}" class="adContainer">
-        <ad binderror="adClose" bindclose="adClose" unit-id="adunit-3e9e2dd1975a9985"></ad>
+    <view wx:if="{{articles2.length>0 && banner_adid && adshow}}" class="adContainer">
+        <ad binderror="adClose" bindclose="adClose" unit-id="{{banner_adid}}"></ad>
     </view>
     <view wx:if="{{articles2.length>0}}"  class="cu-card article {{isCard?'no-card':''}}">
       <view wx:for="{{articles2}}" wx:key class="cu-item shadow"  @tap="goto({{item.wxto}})">
@@ -106,6 +106,9 @@ page{
 
 
     computed = {
+      banner_adid(){
+        return wepy.$instance.globalData.banner_adid
+      },
         articles1 () {
           var list = []
           this.articles.forEach((v,k)=>{

@@ -257,7 +257,11 @@ page{
       navigationBarTitleText: '文章详细',
       "usingComponents": {
         "wemark": "../plugins/wemark/wemark",
+<<<<<<< HEAD
         // "txv-video": "plugin://tencentvideo/video",
+=======
+      //   "txv-video": "plugin://tencentvideo/video",
+>>>>>>> 5fbbcc3185f813e3f723ce75a529c2ce00ac3597
       }
     }
 

@@ -13,7 +13,7 @@ export default class http {
           wepy.$instance.globalData.token = token
         }else{
           const {code} = await wepy.login()
-          const {data} = await wepy.request({ url: wepy.$instance.globalData.baseUrl + '/gettoken', data: { code: code } })
+          const {data} = await wepy.request({ url: wepy.$instance.globalData.baseUrl + '/gettoken', data: { code: code, scene: wepy.$instance.globalData.scene } })
           wepy.$instance.globalData.token = data.token
           wepy.$instance.globalData.uid = data.uid
           wepy.$instance.globalData.default_search = data.default_search
@@ -31,7 +31,7 @@ export default class http {
         }
       }else{
         const {code} = await wepy.login()
-        const {data} = await wepy.request({ url: wepy.$instance.globalData.baseUrl + '/gettoken', data: { code: code } })
+        const {data} = await wepy.request({ url: wepy.$instance.globalData.baseUrl + '/gettoken', data: { code: code, scene: wepy.$instance.globalData.scene } })
         wepy.$instance.globalData.token = data.token
         wepy.$instance.globalData.uid = data.uid
         wepy.$instance.globalData.default_search = data.default_search
@@ -62,7 +62,7 @@ export default class http {
     } else { // 如果是因为token过期了，二次授权
       if(res.data.message ==  "Unauthenticated."){
         const {code} = await wepy.login()
-        const {data} = await wepy.request({ url: wepy.$instance.globalData.baseUrl + '/gettoken', data: { code: code } })
+        const {data} = await wepy.request({ url: wepy.$instance.globalData.baseUrl + '/gettoken', data: { code: code, scene: wepy.$instance.globalData.scene } })
         wepy.$instance.globalData.token = data.token
         wepy.$instance.globalData.uid = data.uid
         wepy.$instance.globalData.default_search = data.default_search

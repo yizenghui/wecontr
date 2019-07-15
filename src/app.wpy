@@ -242,6 +242,7 @@ export default class extends wepy.app {
     session: '',
     ads: [],
     carousels: [],
+    scene:0,
     uid: 0,//用户分享时使用
     fromid: 0,//从分享处来使用
     token: '',
@@ -255,9 +256,9 @@ export default class extends wepy.app {
     banner_adid: '',//  banner广告id
     reward_adid: '',// 激励视频id
     show_login: false, // 展示登录
-    // baseUrl: 'http://cms.cc:626/api/v1', 
+    baseUrl: 'http://wxcms.cc:626/api/v1', 
     // baseUrl: 'http://wxcms.oo/api/v1',
-    baseUrl: 'https://readfollow.com/api/v1', 
+    // baseUrl: 'https://readfollow.com/api/v1', 
     // baseUrl: 'https://wxcms.readfollow.com/api', 
     userInfo: null
   
@@ -265,12 +266,13 @@ export default class extends wepy.app {
   
   async onLaunch (p) {
     // console.log(p)
+    wepy.$instance.globalData.fromid = p.query.fromid //记录用户来源
+    wepy.$instance.globalData.scene = p.scene //记录用户打开方式
     let e = await wepy.getSystemInfo()
     wepy.$instance.globalData.StatusBar =  e.statusBarHeight;
     wepy.$instance.globalData.CustomBar =   e.platform == 'android' ? e.statusBarHeight + 50 : e.statusBarHeight + 45;
     wepy.$instance.globalData.Custom = wx.getMenuButtonBoundingClientRect();
     wepy.$instance.globalData.uid = await wepy.getStorageSync('uid')
-    wepy.$instance.globalData.fromid = p.query.fromid //记录用户来源
   }
 
 }
