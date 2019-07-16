@@ -16,36 +16,14 @@ export default class http {
           const {data} = await wepy.request({ url: wepy.$instance.globalData.baseUrl + '/gettoken', data: { code: code, scene: wepy.$instance.globalData.scene } })
           wepy.$instance.globalData.token = data.token
           wepy.$instance.globalData.uid = data.uid
-          wepy.$instance.globalData.default_search = data.default_search
-          wepy.$instance.globalData.index_share_title = data.index_share_title
-          wepy.$instance.globalData.index_share_cover = data.index_share_cover
-          wepy.$instance.globalData.topic_share_title = data.topic_share_title
-          wepy.$instance.globalData.topic_share_cover = data.topic_share_cover
-          wepy.$instance.globalData.show_login = data.show_login
-          wepy.$instance.globalData.sign_action = data.sign_action
-          wepy.$instance.globalData.reward_action = data.reward_action
-          wepy.$instance.globalData.banner_adid = data.banner_adid
-          wepy.$instance.globalData.reward_adid = data.reward_adid
-          // wepy.setStorageSync('token', data.token)
-          // wepy.setStorageSync('uid', data.uid)
+          wepy.$instance.globalData.appconfig = data
         }
       }else{
         const {code} = await wepy.login()
         const {data} = await wepy.request({ url: wepy.$instance.globalData.baseUrl + '/gettoken', data: { code: code, scene: wepy.$instance.globalData.scene } })
         wepy.$instance.globalData.token = data.token
         wepy.$instance.globalData.uid = data.uid
-        wepy.$instance.globalData.default_search = data.default_search
-        wepy.$instance.globalData.index_share_title = data.index_share_title
-        wepy.$instance.globalData.index_share_cover = data.index_share_cover
-        wepy.$instance.globalData.topic_share_title = data.topic_share_title
-        wepy.$instance.globalData.topic_share_cover = data.topic_share_cover
-        wepy.$instance.globalData.show_login = data.show_login
-        wepy.$instance.globalData.sign_action = data.sign_action
-        wepy.$instance.globalData.reward_action = data.reward_action
-        wepy.$instance.globalData.banner_adid = data.banner_adid
-        wepy.$instance.globalData.reward_adid = data.reward_adid
-        // wepy.setStorageSync('token', data.token)
-        // wepy.setStorageSync('uid', data.uid)
+        wepy.$instance.globalData.appconfig = data
       }
     }
 
@@ -65,18 +43,7 @@ export default class http {
         const {data} = await wepy.request({ url: wepy.$instance.globalData.baseUrl + '/gettoken', data: { code: code, scene: wepy.$instance.globalData.scene } })
         wepy.$instance.globalData.token = data.token
         wepy.$instance.globalData.uid = data.uid
-        wepy.$instance.globalData.default_search = data.default_search
-        wepy.$instance.globalData.index_share_title = data.index_share_title
-        wepy.$instance.globalData.index_share_cover = data.index_share_cover
-        wepy.$instance.globalData.topic_share_title = data.topic_share_title
-        wepy.$instance.globalData.topic_share_cover = data.topic_share_cover
-        wepy.$instance.globalData.show_login = data.show_login
-        wepy.$instance.globalData.sign_action = data.sign_action
-        wepy.$instance.globalData.reward_action = data.reward_action
-        wepy.$instance.globalData.banner_adid = data.banner_adid
-        wepy.$instance.globalData.reward_adid = data.reward_adid
-        // wepy.setStorageSync('token', data.token)
-        // wepy.setStorageSync('uid', data.uid)
+        wepy.$instance.globalData.appconfig = data
         const res2 = await wepy.request(param)
 
         if (this.isSuccess(res2)) {

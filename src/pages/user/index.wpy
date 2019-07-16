@@ -81,6 +81,12 @@ page{
       <text class='text-grey'>积分攻略</text>
     </navigator>
   </view>
+  <view class="cu-item arrow" wx:if="{{reward_status}}">
+    <navigator class='content' url='/pages/user/reward' hover-class='none'>
+      <text class='icon-like text-red'></text>
+      <text class='text-grey'>我激励的文章</text>
+    </navigator>
+  </view>
   <view class="cu-item arrow">
     <navigator class='content' url='/pages/user/like' hover-class='none'>
       <text class='icon-appreciatefill text-red'></text>
@@ -99,25 +105,25 @@ page{
       <text class='text-grey'>我的足迹</text>
     </navigator>
   </view>
-  <view class="cu-item arrow">
+  <view class="cu-item arrow"  wx:if="{{shopping_status}}" >
     <navigator class='content' url='/pages/user/goods' hover-class='none'>
       <text class='icon-shop text-red'></text>
       <text class='text-grey'>积分商城</text>
     </navigator>
   </view>
-  <view class="cu-item arrow">
+  <view class="cu-item arrow" wx:if="{{shopping_status}}" >
     <navigator class='content' url='/pages/user/order' hover-class='none'>
       <text class='icon-barcode text-red'></text>
       <text class='text-grey'>我的兑换卷</text>
     </navigator>
   </view>
-  <view class="cu-item arrow">
+  <view class="cu-item arrow" wx:if="{{rank_status}}">
     <navigator class='content' url='/pages/user/rank' hover-class='none'>
       <text class='icon-rank text-green'></text>
       <text class='text-grey'>排行榜</text>
     </navigator>
   </view>
-  <view class="cu-item arrow">
+  <view class="cu-item arrow"  wx:if="{{point_logs_status}}">
     <navigator class='content' url='/pages/user/pointlog' hover-class='none'>
       <text class='icon-formfill text-green'></text>
       <text class='text-grey'>积分记录</text>
@@ -135,12 +141,22 @@ page{
       <text class='text-grey'>我要投稿</text>
     </navigator>
   </view> -->
+  
   <view class="cu-item arrow">
+    <button class='cu-btn content' open-type='contact'>
+      <text class='icon-service text-green'></text>
+      <text class='text-grey'>联系客服</text>
+    </button>
+  </view>
+
+
+  <!-- <view class="cu-item arrow">
     <button class='cu-btn content' open-type='feedback'>
       <text class='icon-writefill text-cyan'></text>
       <text class='text-grey'>意见反馈</text>
     </button>
-  </view>
+  </view> -->
+
 </view>
 
 
@@ -247,6 +263,25 @@ page{
       this.$apply()
     }
     watch = {
+      
+    }
+    computed = {
+      reward_status(){
+        if(!wepy.$instance.globalData.appconfig) return null
+        return wepy.$instance.globalData.appconfig.reward_status
+      },
+      rank_status(){
+        if(!wepy.$instance.globalData.appconfig) return null
+        return wepy.$instance.globalData.appconfig.rank_status
+      },
+      shopping_status(){
+        if(!wepy.$instance.globalData.appconfig) return null
+        return wepy.$instance.globalData.appconfig.shopping_status
+      },
+      point_logs_status(){
+        if(!wepy.$instance.globalData.appconfig) return null
+        return wepy.$instance.globalData.appconfig.point_logs_status
+      }
       
     }
     events = {

@@ -26,7 +26,7 @@ page{
     </swiper> -->
     
     <Carousel position="1" :carousels.sync="carousels"/>
-
+<official-account></official-account>
     <Search wx:if="{{default_search}}" :title.sync="default_search"/>
 
     <Ad1 position="1" :ads.sync="ads"/>
@@ -114,7 +114,6 @@ page{
       StatusBar:0,
       CustomBar:0,
       page:1,
-      default_search:'',
       swipers: [],
       ads: [],
       carousels: [],
@@ -122,28 +121,31 @@ page{
     }
 
     computed = {
-      banner_adid(){
-        return wepy.$instance.globalData.banner_adid
+      default_search(){
+        return wepy.$instance.globalData.appconfig.default_search
       },
-        articles1 () {
-          var list = []
-          this.articles.forEach((v,k)=>{
-            if(k<=8){
-              list = [...list,v]
-            }
-          })
-          return  list
-        },
-        
-        articles2 () {
-          var list = []
-          this.articles.forEach((v,k)=>{
-            if(k>8){
-              list = [...list,v]
-            }
-          })
-          return  list
-        }
+      banner_adid(){
+        return wepy.$instance.globalData.appconfig.banner_adid
+      },
+      articles1 () {
+        var list = []
+        this.articles.forEach((v,k)=>{
+          if(k<=8){
+            list = [...list,v]
+          }
+        })
+        return  list
+      },
+      
+      articles2 () {
+        var list = []
+        this.articles.forEach((v,k)=>{
+          if(k>8){
+            list = [...list,v]
+          }
+        })
+        return  list
+      }
     };
 
     methods = { 
@@ -188,16 +190,11 @@ page{
     }
 
     async onLoad(query) {
-
-
-
-
       this.StatusBar= wepy.$instance.globalData.StatusBar
       this.CustomBar= wepy.$instance.globalData.CustomBar
       this.carousels = await commApi.GetCarousels()
-      this.default_search = wepy.$instance.globalData.default_search
-      this.ads = await commApi.GetAds()
       this.$apply()
+      this.ads = await commApi.GetAds()
       this.articles = await commApi.GetRecommendedArticles(1)
       this.page = 2;
       this.loadModal = false

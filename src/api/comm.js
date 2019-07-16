@@ -143,6 +143,12 @@ export default class comm extends base {
   static async GetFootprintArticles(page) {
     return await this.get(`${this.baseUrl}/user/footprint`, {page: page});
   }
+
+  // 获取激励过的文章列表
+  static async GetRewardArticles(page) {
+    return await this.get(`${this.baseUrl}/user/reward`, {page: page});
+  }
+  
   // 获取关注过的文章列表
   static async GetLikeArticles(page) {
     return await this.get(`${this.baseUrl}/user/like`, {page: page});

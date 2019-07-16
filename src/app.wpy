@@ -154,6 +154,7 @@ export default class extends wepy.app {
       'pages/user/task',
       'pages/user/team',
       'pages/user/rank',
+      'pages/user/reward',
       'pages/team/join',
       'pages/user/pointlog',
       'pages/user/exchange',
@@ -246,6 +247,7 @@ export default class extends wepy.app {
     uid: 0,//用户分享时使用
     fromid: 0,//从分享处来使用
     token: '',
+    appconfig:[],
     default_search: '',
     index_share_title: '',
     index_share_cover: '',
@@ -256,8 +258,8 @@ export default class extends wepy.app {
     banner_adid: '',//  banner广告id
     reward_adid: '',// 激励视频id
     show_login: false, // 展示登录
-    baseUrl: 'http://wxcms.cc:626/api/v1', 
-    // baseUrl: 'http://wxcms.oo/api/v1',
+    // baseUrl: 'http://wxcms.cc:626/api/v1', 
+    baseUrl: 'http://wxcms.oo/api/v1',
     // baseUrl: 'https://readfollow.com/api/v1', 
     // baseUrl: 'https://wxcms.readfollow.com/api', 
     userInfo: null
