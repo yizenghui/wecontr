@@ -285,7 +285,7 @@ page{
     config = {
       navigationBarTitleText: '文章详细',
       "usingComponents": {
-        "wemark": "../plugins/wemark/wemark",
+        "wemark": "../../plugins/wemark/wemark",
         // "txv-video": "plugin://tencentvideo/video",
       }
     }
