@@ -43,7 +43,7 @@
             appId: item.gotoapp,
             path: item.url,
             extraData: {
-              from: wepy.$instance.globalData.appid
+              from: wepy.$instance.globalData.appconfig.app_id
             },
             envVersion: 'develop',
             success(res) {

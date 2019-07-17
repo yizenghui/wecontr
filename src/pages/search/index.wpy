@@ -82,7 +82,7 @@ page{
   import search from '../../components/search'
   export default class Index extends wepy.page {
     config = {
-      navigationBarTitleText: '自律的人最优秀'
+      navigationBarTitleText: 'WeContr内容管理系统搜索功能'
     }
 
 

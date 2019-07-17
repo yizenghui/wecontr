@@ -37,6 +37,7 @@ page{
 
 
 <Ad1 position="9" :ads.sync="ads"/>
+<!-- <official-account wx:if="{{follow_status}}" bindload="officialLoaded" binderror="officialLoaded"></official-account> -->
 
 <view class="cu-modal {{show_login?'show':''}}" @tap='hideLoginModal'>
   <view class="cu-dialog padding" catchtap>
@@ -266,6 +267,10 @@ page{
       
     }
     computed = {
+      follow_status(){
+        if(!wepy.$instance.globalData.appconfig) return null
+        return wepy.$instance.globalData.appconfig.follow_status
+      },
       reward_status(){
         if(!wepy.$instance.globalData.appconfig) return null
         return wepy.$instance.globalData.appconfig.reward_status
@@ -301,6 +306,11 @@ page{
         }
     };
     methods = {
+      officialLoaded(e){
+        // 如果没有加载出关注组件，把全局的关注组件状态变量给改为不展示
+        if(e.detail.status!==0) wepy.$instance.globalData.appconfig.follow_status = 0
+        console.log('officialLoaded',e.detail.status)
+      },
       goto(to){
           console.log('to',to)
           wepy.navigateTo({url:to});

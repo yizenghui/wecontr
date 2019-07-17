@@ -1,7 +1,7 @@
 <style lang="less">
 
 page{
-  padding-bottom: 100rpx;
+  // padding-bottom: 100rpx;
 }
 .my-audio{
     position: fixed;
@@ -170,6 +170,7 @@ page{
   </view> -->
 
 
+<!--
   <view class="cu-bar bg-white tabbar border shop foot">
     <view class='padding bg-white' wx:if="{{rewardusers.length}}">
       <view class="cu-avatar-group">
@@ -188,7 +189,7 @@ page{
       </view>
     </view>
   </view>
-
+-->
 
   </view>
   
@@ -271,7 +272,7 @@ page{
     <ad binderror="adClose" bindclose="adClose" unit-id="{{article.author.banner_adid}}"></ad>
 </view>
 <Ad2 position="4" :ads.sync="ads"/>
-
+<official-account wx:if="{{follow_status}}" bindload="officialLoaded" binderror="officialLoaded"></official-account>
 </view>
 </template>
 
@@ -325,8 +326,28 @@ page{
       
     };
 
+    computed = {
+      follow_status(){
+        if(!wepy.$instance.globalData.appconfig) return null
+        return wepy.$instance.globalData.appconfig.follow_status
+      },
+      share_title(){
+        return this.article.share_title?this.article.share_title:this.article.title
+      },
+      share_cover(){
+        return this.article.share_cover?this.article.share_cover:this.article.cover
+      },
+      share_path(){
+        return '/pages/article/info?id='+this.id+'&fromid=' + wepy.$instance.globalData.uid
+      }
+    };
     methods = {
 
+      officialLoaded(e){
+        // 如果没有加载出关注组件，把全局的关注组件状态变量给改为不展示
+        if(e.detail.status!==0) wepy.$instance.globalData.appconfig.follow_status = 0
+        console.log('officialLoaded',e.detail.status)
+      },
       adClose(){
         this.adshow = false
       },
@@ -563,15 +584,13 @@ page{
     }
 
 
-
     onShareAppMessage(res) {
         return {
-            title: this.article.share_title?this.article.share_title:this.article.title,
-            imageUrl:this.article.share_cover?this.article.share_cover:this.article.cover,
-            path: '/pages/article/info?id='+this.id+'&fromid=' + wepy.$instance.globalData.uid
+            title: this.share_title,
+            imageUrl: this.share_cover,
+            path: this.share_path,
         }
     }
-
     
   }
 
