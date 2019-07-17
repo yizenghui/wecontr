@@ -149,7 +149,6 @@ page{
       officialLoaded(e){
         // 如果没有加载出关注组件，把全局的关注组件状态变量给改为不展示
         if(e.detail.status!==0) wepy.$instance.globalData.appconfig.follow_status = 0
-        console.log('officialLoaded',e.detail.status)
       },
       adClose(){
         this.adshow = false
