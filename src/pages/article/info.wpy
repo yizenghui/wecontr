@@ -1,7 +1,7 @@
 <style lang="less">
 
 page{
-  padding-bottom: 100rpx;
+  // padding-bottom: 100rpx;
 }
 .my-audio{
     position: fixed;
@@ -30,6 +30,20 @@ page{
 }
 .adContainer{
   padding:20rpx 20rpx;
+}
+
+.hideArticleBox{
+    width: 100%;
+    background-image: -webkit-gradient(linear,left top, left bottom,from(rgba(255,255,255,0)),color-stop(70%, #fff));
+    background-image: linear-gradient(-180deg,rgba(255,255,255,0) 0%,#fff 70%);
+    padding-bottom: 26px;
+}
+.hideArticlePos{
+    position: relative;
+    z-index: 9;
+    padding-top: 200px;
+    bottom: 2px;
+    margin-top: -200px;
 }
 </style>
 <template>
@@ -116,16 +130,21 @@ page{
     
     <player  wx:if="{{playurl}}" :url.sync="playurl" :title.sync="playtitle" />
       
-    <view class="content">
-      <view class="desc">
+    <view style="padding:0 30rpx;">
+      <view class="desc" id="desc" style="{{limit_content_height&&hidden_full_text?'max-height:'+limit_content_height+'px; overflow: hidden; position:relative;':''}}">
         
       <wemark md="{{content}}" type="wemark"></wemark>
+
       <!-- <wemark md="{{content}}" link highlight type="wemark"></wemark> -->
         <!-- <view>
           <view class='cu-tag bg-red light sm round'>假装有猫系列</view>
           <view class='cu-tag bg-green light sm round'>戏精系列</view>
         </view> -->
       </view>
+      <view  wx:if="{{hidden_full_text}}" class="hideArticlePos hideArticleBox text-center">
+              <text class='text-gray' >文章已设置激励后可阅读全文!</text>
+      </view> 
+
     </view>
     
     <!--
@@ -167,7 +186,7 @@ page{
     <view class='btn-group'  @tap="goto('/pages/user/guide')">
       <button class='cu-btn bg-red round shadow-blur'>去赚积分</button>
     </view>
-  </view> -->
+  </view> 
 
 
   <view class="cu-bar bg-white tabbar border shop foot">
@@ -188,7 +207,7 @@ page{
       </view>
     </view>
   </view>
-
+-->
 
   </view>
   
@@ -242,7 +261,7 @@ page{
   
 <view class='padding  text-center  bg-white' wx:if="{{videoAdLoaded}}">
     <button class='cu-btn round lg bg-red' @tap="showReward()">
-      <text class='icon-like'></text> 激励一下
+      <text class="icon-{{need_reward?'video':'like'}}"></text> {{userrewardarticle?'已激励':'激励'}}
     </button>
     <view class='solid-bottom text-xs padding'>
       <text class='text-gray' wx:if="{{rewardusers.length}}">激励一下,完整观看视频后可获得奖励!</text>
@@ -252,7 +271,7 @@ page{
  
 <view class='padding  text-center  bg-white' wx:if="{{!videoAdLoaded}}">
     <view>
-      <text class='icon-like'></text> 已激励用户
+      <text class="icon-{{need_reward?'video':'like'}}"></text> {{userrewardarticle?'已激励':'激励暂不可用'}}
     </view>
     <view class='solid-bottom text-xs padding'>
       <text class='text-gray' wx:if="{{!rewardusers.length}}">暂时还没有人进行激励!</text>
@@ -300,8 +319,10 @@ page{
       adshow:true,
       loadModal:true,
       isCard:true,
+      need_reward:false,
       StatusBar:0,
       CustomBar:0,
+      limit_content_height:0,// 限制时正文最大高度
       Custom:0,
       fromid:0,
       id:'',
@@ -313,6 +334,7 @@ page{
       playurl: "",
       playtitle: "",
       userlikearticle:false,
+      userrewardarticle:false,
       isloadcomment:false,
       show_login:false,
       videoAdLoaded:false,
@@ -321,6 +343,11 @@ page{
       videoAd:null
     }
     
+    computed = {
+      hidden_full_text(){ // 隐藏全文
+        return !this.userrewardarticle && this.need_reward && this.article.author && this.article.author.reward_adid
+      },
+    }
     events = {
       
     };
@@ -442,6 +469,8 @@ page{
       var that = this
       // 正常播放结束，可以下发游戏奖励
       let state = await commApi.UserRewardArticle(that.article.id)
+      that.userrewardarticle = true
+      that.$apply()
       if(state.message){
         wepy.showToast({
           title: state.message,
@@ -456,6 +485,7 @@ page{
       that.videoAdLoaded = false
       that.$apply()
     }
+
     async bindGetUserInfo(e) {
       this.show_login = false
       await commApi.AsyncUserData(e.detail)
@@ -516,15 +546,32 @@ page{
       this.content = this.article.body
       this.playurl = this.article.audio
       this.playtitle = this.article.title
+      this.need_reward = this.article.need_reward
+      
       this.userlikearticle = this.article.userlikearticle
+      this.userrewardarticle = this.article.userrewardarticle
       this.loadModal = false
       // this.likeusers = await commApi.GetArticleLikeUsers(query.id)
       
       this.rewardusers = await commApi.GetArticleRewardUsers(this.id)
-      console.log('GetArticleRewardUsers',this.rewardusers)
+      // console.log('GetArticleRewardUsers',this.rewardusers)
       await this.initRewardArticle(this.article)
       //更新
       this.$apply()
+      if(this.need_reward){ //当文章需要激励后阅读时
+        var that = this 
+        var query = wx.createSelectorQuery()
+        query.select('#desc').boundingClientRect()
+        query.selectViewport().scrollOffset()
+        query.exec(function (res) {
+          res[0].top       // #the-id节点的上边界坐标
+          res[1].scrollTop // 显示区域的竖直滚动位置
+          that.limit_content_height = res[0].height/2
+          that.$apply()
+          // console.log('打印demo的元素的信息', res);
+          // console.log('打印高度', res[0].height);
+        })
+      }
     }
 
 
@@ -532,7 +579,7 @@ page{
     async onReachBottom(){
       if(this.article.title){ //有文章内容才能触发
         // 首次拉到底初始化评论功能(延迟加载评论)
-        if(!this.isloadcomment){
+        if(!this.isloadcomment && !this.hidden_full_text){
           // 记录用户已经阅读该文章(首次拉到底时执行)
           let state = await commApi.ViewAction(this.id)
           if(state.message){
