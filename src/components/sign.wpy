@@ -7,13 +7,13 @@
   <view class="cu-dialog padding" catchtap>
       <view class="flex">
       <view wx:if="{{todayCanSign}}" class='flex-sub bg-grey padding-sm margin-xs radius' @tap="doSign()">
-        普通签到 +{{signAction}}
+        普通签到 +{{signAction * scoreRatio}} {{scoreType}}
       </view>
       <view  wx:if="{{todayCanRewardSign}}" class='flex-sub bg-red padding-sm margin-xs radius' @tap="doRewardAndSign()">
-        激励签到 +{{signAction+rewardAction}}
+        激励签到 +{{signAction+rewardAction * scoreRatio}} {{scoreType}}
       </view>
       <view wx:if="{{todayCanReward}}"  class='flex-sub bg-red padding-sm margin-xs radius' @tap="doReward()">
-        激励 +{{rewardAction}}
+        激励 +{{rewardAction * scoreRatio}} {{scoreType}}
       </view>
 
       
@@ -40,6 +40,14 @@
         type:Number,
         default:10,
       },
+      scoreType:{ //积分标题
+        type:String,
+        default:'积分',
+      },
+      scoreRatio:{ //积分展示比例
+        type:Number,
+        default:1,
+      },
       canSign:{ //可以签到
         type:Boolean,
         default:false,
@@ -58,7 +66,7 @@
       },
       unitid:{ // 激励广告id
         type:String,
-        default:'adunit-af7d0a78f1f9b557',
+        default:'',
       }
     }
     data = {

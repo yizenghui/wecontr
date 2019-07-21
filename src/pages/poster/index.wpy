@@ -127,7 +127,7 @@
             });
             if (res.errMsg === "saveImageToPhotosAlbum:ok") {
                 wepy.showToast({
-                    title: "分享图已保存到相册",
+                    title: "已保存到相册",
                     icon: "success",
                     duration: 2000
                 });

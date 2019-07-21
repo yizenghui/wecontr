@@ -37,6 +37,7 @@ page{
 
 
 <Ad1 position="9" :ads.sync="ads"/>
+<!-- <official-account wx:if="{{follow_status}}" bindload="officialLoaded" binderror="officialLoaded"></official-account> -->
 
 <view class="cu-modal {{show_login?'show':''}}" @tap='hideLoginModal'>
   <view class="cu-dialog padding" catchtap>
@@ -161,7 +162,7 @@ page{
 
 
 
-<Sign :show.sync="showSign"  :canSign.sync="today_sign"  :canReward.sync="today_reward"  :signAction.sync="sign_action"  :rewardAction.sync="reward_action" :unitid.sync="reward_adid"/>
+<Sign :show.sync="showSign" :scoreType.sync="scoreType" :scoreRatio.sync="scoreRatio"  :canSign.sync="today_sign"  :canReward.sync="today_reward"  :signAction.sync="sign_action"  :rewardAction.sync="reward_action" :unitid.sync="reward_adid"/>
 <Ad2 position="10" :ads.sync="ads"/>
 
 <view class='padding'>
@@ -178,7 +179,7 @@ page{
   import sign from '../../components/sign'
   export default class Index extends wepy.page {
     config = {
-      navigationBarTitleText: '用户主页'
+      navigationBarTitleText: 'WeContr内容管理系统用户主页'
     }
 
 
@@ -197,9 +198,6 @@ page{
       user:[],
       carousels:[],
       ads:[],
-      reward_adid:'',
-      sign_action:0,
-      reward_action:0,
       videoAd:null,
       today_sign:false,
       today_reward:false,
@@ -266,6 +264,33 @@ page{
       
     }
     computed = {
+      
+      scoreType(){
+        if(!wepy.$instance.globalData.appconfig) return null
+        return wepy.$instance.globalData.appconfig.scoreType
+      },
+
+      scoreRatio(){
+        if(!wepy.$instance.globalData.appconfig) return null
+        return wepy.$instance.globalData.appconfig.scoreRatio
+      },
+
+      sign_action(){
+        if(!wepy.$instance.globalData.appconfig) return null
+        return wepy.$instance.globalData.appconfig.sign_action
+      },
+      reward_action(){
+        if(!wepy.$instance.globalData.appconfig) return null
+        return wepy.$instance.globalData.appconfig.reward_action
+      },
+      reward_adid(){
+        if(!wepy.$instance.globalData.appconfig) return null
+        return wepy.$instance.globalData.appconfig.reward_adid
+      },
+      follow_status(){
+        if(!wepy.$instance.globalData.appconfig) return null
+        return wepy.$instance.globalData.appconfig.follow_status
+      },
       reward_status(){
         if(!wepy.$instance.globalData.appconfig) return null
         return wepy.$instance.globalData.appconfig.reward_status
@@ -301,6 +326,11 @@ page{
         }
     };
     methods = {
+      officialLoaded(e){
+        // 如果没有加载出关注组件，把全局的关注组件状态变量给改为不展示
+        if(e.detail.status!==0) wepy.$instance.globalData.appconfig.follow_status = 0
+        console.log('officialLoaded',e.detail.status)
+      },
       goto(to){
           console.log('to',to)
           wepy.navigateTo({url:to});
@@ -369,9 +399,6 @@ page{
         this.CustomBar= wepy.$instance.globalData.CustomBar
         this.ads = await commApi.GetAds()
         this.carousels = await commApi.GetCarousels()
-        this.sign_action = wepy.$instance.globalData.sign_action
-        this.reward_action = wepy.$instance.globalData.reward_action
-        this.reward_adid = wepy.$instance.globalData.reward_adid
         this.$apply()
     }
 

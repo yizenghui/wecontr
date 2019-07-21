@@ -30,11 +30,11 @@ page{
 <view class="cu-bar bg-white" wx:if="{{users.length}}">
   <view class='action'>
     <text class='icon-title text-green'></text>
-    <text>排行榜仅展示当天签到用户</text>
+    <text>仅展示当天签到用户</text>
   </view>
 </view>
-<view class="cu-list menu menu-avatar">
-  <view class="cu-item" wx:for="{{users}}">
+<view class="cu-list menu menu-avatar" wx:if="{{users.length}}">
+  <view class="cu-item" wx:for="{{users}}" wx:key>
     <view class="cu-avatar round lg" style="background-image:url({{item.avatar}});"></view>
     <view class='content'>
       <view class='text-grey'>{{item.name}}</view>
@@ -48,6 +48,8 @@ page{
 </view>
 
 
+
+  <view wx:if="{{!users.length}}" class="bg-gray text-center padding" >您可能是今天第一个签到的！</view>
 
   <view wx:if="{{loadstatus}}" class="cu-load bg-gray {{loadstatus==1?'loading':'over'}}"></view>
 

@@ -26,10 +26,13 @@ page{
     </swiper> -->
     
     <Carousel position="1" :carousels.sync="carousels"/>
-<official-account></official-account>
+
     <Search wx:if="{{default_search}}" :title.sync="default_search"/>
 
     <Ad1 position="1" :ads.sync="ads"/>
+    <official-account wx:if="{{follow_status}}" bindload="officialLoaded" binderror="officialLoaded"></official-account>
+
+
 
     <view  wx:if="articles1" class="cu-card article {{isCard?'no-card':''}}">
       <view wx:for="{{articles1}}" wx:key class="cu-item shadow"  @tap="goto({{item.wxto}})">
@@ -93,7 +96,7 @@ page{
 
   export default class Index extends wepy.page {
     config = {
-      navigationBarTitleText: '微信小程序博客'
+      navigationBarTitleText: 'WeContr内容管理系统'
     }
 
 
@@ -122,11 +125,32 @@ page{
 
     computed = {
       default_search(){
+        if(!wepy.$instance.globalData.appconfig) return null
         return wepy.$instance.globalData.appconfig.default_search
       },
+
+      follow_status(){
+        if(!wepy.$instance.globalData.appconfig) return null
+        return wepy.$instance.globalData.appconfig.follow_status
+      },
+
       banner_adid(){
+        if(!wepy.$instance.globalData.appconfig) return null
         return wepy.$instance.globalData.appconfig.banner_adid
       },
+
+      share_title(){
+        return wepy.$instance.globalData.appconfig.index_share_title?wepy.$instance.globalData.appconfig.index_share_title:'分享小程序'
+      },
+
+      share_cover(){
+        return wepy.$instance.globalData.appconfig.index_share_cover
+      },
+
+      share_path(){
+        return '/pages/index/index?fromid=' + wepy.$instance.globalData.uid
+      },
+
       articles1 () {
         var list = []
         this.articles.forEach((v,k)=>{
@@ -152,13 +176,16 @@ page{
       adClose(){
         this.adshow = false
       },
+      officialLoaded(e){
+        // 如果没有加载出关注组件，把全局的关注组件状态变量给改为不展示
+        if(e.detail.status!==0) wepy.$instance.globalData.appconfig.follow_status = 0
+      },
       goto(to){
          if(to) wepy.navigateTo({url:to});
       },
       click(item){
         // todo 
         if(item.genre==1 ||item.genre==2 ||item.genre==3){ //1图片链接、2文字链接、3图文链接
-
           if(item.url){
             wepy.navigateTo({url:item.url});
             wepy.switchTo({url:item.url});
@@ -175,7 +202,7 @@ page{
             appId: item.gotoapp,
             path: item.url,
             extraData: {
-              from: wepy.$instance.globalData.appid
+              from: wepy.$instance.globalData.appconfig.app_id
             },
             envVersion: 'develop',
             success(res) {
@@ -185,7 +212,6 @@ page{
         }else{
           // todo
         }
-                
       },
     }
 
@@ -241,9 +267,9 @@ page{
     
     onShareAppMessage(res) {
         return {
-            title: wepy.$instance.globalData.index_share_title?wepy.$instance.globalData.index_share_title:'分享小程序',
-            imageUrl: wepy.$instance.globalData.index_share_cover,
-            path: '/pages/index/index?fromid=' + wepy.$instance.globalData.uid
+            title: this.share_title,
+            imageUrl: this.share_cover,
+            path: this.share_path,
         }
     }
 
