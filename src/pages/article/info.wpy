@@ -323,9 +323,9 @@ page{
       need_reward:false,
       StatusBar:0,
       CustomBar:0,
-      limit_content_height:0,// 限制时正文最大高度
       Custom:0,
       fromid:0,
+      limit_content_height:0,// 限制时正文最大高度
       id:'',
       article:[],
       likeusers:[],
@@ -344,16 +344,14 @@ page{
       videoAd:null
     }
     
-    computed = {
-      hidden_full_text(){ // 隐藏全文
-        return !this.userrewardarticle && this.need_reward && this.article.author && this.article.author.reward_adid
-      },
-    }
     events = {
       
     };
 
     computed = {
+      hidden_full_text(){ // 隐藏全文
+        return !this.userrewardarticle && this.need_reward && this.article.author && this.article.author.reward_adid
+      },
       follow_status(){
         if(!wepy.$instance.globalData.appconfig) return null
         return wepy.$instance.globalData.appconfig.follow_status
