@@ -15,10 +15,10 @@ page{
   <view>
 
   <view class="cu-custom" style="height:{{CustomBar}}px;">
-    <view class="cu-bar fixed bg-gradual-green" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
+    <view class="cu-bar fixed bg-gradual-{{template_topic}}" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
       <navigator class='action' open-type="navigateBack" delta="1" hover-class="none">
         <text class='icon-back'></text> 
-        排行榜
+        签到排行榜
       </navigator>
       <view class='action'>
         <!-- 专栏：自我提供 -->
@@ -41,7 +41,7 @@ page{
       <view class='text-gray text-sm'>{{item.city}}</view>
     </view>
     <view class='action'>
-      <view class='text-red '>{{item.total_point}}</view>
+      <view class='text-red '>{{item.total_point*scoreRatio}} {{scoreType}}</view>
     </view>
   </view>
 
@@ -82,7 +82,20 @@ page{
     }
 
     computed = {
-    };
+      
+      scoreType(){
+        if(!wepy.$instance.globalData.appconfig) return null
+        return wepy.$instance.globalData.appconfig.score_type
+      },
+      scoreRatio(){
+        if(!wepy.$instance.globalData.appconfig) return 1
+        return wepy.$instance.globalData.appconfig.score_ratio
+      },
+      template_topic(){
+        if(!wepy.$instance.globalData.appconfig) return 'green'
+        return wepy.$instance.globalData.appconfig.template_topic
+      }
+    }
 
     methods = { 
      

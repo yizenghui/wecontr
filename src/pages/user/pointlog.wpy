@@ -14,10 +14,10 @@ page{
 
 
 <view class="cu-custom" style="height:{{CustomBar}}px;">
-  <view class="cu-bar fixed bg-gradual-green" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
+  <view class="cu-bar fixed bg-gradual-{{template_topic}}" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
     <navigator class='action' open-type="navigateBack" delta="1" hover-class="none">
       <text class='icon-back'></text> 
-      积分记录
+      {{scoreType}}记录
     </navigator>
     <view class='action'>
       <!-- 专栏：自我提供 -->
@@ -31,8 +31,8 @@ page{
   <view class="cu-item"  wx:for="{{logs}}" wx:key>
     <view class='content'>
       <text class='text-grey'>{{item.intro}}</text>
-      <text class='text-green' wx:if="{{item.change>0}}"> +{{item.change}}</text>
-      <text class='text-red' wx:if="{{item.change<=0}}"> {{item.change}}</text>
+      <text class='text-green' wx:if="{{item.change>0}}"> +{{item.change*scoreRatio}}</text>
+      <text class='text-red' wx:if="{{item.change<=0}}"> {{item.change*scoreRatio}}</text>
     </view>
     <view class='action'>
         {{item.created_at}}
@@ -49,7 +49,7 @@ page{
   import commApi from '../../api/comm'
   export default class Pointlog extends wepy.page {
     config = {
-      navigationBarTitleText: '我的足迹',
+      navigationBarTitleText: '积分记录',
     }
 
     components = {
@@ -66,6 +66,20 @@ page{
       logs:[]
     }
 
+    computed = {
+      scoreType(){
+        if(!wepy.$instance.globalData.appconfig) return null
+        return wepy.$instance.globalData.appconfig.score_type
+      },
+      scoreRatio(){
+        if(!wepy.$instance.globalData.appconfig) return 1
+        return wepy.$instance.globalData.appconfig.score_ratio
+      },
+      template_topic(){
+        if(!wepy.$instance.globalData.appconfig) return 'green'
+        return wepy.$instance.globalData.appconfig.template_topic
+      }
+    }
 
     methods = {
       goto(to){

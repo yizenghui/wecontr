@@ -12,7 +12,7 @@ page{
   <view>
 
     <view class="cu-custom" style="height:{{CustomBar}}px;">
-      <view class="cu-bar fixed bg-gradual-green" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
+      <view class="cu-bar fixed bg-gradual-{{template_topic}}" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
         <navigator class='action' url="/pages/index/index" open-type="switchTab" hover-class="none">
           <text class='icon-back'></text> 
           搜索
@@ -107,7 +107,11 @@ page{
     }
 
     computed = {
-        articles1 () {
+      template_topic(){
+        if(!wepy.$instance.globalData.appconfig) return 'green'
+        return wepy.$instance.globalData.appconfig.template_topic
+      },
+      articles1 () {
           var list = []
           this.articles.forEach((v,k)=>{
             if(k<=8){

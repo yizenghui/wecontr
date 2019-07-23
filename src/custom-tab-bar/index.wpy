@@ -4,12 +4,14 @@
     <view class='icon-cu-image'>
       <image src="{{selected === index ? item.selectedIconPath : item.iconPath}}" class="{{selected === index ? 'animation' : 'animation'}}"></image>
     </view>
-    <view class="{{selected === index ? 'text-green' : 'text-gray'}}">{{item.text}}</view>
+    <view class="{{selected === index ? text_template_color : 'text-gray'}}">{{item.text}}</view>
   </view>
 </view>
 </template>
 
 <script>
+
+import wepy from 'wepy'
 
 Component({
   options: {
@@ -17,6 +19,8 @@ Component({
   },
   data: {
     selected: 0,
+    // text_template_color: !wepy.$instance.globalData.appconfig?'text-green': 'text-'+wepy.$instance.globalData.appconfig.template_topic, // 未获得参数
+    text_template_color: 'text-green',
     list: [
          {
           pagePath: "/pages/index/index",
@@ -37,6 +41,9 @@ Component({
           text: "我的"
         }
     ]
+  },
+  onLoad:function(){
+    console.log('switchTab')
   },
    methods: {
     switchTab(e) {

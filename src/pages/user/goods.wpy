@@ -12,10 +12,10 @@ page{
   <view>
 
 <view class="cu-custom" style="height:{{CustomBar}}px;">
-  <view class="cu-bar fixed bg-gradual-green" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
+  <view class="cu-bar fixed bg-gradual-{{template_topic}}" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
     <navigator class='action' open-type="navigateBack" delta="1" hover-class="none">
       <text class='icon-back'></text> 
-      积分商城
+      {{scoreType}}商城
     </navigator>
     <view class='action'>
       <!-- 专栏：自我提供 -->
@@ -35,9 +35,9 @@ page{
     
     <view class='padding flex text-center text-grey bg-white shadow-warp'>
       <view class='flex flex-sub flex-direction solid-right'>
-        <view class="text-xxl text-orange">{{item.point}}</view>
+        <view class="text-xxl text-orange">{{item.point*scoreRatio}}</view>
         <view class="margin-top-sm">
-          <text class='icon-goodsfill'></text>所需积分</view>
+          <text class='icon-goodsfill'></text>所需{{scoreType}}</view>
       </view>
       <view class='flex flex-sub flex-direction solid-right'>
         <view class="text-xxl text-blue">{{item.out}}</view>
@@ -69,7 +69,7 @@ page{
 <view class="cu-modal {{showPointTips?'show':''}}">
   <view class="cu-dialog">
     <view class="cu-bar bg-white justify-end">
-      <view class='content'>积分详情</view>
+      <view class='content'>{{scoreType}}详情</view>
       <view class='action' @tap='hidepointtips()'>
         <text class='icon-close text-red'></text>
       </view>
@@ -79,28 +79,28 @@ page{
       
     <view class='padding flex text-center text-grey bg-white shadow-warp'>
       <view class='flex flex-sub flex-direction solid-right'>
-        <view class="text-xxl text-orange">{{user.total_point}}</view>
+        <view class="text-xxl text-orange">{{user.total_point*scoreRatio}}</view>
         <view class="margin-top-sm">
-          总积分
+          总{{scoreType}}
         </view>
       </view>
       <view class='flex flex-sub flex-direction solid-right'>
-        <view class="text-xxl text-blue">{{user.point}}</view>
+        <view class="text-xxl text-blue">{{user.point*scoreRatio}}</view>
         <view class="margin-top-sm">
-           剩余积分
+           剩余{{scoreType}}
         </view>
       </view>
       <view class='flex flex-sub flex-direction'>
-        <view class="text-xxl text-green">{{user.current_point}}</view>
+        <view class="text-xxl text-green">{{user.current_point*scoreRatio}}</view>
         <view class="margin-top-sm">
-          可用积分
+          可用{{scoreType}}
         </view>
       </view>
     </view>
     <view class="cu-bar bg-white margin-top">
       <view class='action'>
         <text class='icon-title text-green'></text>
-        <text>每期结算时剩余积分变成可用积分</text>
+        <text>每期结算时剩余{{scoreType}}变成可用{{scoreType}}</text>
       </view>
     </view>
     </view>
@@ -123,12 +123,12 @@ page{
     </view>
     <view class="action" @tap="pointtips()">
       <view class='icon-goodsfill'>
-        <view class='cu-tag badge'>{{user.current_point}}</view>
+        <view class='cu-tag badge'>{{user.current_point*scoreRatio}}</view>
       </view>
-      可用积分
+      可用{{scoreType}}
     </view>
     <view class='btn-group'  @tap="goto('/pages/user/guide')">
-      <button class='cu-btn bg-red round shadow-blur'>去赚积分</button>
+      <button class='cu-btn bg-red round shadow-blur'>去赚{{scoreType}}</button>
     </view>
   </view>
 
@@ -162,6 +162,21 @@ page{
       goodses:[]
     }
 
+    computed = {
+      
+      scoreType(){
+        if(!wepy.$instance.globalData.appconfig) return null
+        return wepy.$instance.globalData.appconfig.score_type
+      },
+      scoreRatio(){
+        if(!wepy.$instance.globalData.appconfig) return 1
+        return wepy.$instance.globalData.appconfig.score_ratio
+      },
+      template_topic(){
+        if(!wepy.$instance.globalData.appconfig) return 'green'
+        return wepy.$instance.globalData.appconfig.template_topic
+      }
+    }
 
     methods = {
       goto(to){
@@ -178,7 +193,7 @@ page{
       },
       async buy(item){
         // todo 提醒用户确认兑换
-        var tips = `${item.point}积分兑换《${item.name}》?`
+        var tips = `${item.point*this.scoreRatio}${this.scoreType}兑换《${item.name}》?`
         let res = await wepy.showModal({
             title: '提醒',
             content: tips,

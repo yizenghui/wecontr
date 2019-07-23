@@ -56,19 +56,19 @@ page{
 
 <view class='padding flex text-center text-grey bg-white shadow-warp'>
   <view class='flex flex-sub flex-direction solid-right'>
-    <view class="text-xxl text-orange">{{user.total_point}}</view>
+    <view class="text-xxl text-orange">{{user_total_point}}</view>
     <view class="margin-top-sm">
-      <text class='icon-selection'></text> 总积分</view>
+      <text class='icon-selection'></text> 总{{scoreType}}</view>
   </view>
   <view class='flex flex-sub flex-direction solid-right'>
-    <view class="text-xxl text-blue">{{user.point}}</view>
+    <view class="text-xxl text-blue">{{user_point}}</view>
     <view class="margin-top-sm">
-      <text class='icon-pay'></text> 剩余积分</view>
+      <text class='icon-pay'></text> 剩余{{scoreType}}</view>
   </view>
   <view class='flex flex-sub flex-direction'>
-    <view class="text-xxl text-green">+{{user.task.total}}</view>
+    <view class="text-xxl text-green">+{{user_task_total_point}}</view>
     <view class="margin-top-sm">
-      <text class='icon-fork'></text> 今日积分</view>
+      <text class='icon-fork'></text> 今日{{scoreType}}</view>
   </view>
 </view>
 
@@ -79,7 +79,7 @@ page{
   <view class="cu-item arrow">
     <navigator class='content' url='/pages/user/guide' hover-class='none'>
       <text class='icon-creativefill text-orange'></text>
-      <text class='text-grey'>积分攻略</text>
+      <text class='text-grey'>{{scoreType}}攻略</text>
     </navigator>
   </view>
   <view class="cu-item arrow" wx:if="{{reward_status}}">
@@ -109,7 +109,7 @@ page{
   <view class="cu-item arrow"  wx:if="{{shopping_status}}" >
     <navigator class='content' url='/pages/user/goods' hover-class='none'>
       <text class='icon-shop text-red'></text>
-      <text class='text-grey'>积分商城</text>
+      <text class='text-grey'>{{scoreType}}商城</text>
     </navigator>
   </view>
   <view class="cu-item arrow" wx:if="{{shopping_status}}" >
@@ -127,7 +127,7 @@ page{
   <view class="cu-item arrow"  wx:if="{{point_logs_status}}">
     <navigator class='content' url='/pages/user/pointlog' hover-class='none'>
       <text class='icon-formfill text-green'></text>
-      <text class='text-grey'>积分记录</text>
+      <text class='text-grey'>{{scoreType}}记录</text>
     </navigator>
   </view>
   <!-- <view class="cu-item arrow">
@@ -204,8 +204,7 @@ page{
       today_signed:false,
     }
 
-    
-    
+   
     async doSign(){
       let data = await commApi.UserSign()
       // console.log('doSign',data)
@@ -264,15 +263,41 @@ page{
       
     }
     computed = {
-      
+
+      user_total_point(){
+        if(this.scoreRatio < 1){
+          var num =  parseFloat(this.user.total_point) * parseFloat(this.scoreRatio)
+          return num.toFixed(2)
+        }
+        return parseInt( parseInt(this.user.total_point) * parseFloat(this.scoreRatio) )
+      },
+      user_point(){
+         if(this.scoreRatio < 1){
+          var num =  parseFloat(this.user.point) * parseFloat(this.scoreRatio)
+          return num.toFixed(2)
+         }
+        return parseInt( parseInt(this.user.point) * parseFloat(this.scoreRatio) )
+      },
+      user_task_total_point(){
+        if(!this.user.task) return 0;
+        if(this.scoreRatio < 1){
+          var num =  parseFloat(this.user.task.total) * parseFloat(this.scoreRatio)
+          return num.toFixed(2)
+        }
+        return parseInt( parseInt(this.user.task.total) * parseFloat(this.scoreRatio) )
+      },
+      template_topic(){
+        if(!wepy.$instance.globalData.appconfig) return 'green'
+        return wepy.$instance.globalData.appconfig.template_topic
+      },
       scoreType(){
         if(!wepy.$instance.globalData.appconfig) return null
-        return wepy.$instance.globalData.appconfig.scoreType
+        return wepy.$instance.globalData.appconfig.score_type
       },
 
       scoreRatio(){
-        if(!wepy.$instance.globalData.appconfig) return null
-        return wepy.$instance.globalData.appconfig.scoreRatio
+        if(!wepy.$instance.globalData.appconfig) return 1
+        return wepy.$instance.globalData.appconfig.score_ratio
       },
 
       sign_action(){

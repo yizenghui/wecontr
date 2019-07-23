@@ -14,7 +14,7 @@ page{
 <!-- <image src='/images/componentBg.png' mode='widthFix' class='response'></image> -->
 
 <view class="cu-custom" style="height:{{CustomBar}}px;">
-  <view class="cu-bar fixed bg-gradual-green" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
+  <view class="cu-bar fixed bg-gradual-{{template_topic}}" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
     <navigator class='action' open-type="navigateBack" delta="1" hover-class="none">
       <text class='icon-back'></text> 
       我的队伍
@@ -126,6 +126,11 @@ page{
     }
 
     computed = {
+      
+      template_topic(){
+        if(!wepy.$instance.globalData.appconfig) return 'green'
+        return wepy.$instance.globalData.appconfig.template_topic
+      },
       team(){
         if(this.user.team) return this.user.team
         return false;

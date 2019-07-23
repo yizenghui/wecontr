@@ -10,7 +10,7 @@
         普通签到 +{{signAction * scoreRatio}} {{scoreType}}
       </view>
       <view  wx:if="{{todayCanRewardSign}}" class='flex-sub bg-red padding-sm margin-xs radius' @tap="doRewardAndSign()">
-        激励签到 +{{signAction+rewardAction * scoreRatio}} {{scoreType}}
+        激励签到 +{{signAction * scoreRatio + rewardAction * scoreRatio}} {{scoreType}}
       </view>
       <view wx:if="{{todayCanReward}}"  class='flex-sub bg-red padding-sm margin-xs radius' @tap="doReward()">
         激励 +{{rewardAction * scoreRatio}} {{scoreType}}
