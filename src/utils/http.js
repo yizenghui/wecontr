@@ -1,3 +1,5 @@
+/* eslint-disable eqeqeq */
+/* eslint-disable keyword-spacing */
 import wepy from 'wepy'
 
 // HTTP工具类
@@ -6,21 +8,23 @@ export default class http {
     // 如果全局变量中没有签名参数，先获取签名再发出请求
     if (!wepy.$instance.globalData.token) {
       let token = await wepy.getStorageSync('token') // 获取缓存中的token
-      if(token){
+      if (token) {
         // 检查缓存的token是否过期
         let checkdata = await wepy.request({ url: wepy.$instance.globalData.baseUrl + '/checktoken', data: { token: token } })
+        if(wepy.$instance.globalData.api_debug)console.log('request', wepy.$instance.globalData.baseUrl + '/checktoken', checkdata)
         if (this.isSuccess(checkdata)) {
           wepy.$instance.globalData.token = token
-        }else{
+        } else{
           const {code} = await wepy.login()
           const {data} = await wepy.request({ url: wepy.$instance.globalData.baseUrl + '/gettoken', data: { code: code, scene: wepy.$instance.globalData.scene } })
           wepy.$instance.globalData.token = data.token
           wepy.$instance.globalData.uid = data.uid
           wepy.$instance.globalData.appconfig = data
         }
-      }else{
+      }else {
         const {code} = await wepy.login()
         const {data} = await wepy.request({ url: wepy.$instance.globalData.baseUrl + '/gettoken', data: { code: code, scene: wepy.$instance.globalData.scene } })
+        if(wepy.$instance.globalData.api_debug)console.log('request', wepy.$instance.globalData.baseUrl + '/checktoken', data)
         wepy.$instance.globalData.token = data.token
         wepy.$instance.globalData.uid = data.uid
         wepy.$instance.globalData.appconfig = data
@@ -35,10 +39,11 @@ export default class http {
 
     const res = await wepy.request(param)
 
+    if(wepy.$instance.globalData.api_debug)console.log('request', method, url, res)
     if (this.isSuccess(res)) {
       return res.data
     } else { // 如果是因为token过期了，二次授权
-      if(res.data.message ==  "Unauthenticated."){
+      if (res.data.message == 'Unauthenticated.') {
         const {code} = await wepy.login()
         const {data} = await wepy.request({ url: wepy.$instance.globalData.baseUrl + '/gettoken', data: { code: code, scene: wepy.$instance.globalData.scene } })
         wepy.$instance.globalData.token = data.token
@@ -48,8 +53,8 @@ export default class http {
 
         if (this.isSuccess(res2)) {
           return res2.data
-        } 
-      }else{
+        }
+      } else{
         throw this.requestException(res)
       }
     }

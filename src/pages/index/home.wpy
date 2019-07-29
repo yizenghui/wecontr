@@ -1,0 +1,274 @@
+
+<style lang="less">
+page{
+  padding-bottom: 100rpx;
+}
+.cu-bar .content image{
+  height: 60rpx;
+  width: 240rpx;
+}
+
+.adContainer{
+  padding:20rpx 30rpx;
+}
+</style>
+<template><view>
+
+    <view class='cu-custom'>
+      <view class="cu-bar fixed bg-shadeTop" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
+        <!-- <view class='content' style='top:{{StatusBar}}px;'>自律帝</view> -->
+      </view>
+    </view>
+    <!-- <swiper wx:if="{{carousels.length}}" class="screen-swiper round-dot" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500">
+      <swiper-item wx:for="{{carousels}}" wx:key wx:if="{{item.position==1}}"   @tap="click({{item}})">
+        <image src="{{item.cover}}" mode='aspectFill'></image>
+      </swiper-item>
+    </swiper> -->
+    
+    <Carousel position="1" :carousels.sync="carousels"/>
+
+    <Search wx:if="{{default_search}}" :title.sync="default_search"/>
+
+    <Ad1 position="1" :ads.sync="ads"/>
+    <official-account wx:if="{{follow_status}}" bindload="officialLoaded" binderror="officialLoaded"></official-account>
+
+
+
+    <view  wx:if="articles1" class="cu-card article {{isCard?'no-card':''}}">
+      <view wx:for="{{articles1}}" wx:key class="cu-item shadow"  @tap="goto({{item.wxto}})">
+        <view class="title">{{item.title}}</view>
+        <view class="content">
+          <image wx:if="{{item.cover}}" src="{{item.cover}}" mode="aspectFill"></image>
+          <view class="desc">
+            <view class='text-content' wx:if="{{item.intro}}"> {{item.intro}}</view>
+            <view class="text-gray">
+                <text class="icon-attentionfill"></text> {{item.view}}
+                <text class="icon-appreciatefill"></text> {{item.liked}}
+                <!-- <text class="icon-messagefill"></text> {{item.commented}} -->
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <Ad2 wx:if="{{articles2.length>0}}" position="2" :ads.sync="ads"/>
+
+    <view wx:if="{{articles2.length>0 && banner_adid && adshow}}" class="adContainer">
+        <ad binderror="adClose" bindclose="adClose" unit-id="{{banner_adid}}"></ad>
+    </view>
+    <view wx:if="{{articles2.length>0}}"  class="cu-card article {{isCard?'no-card':''}}">
+      <view wx:for="{{articles2}}" wx:key class="cu-item shadow"  @tap="goto({{item.wxto}})">
+        <view class="title">{{item.title}}</view>
+        <view class="content">
+          <image wx:if="{{item.cover}}" src="{{item.cover}}" mode="aspectFill"></image>
+          <view class="desc">
+            <view class='text-content' wx:if="{{item.intro}}"> {{item.intro}}</view>
+            <view class="text-gray">
+                <text class="icon-attentionfill"></text> {{item.view}}
+                <text class="icon-appreciatefill"></text> {{item.liked}}
+                <!-- <text class="icon-messagefill"></text> {{item.commented}} -->
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+
+  <view class='cu-load load-modal' wx:if="{{loadModal}}"> 
+      <!-- <view class='icon-emojifill text-orange'></view> -->
+      <image src='/images/logo.png' class='png' mode='aspectFit'></image>
+      <view class='gray-text'>加载中...</view>
+  </view>
+
+    <view wx:if="{{loadstatus}}" class="cu-load bg-gray {{loadstatus==1?'loading':'over'}}"></view>
+
+    
+</view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import commApi from '../../api/comm'
+  import carousel from '../../components/carousel'
+  import ad from '../../components/ad'
+  import search from '../../components/search'
+  
+
+  export default class Ad extends wepy.component {
+    
+    components = {
+      Carousel:carousel,
+      Search:search,
+      Ad1:ad,
+      Ad2:ad,
+    };
+
+
+    data = {
+      isCard:true,
+      adshow:true,
+      loadModal:true,
+      loadstatus:0,
+      showLoad:false,
+      StatusBar:0,
+      CustomBar:0,
+      page:1,
+      swipers: [],
+      ads: [],
+      carousels: [],
+      articles: [],
+    }
+
+    computed = {
+      default_search(){
+        if(!wepy.$instance.globalData.appconfig) return null
+        return wepy.$instance.globalData.appconfig.default_search
+      },
+
+      follow_status(){
+        if(!wepy.$instance.globalData.appconfig) return null
+        return wepy.$instance.globalData.appconfig.follow_status
+      },
+
+      banner_adid(){
+        if(!wepy.$instance.globalData.appconfig) return null
+        return wepy.$instance.globalData.appconfig.banner_adid
+      },
+
+      share_title(){
+        return wepy.$instance.globalData.appconfig.index_share_title?wepy.$instance.globalData.appconfig.index_share_title:'分享小程序'
+      },
+
+      share_cover(){
+        return wepy.$instance.globalData.appconfig.index_share_cover
+      },
+
+      share_path(){
+        return '/pages/index/index?fromid=' + wepy.$instance.globalData.uid
+      },
+
+      articles1 () {
+        var list = []
+        this.articles.forEach((v,k)=>{
+          if(k<=8){
+            list = [...list,v]
+          }
+        })
+        return  list
+      },
+      
+      articles2 () {
+        var list = []
+        this.articles.forEach((v,k)=>{
+          if(k>8){
+            list = [...list,v]
+          }
+        })
+        return  list
+      }
+    };
+
+    methods = { 
+      adClose(){
+        this.adshow = false
+      },
+      officialLoaded(e){
+        // 如果没有加载出关注组件，把全局的关注组件状态变量给改为不展示
+        if(e.detail.status!==0) wepy.$instance.globalData.appconfig.follow_status = 0
+      },
+      goto(to){
+         if(to) wepy.navigateTo({url:to});
+      },
+      click(item){
+        // todo 
+        if(item.genre==1 ||item.genre==2 ||item.genre==3){ //1图片链接、2文字链接、3图文链接
+          if(item.url){
+            wepy.navigateTo({url:item.url});
+            wepy.switchTo({url:item.url});
+          }
+        }else if( item.genre==4 || item.genre==5 || item.genre==6 ){  // 4图片海报 5文字海报 6图文海报
+          if(item.poster){
+              wx.previewImage({
+                current: item.poster, // 海报
+                urls: [item.poster]
+              })
+            }
+        }else if( item.genre==7 || item.genre==8 || item.genre==9 ){  // 7图片跳小程序 8文字跳小程序 9图文跳小程序
+          wx.navigateToMiniProgram({
+            appId: item.gotoapp,
+            path: item.url,
+            extraData: {
+              from: wepy.$instance.globalData.appconfig.app_id
+            },
+            envVersion: 'develop',
+            success(res) {
+              // 打开成功
+            }
+          })
+        }else{
+          // todo
+        }
+      },
+    }
+
+    async onLoad(query) {
+      this.StatusBar= wepy.$instance.globalData.StatusBar
+      this.CustomBar= wepy.$instance.globalData.CustomBar
+      this.carousels = await commApi.GetCarousels()
+      this.$apply()
+      this.ads = await commApi.GetAds()
+      this.articles = await commApi.GetRecommendedArticles(1)
+      this.page = 2;
+      this.loadModal = false
+      this.$apply()
+    }
+
+
+     onShow(query) {
+      if (typeof this.$wxpage.getTabBar === 'function' &&
+        this.$wxpage.getTabBar()) {
+        this.$wxpage.getTabBar().setData({
+        selected: 0
+        })
+        // this.$apply() async
+      }
+    }
+    
+    async onReachBottom(){
+      this.loadstatus = 1
+      this.$apply()
+      let articles = await commApi.GetRecommendedArticles(this.page)
+      if(articles.length){
+          this.page ++
+          this.articles = [...this.articles,...articles]
+          this.loadstatus = 0
+      }else{
+        this.loadstatus = 2
+      }
+      this.$apply()
+    }
+        
+    // 下拉刷新
+    async onPullDownRefresh() {
+      wepy.stopPullDownRefresh()
+      this.loadstatus = 1
+      this.articles = []
+      this.$apply()
+      this.articles = await commApi.GetRecommendedArticles(1)
+      this.page = 2;
+      this.loadstatus = 0
+      this.$apply()
+    }
+
+    
+    onShareAppMessage(res) {
+        return {
+            title: this.share_title,
+            imageUrl: this.share_cover,
+            path: this.share_path,
+        }
+    }
+
+  }
+</script>
+
+
