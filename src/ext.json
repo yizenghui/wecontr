@@ -1,0 +1,11 @@
+{
+  "extEnable": true,
+  "extAppid": "wxa94ddd94358b2d1d",
+  "directCommit": false,
+  "ext": {
+    "api_token": "0RPJhqvW6gMp",
+    "app_name": "WeContr",
+    "version":"1.0.0",
+    "base_url":"https://readfollow.com/api/v1"
+  }
+}

@@ -239,6 +239,7 @@ export default class extends wepy.app {
   }
 
   globalData = {
+    app_name:"WeContr",
     api_token: '0RPJhqvW6gMp', // 请修改为您在https://readfollow.com/tenancy/auth/setting#tab-form-2 看到的api token (如果报错，请检查小程序appID跟后台是否对应修改好了)
     session: '',
     ads: [],
@@ -260,14 +261,30 @@ export default class extends wepy.app {
     show_login: false, // 展示登录
     // baseUrl: 'http://wxcms.cc:626/api/v1', 
     // baseUrl: 'http://wxcms.oo/api/v1',
-    baseUrl: 'https://readfollow.com/api/v1', 
+    baseUrl: 'https://readfollow.com/api', 
     // baseUrl: 'https://wxcms.readfollow.com/api', 
-    userInfo: null
+    userInfo: null,
+    version:"0.0.0"
   
   }
   
   async onLaunch (p) {
     // console.log(p)
+    let extConfig = wx.getExtConfigSync? wx.getExtConfigSync(): {}
+    if(extConfig == {}){
+      wx.showModal({
+        title: '出错了',
+        content: '无法正确加载系统配置，请在最近使用小程序中删除后重试！',
+        showCancel: false
+      })
+    }
+    wepy.$instance.globalData.api_token = extConfig.api_token
+    wepy.$instance.globalData.baseUrl = extConfig.base_url
+    wepy.$instance.globalData.app_name = extConfig.app_name
+    wepy.$instance.globalData.version = extConfig.version
+
+
+
     wepy.$instance.globalData.fromid = p.query.fromid //记录用户来源
     wepy.$instance.globalData.scene = p.scene //记录用户打开方式
     let e = await wepy.getSystemInfo()
