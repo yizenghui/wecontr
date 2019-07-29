@@ -166,7 +166,7 @@ page{
 <Ad2 position="10" :ads.sync="ads"/>
 
 <view class='padding'>
-  <view class='text-center text-grey'>readfollow.com 提供技术支持</view>
+  <view class='text-center text-grey'>WeContr.com 提供技术支持 {{version}}</view>
 </view>
 </view>
 </template>
@@ -264,6 +264,9 @@ page{
     }
     computed = {
 
+      version(){
+        return wepy.$instance.globalData.version
+      }, 
       user_total_point(){
         if(this.scoreRatio < 1){
           var num =  parseFloat(this.user.total_point) * parseFloat(this.scoreRatio)

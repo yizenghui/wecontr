@@ -5,7 +5,7 @@
   "ext": {
     "api_token": "0RPJhqvW6gMp",
     "app_name": "WeContr",
-    "version":"1.0.0",
+    "version":"dev",
     "base_url":"https://readfollow.com/api/v1"
   }
 }
