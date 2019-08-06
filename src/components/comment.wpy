@@ -1,0 +1,213 @@
+<style type="less">
+.rpcm{
+  line-height:100rpx;
+  font-size:28rpx;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  overflow:hidden;
+  width:100%;
+}
+</style>
+
+<template>
+<view>
+  
+  
+<view  class="cu-modal {{showInputBoxStatus?'show':''}}" @tap='hideInputBox'>
+  <view class="cu-dialog padding" catchtap>
+    <view class="rpcm text-left">
+      {{reply_id?'回复':'评论'}}：<text class="text-gray">{{reply_id?reply_content:title}}</text>
+    </view>
+    <view class="cu-form-group text-left">
+      <textarea  wx:if="{{showInputBoxStatus}}" maxlength="-1" bindinput="inputComment" placeholder='{{inputPlaceholder}}'></textarea>
+    </view>
+    <view class="rpcm text-left" wx:if="{{comment_status == 2}}">
+      <text class="text-gray">评论需通过审核后才能展示</text>
+    </view>
+    <view class="cu-bar margin-top">
+      <button wx:if="{{commentInput}}" class='cu-btn bg-green shadow' @tap="postComment()" >评论</button>
+      <button wx:if="{{!commentInput}}" class='cu-btn bg-gray shadow' disabled >评论</button>
+    </view>
+  </view>
+</view>
+
+<view class="cu-bar bg-white solid-bottom margin-top">
+  <view class='action'>
+    <text class='icon-title text-orange '></text> 精彩评论
+  </view>
+  <view class='action' wx:if="{{comment_status == 1 || comment_status == 2}}">
+    <button class='cu-btn bg-green shadow' @tap="showInputBox()" data-target="gridModal">写评论</button>
+  </view>
+  
+  <view class='action' wx:if="{{comment_status == 3 || comment_status == 4}}">
+    <text class="text-grey">已关闭评论</text>
+  </view>
+</view>
+
+
+<view class="cu-card dynamic no-card" wx:if="{{comments.length}}">
+  <view class="cu-item shadow">
+   
+    <view class="cu-list menu menu-avatar comment solids-top">
+      <view class="cu-item" wx:for="{{comments}}" wx:key>
+        <view class="cu-avatar round" style="background-image:url({{item.user_avatar}});"></view>
+        <view class='content'>
+          <view class='text-grey'>{{item.user_name}}</view>
+          <view class='text-gray text-content text-df'>
+            {{item.comment}}
+          </view>
+           <view class='bg-gray padding-sm radius margin-top-sm  text-sm' wx:if="{{item.quote}}">
+            <view class="flex">
+              <view>{{item.quote.user_name}}：</view>
+              <view class='flex-sub'>{{item.quote.comment}}</view>
+            </view>
+          </view>
+           <view class='margin-top-sm flex justify-between'>
+            <view class='text-gray text-df'>{{item.created_at}}</view>
+            <view>
+               <text  bindtap="toggleLike({{index}},{{item}})"  class="icon-appreciate{{item.userliked?'fill':''}} text-{{item.userliked?'red':'gray'}}"></text> <text  bindtap="toggleLike({{index}},{{item}})" class="text-gray margin-left-xs">{{item.like}}</text>
+              <text bindtap="showInputBox({{item}})" class="icon-messagefill text-gray margin-left-sm"></text> <text bindtap="showInputBox(({{item}})" class="text-gray margin-left-xs">{{item.reply}}</text> 
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+  </view>
+</view>
+
+ <view class="cu-list menu text-center" wx:if="{{!comments.length}}">
+    <view class="cu-item">
+      <view class="content">
+        <text class="text-grey">暂时还没有评论</text>
+      </view>
+    </view>
+  </view>
+  <view class="cu-list menu text-center" wx:if="{{showMoreComment}}">
+    <view class="cu-item" @tap="showAllComment">
+      <view class="content">
+        <text class="text-grey">查看所有评论</text>
+      </view>
+    </view>
+  </view>
+</view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import commApi from '../api/comm'
+
+  export default class Comment extends wepy.component {
+    props = {
+      cate: {
+        type:String,
+        default:''
+      },
+      id: {
+        type:Number,
+        default:''
+      },
+      cd: {
+        type:Number, //评论文章后，60秒内cd todo
+        default:60
+      },
+      title: {
+        type:String,
+        default:''
+      },
+      comment_status: {
+        type:Number,
+        default:1
+      },
+    }
+
+    data = {
+      comments:[],
+      showInputBoxStatus:false,
+      showMoreComment:false,
+      commentInput:"",
+      reply_id:"",
+      reply_content:"",
+      inputPlaceholder:"",
+    }
+
+    watch = {
+      async id(v){
+        this.comments = await commApi.GetComments(this.id, 1, this.cate,'rank')
+        if( this.comments.length>9 ) this.showMoreComment = true
+        this.$apply()
+      }
+    }
+
+    methods = {
+      async showInputBox(item){
+        if(!item){
+          this.reply_id = 0
+          this.reply_content = ''
+        }else{
+          this.reply_id = item.id
+          this.reply_content = item.comment
+        }
+        this.showInputBoxStatus = true
+        this.$apply()
+        
+        this.showInputBox = true
+        this.inputPlaceholder = ''
+        this.$apply()
+
+        var inputPlaceholder = '在这里输入评论'
+        var count = inputPlaceholder.length
+        var that = this
+        var timer1 = setInterval(function () {
+          if (count == 1) {
+            clearInterval(timer1);
+          }
+          count--;
+          that.inputPlaceholder = inputPlaceholder.substring(0,inputPlaceholder.length - count)
+          that.$apply()
+        }, 200)
+      },
+      async hideInputBox(){
+        this.showInputBoxStatus = false
+      },
+      async showAllComment(){
+          wepy.navigateTo({url:'/pages/comment/index?id='+this.id+'&cate='+this.cate});
+      },
+      
+      async toggleLike(index,item){
+        if(item.userliked){
+          let ret = await commApi.UnLikeComment(item.id)
+          item.userliked = false
+          item.like --
+          this.comments[index] = item
+          console.log('UnLikeComment',ret)
+        }else{
+          let ret = await commApi.LikeComment(item.id)
+          item.userliked = true
+          item.like ++
+          this.comments[index] = item
+          console.log('UnLikeComment',ret)
+        }
+        this.$apply()
+      },
+      async postComment(){
+        let comment = await commApi.Comment(this.id, this.cate, this.commentInput, this.reply_id)
+        if(comment.id){
+          this.comments = [comment, ...this.comments]
+          this.reply_id = 0
+          this.commentInput = ''
+          this.reply_content = ''
+          this.showInputBoxStatus = false
+          this.$apply()
+          wepy.showToast({ title: '发布评论成功！', icon:"none", duration: 1000 });
+        }else{
+          wepy.showToast({ title: '发布评论失败，请稍候再试或联系系统管理员！', icon:"none", duration: 2000 });
+        }
+      },
+      inputComment(e) {
+        this.commentInput = e.detail.value
+      },
+    }
+    async onLoad(){
+    }
+  }
+</script>

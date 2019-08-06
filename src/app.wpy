@@ -160,6 +160,7 @@ export default class extends wepy.app {
       'pages/user/exchange',
       'pages/topic/list',
       'pages/article/info',
+      'pages/comment/index',
       'pages/poster/index',
       'pages/search/index',
       'pages/jump/index',

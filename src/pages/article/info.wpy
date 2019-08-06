@@ -292,6 +292,10 @@ page{
 </view>
 <Ad2 position="4" :ads.sync="ads"/>
 <official-account wx:if="{{follow_status}}" bindload="officialLoaded" binderror="officialLoaded"></official-account>
+
+
+<Comment wx:if="{{id && comment_title && comment_status}}" cate="article" :id.sync="id"  :comment_status.sync="comment_status" :title.sync="comment_title"/>
+
 </view>
 </template>
 
@@ -299,6 +303,7 @@ page{
   import wepy from 'wepy'
   import commApi from '../../api/comm'
   import ad from '../../components/ad'
+  import comment from '../../components/comment'
   import player from '../../components/player'
   export default class Index extends wepy.page {
     config = {
@@ -314,6 +319,7 @@ page{
       Ad1:ad,
       Ad2:ad,
       player:player,
+      Comment:comment,
     };
 
     data = {
@@ -331,12 +337,14 @@ page{
       likeusers:[],
       rewardusers:[],
       ads:[],
+      comment_id: "",
+      comment_title: "",
       content: "",
       playurl: "",
       playtitle: "",
       userlikearticle:false,
       userrewardarticle:false,
-      isloadcomment:false,
+      comment_status:false,
       show_login:false,
       videoAdLoaded:false,
       showReward:false, // 展现激励提醒
@@ -558,7 +566,7 @@ page{
     }
 
     async onLoad(query) {
-      this.id = query.id
+      // this.id = query.id
       this.fromid = query.fromid
       this.StatusBar= wepy.$instance.globalData.StatusBar
       this.CustomBar= wepy.$instance.globalData.CustomBar
@@ -568,8 +576,11 @@ page{
       this.content = this.article.body
       this.playurl = this.article.audio
       this.playtitle = this.article.title
+      this.comment_title = this.article.title
+      this.comment_status = this.article.comment_status
       this.need_reward = this.article.need_reward
       
+      this.id = query.id
       this.userlikearticle = this.article.userlikearticle
       this.userrewardarticle = this.article.userrewardarticle
       this.loadModal = false

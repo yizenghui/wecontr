@@ -166,7 +166,7 @@ page{
 <Ad2 position="10" :ads.sync="ads"/>
 
 <view class='padding'>
-  <view class='text-center text-grey'>WeContr.com 提供技术支持 {{version}}</view>
+  <view class='text-center text-grey'>技术支持:WeContr 版本:{{version}}</view>
 </view>
 </view>
 </template>
