@@ -184,7 +184,9 @@
         }, 200)
       },
       async hideInputBox(){
+        this.inputPlaceholder = ''
         this.showInputBox = false
+        this.$apply()
       },
       
       async toggleSort(){

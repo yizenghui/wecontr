@@ -149,10 +149,6 @@
         }
         this.showInputBoxStatus = true
         this.$apply()
-        
-        this.showInputBox = true
-        this.inputPlaceholder = ''
-        this.$apply()
 
         var inputPlaceholder = '在这里输入评论'
         var count = inputPlaceholder.length
@@ -167,7 +163,9 @@
         }, 200)
       },
       async hideInputBox(){
+        this.inputPlaceholder = ''
         this.showInputBoxStatus = false
+        this.$apply()
       },
       async showAllComment(){
           wepy.navigateTo({url:'/pages/comment/index?id='+this.id+'&cate='+this.cate});
