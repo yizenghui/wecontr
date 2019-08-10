@@ -165,9 +165,7 @@ page{
 <Sign :show.sync="showSign" :scoreType.sync="scoreType" :scoreRatio.sync="scoreRatio"  :canSign.sync="today_sign"  :canReward.sync="today_reward"  :signAction.sync="sign_action"  :rewardAction.sync="reward_action" :unitid.sync="reward_adid"/>
 <Ad2 position="10" :ads.sync="ads"/>
 
-<view class='padding'>
-  <view class='text-center text-grey'>技术支持:WeContr 版本:{{version}}</view>
-</view>
+<Support />
 </view>
 </template>
 
@@ -177,6 +175,7 @@ page{
   import carousel from '../../components/carousel'
   import ad from '../../components/ad'
   import sign from '../../components/sign'
+  import Support from '../../components/support'
   export default class Index extends wepy.page {
     config = {
       navigationBarTitleText: 'WeContr内容管理系统用户主页'
@@ -187,6 +186,7 @@ page{
       Carousel:carousel,
       Ad1:ad,
       Sign:sign,
+      Support:Support,
       Ad2:ad
     };
 
@@ -264,9 +264,6 @@ page{
     }
     computed = {
 
-      version(){
-        return wepy.$instance.globalData.version
-      }, 
       user_total_point(){
         if(this.scoreRatio < 1){
           var num =  parseFloat(this.user.total_point) * parseFloat(this.scoreRatio)

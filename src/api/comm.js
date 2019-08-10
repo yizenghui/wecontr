@@ -122,6 +122,20 @@ export default class comm extends base {
   static async GetTopicArticles(topicID, page) {
     return await this.get(`${this.baseUrl}/articles`, {page: page, topic: topicID})
   }
+
+  // 获取所有作者
+  static async GetAuthors(page) {
+    return await this.get(`${this.baseUrl}/authors`, {page: page})
+  }
+
+  // 获取作者详细
+  static async GetAuthorInfo(authorID) {
+    return await this.get(`${this.baseUrl}/authors/${authorID}`)
+  }
+  // 获取作者文章列表
+  static async GetAuthorArticles(topicID, page) {
+    return await this.get(`${this.baseUrl}/articles`, {page: page, author: topicID})
+  }
   // 获取专题文章列表
   static async SearchArticles(keywork, page) {
     return await this.get(`${this.baseUrl}/search`, {q: keywork, page: page})

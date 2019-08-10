@@ -1,0 +1,51 @@
+<style type="less">
+</style>
+<template>
+<view>
+  
+<view class="cu-modal {{showVersionModal?'show':''}}">
+  <view class="cu-dialog">
+    <view class="cu-bar bg-white justify-end">
+      <view class="content">关于WeContr</view>
+      <view class="action" @tap="hideVersionModal()">
+        <text class="icon-close text-red"></text>
+      </view>
+    </view>
+    <view class="padding-xl">
+      <view>当前版本：{{version}}</view>
+      <view>官网地址： wecontr.com</view>
+    </view>
+  </view>
+</view>
+
+ <view class='padding'>
+  <view class='text-center text-grey' @tap="showSupportInfo()">由WeContr提供技术支持</view>
+</view>
+</view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import commApi from '../api/comm'
+
+  export default class Support extends wepy.component {
+    props = {
+      
+    }
+    data = {
+      showVersionModal: false,
+    }
+    computed = {
+      version(){
+        return wepy.$instance.globalData.version
+      }, 
+    }
+    methods = {
+      hideVersionModal(){
+        this.showVersionModal = false
+      },
+      showSupportInfo(){
+        this.showVersionModal = true
+      }
+    }
+  }
+</script>

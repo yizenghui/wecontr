@@ -143,6 +143,7 @@ export default class extends wepy.app {
     pages: [
       // 'pages/html',
       'pages/index/index',
+      'pages/author/index',
       'pages/topic/index',
       'pages/user/index',
       'pages/user/footprint',
@@ -159,6 +160,7 @@ export default class extends wepy.app {
       'pages/user/pointlog',
       'pages/user/exchange',
       'pages/topic/list',
+      'pages/author/list',
       'pages/article/info',
       'pages/comment/index',
       'pages/poster/index',

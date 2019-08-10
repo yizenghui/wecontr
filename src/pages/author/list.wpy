@@ -1,0 +1,245 @@
+<style lang="less">
+page{
+  // padding-bottom: 100rpx;
+}
+.cu-bar .content image{
+  height: 60rpx;
+  width: 240rpx;
+}
+.adContainer{
+  padding:20rpx 30rpx;
+}
+</style>
+<template>
+  <view>
+
+
+<view class="cu-custom" style="height:{{CustomBar}}px;">
+  <view class="cu-bar fixed bg-gradual-{{template_topic}}" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
+    <navigator wx:if="{{!fromid}}" class='action' open-type="navigateBack" delta="1" hover-class="none">
+      <text class='icon-back'></text> 
+      {{author.name}}
+    </navigator>
+     <navigator wx:if="{{fromid}}" class='action' url="/pages/index/index" open-type="switchTab" hover-class="none">
+      <text class='icon-back'></text> 
+      返回首页
+    </navigator>
+    <view class='action'>
+    </view>
+  </view>
+</view>
+
+<!-- <Ad1 position="7" :ads.sync="ads"/> -->
+    <!-- <official-account wx:if="{{follow_status}}" bindload="officialLoaded" binderror="officialLoaded"></official-account> -->
+
+
+
+<!--
+<view class="cu-card dynamic">
+  <view class="cu-item shadow">
+   
+    <view class="cu-list menu {{author.avatar?'menu-avatar':''}} comment solids-top">
+      <view class="cu-item">
+        <view wx:if="{{author.avatar}}" class="cu-avatar round" style="background-image:url({{author.avatar}});"></view>
+        <view class='content'>
+          <view class="text-grey">{{author.name}}</view>
+          <view class="text-gray text-sm flex justify-between">
+            {{author.intro?author.intro:''}}
+          </view>
+        </view>
+      </view>
+    </view>
+
+  </view>
+</view>
+-->
+
+    <view  wx:if="articles1" class="cu-card article {{isCard?'no-card':''}}">
+      <view wx:for="{{articles1}}" wx:key class="cu-item shadow"  @tap="goto({{item.wxto}})">
+        <view class="title">{{item.title}}</view>
+        <view class="content">
+          <image wx:if="{{item.cover}}" src="{{item.cover}}" mode="aspectFill"></image>
+          <view class="desc">
+            <view class='text-content' wx:if="{{item.intro}}"> {{item.intro}}</view>
+            <view class="text-gray">
+                <text class="icon-attentionfill"></text> {{item.view}}
+                <text class="icon-appreciatefill"></text> {{item.liked}}
+                <!-- <text class="icon-messagefill"></text> {{item.commented}} -->
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <Ad2 wx:if="{{articles2.length>0}}"  position="8" :ads.sync="ads"/>
+    <view wx:if="{{articles2.length>0 && banner_adid && adshow}}" class="adContainer">
+        <ad binderror="adClose" bindclose="adClose" unit-id="{{banner_adid}}"></ad>
+    </view>
+    <view wx:if="{{articles2.length>0}}"  class="cu-card article {{isCard?'no-card':''}}">
+      <view wx:for="{{articles2}}" wx:key class="cu-item shadow"  @tap="goto({{item.wxto}})">
+        <view class="title">{{item.title}}</view>
+        <view class="content">
+          <image wx:if="{{item.cover}}" src="{{item.cover}}" mode="aspectFill"></image>
+          <view class="desc">
+            <view class='text-content' wx:if="{{item.intro}}"> {{item.intro}}</view>
+            <view class="text-gray">
+                <text class="icon-attentionfill"></text> {{item.view}}
+                <text class="icon-appreciatefill"></text> {{item.liked}}
+                <!-- <text class="icon-messagefill"></text> {{item.commented}} -->
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+<view wx:if="{{loadstatus}}" class="cu-load bg-gray {{loadstatus==1?'loading':'over'}}"></view>
+
+</view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import commApi from '../../api/comm'
+  import ad from '../../components/ad'
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: 'WeContr内容管理系统 - 作者文章列表',
+    }
+
+    components = {
+      Ad1:ad,
+      Ad2:ad,
+    };
+
+
+    data = {
+      isCard:true,
+      adshow:true,
+      StatusBar:0,
+      CustomBar:0,
+      Custom:0,
+      fromid:0,
+      loadstatus:1,
+      id:0,
+      page:1,
+      author:[],
+      articles: [],
+      ads: [],
+    }
+
+
+    computed = {
+      
+      template_topic(){
+        if(!wepy.$instance.globalData.appconfig) return 'green'
+        return wepy.$instance.globalData.appconfig.template_topic
+      },
+      follow_status(){
+        if(!wepy.$instance.globalData.appconfig) return null
+        return wepy.$instance.globalData.appconfig.follow_status
+      },
+      share_title(){
+        return this.author.share_title?this.author.share_title:this.author.name
+      },
+      share_cover(){
+        return this.author.share_cover?this.author.share_cover:this.author.cover
+      },
+      share_path(){
+        return '/pages/author/list?id='+this.id+'&fromid=' + wepy.$instance.globalData.uid
+      },
+      banner_adid(){
+        return wepy.$instance.globalData.banner_adid
+      },
+        articles1 () {
+          var list = []
+          this.articles.forEach((v,k)=>{
+            if(k<=8){
+              list = [...list,v]
+            }
+          })
+          return  list
+        },
+        
+        articles2 () {
+          var list = []
+          this.articles.forEach((v,k)=>{
+            if(k>8){
+              list = [...list,v]
+            }
+          })
+          return  list
+        }
+    };
+    methods = {
+      
+      officialLoaded(e){
+        // 如果没有加载出关注组件，把全局的关注组件状态变量给改为不展示
+        if(e.detail.status!==0) wepy.$instance.globalData.appconfig.follow_status = 0
+      },
+      adClose(){
+        this.adshow = false
+      },
+      goto(to){
+          console.log('to',to)
+          wepy.navigateTo({url:to});
+      },
+      click(){},
+    }
+
+    async onLoad(query) {
+      console.log(query)
+      this.id = query.id
+      this.fromid = query.fromid
+      this.StatusBar= wepy.$instance.globalData.StatusBar
+      this.CustomBar= wepy.$instance.globalData.CustomBar
+      this.Custom= wepy.$instance.globalData.Custom
+      // this.ads = await commApi.GetAds()
+      this.author = await commApi.GetAuthorInfo(this.id)
+      this.articles = await commApi.GetAuthorArticles(this.id,1)
+      this.page = 2;
+      if(this.articles.length){
+        this.loadstatus = 0 
+      }else{
+        this.loadstatus = 2
+      }
+      this.$apply()
+    }
+
+    async onReachBottom(){
+      this.loadstatus = 1 
+      this.$apply()
+      let articles = await commApi.GetAuthorArticles(this.id,this.page)
+      if(articles.length){
+        this.page ++
+        this.articles = [...this.articles,...articles]
+        this.loadstatus = 0 
+      }else{
+        this.loadstatus = 2
+      }
+      this.$apply()
+    }
+        
+    // 下拉刷新
+    async onPullDownRefresh() {
+      wepy.stopPullDownRefresh()
+      this.loadstatus = 1 
+      this.articles = []
+      this.$apply()
+      this.articles = await commApi.GetAuthorArticles(this.id,1)
+      this.page = 2;
+      this.loadstatus = 0 
+      this.$apply()
+    }
+
+
+    onShareAppMessage(res) {
+        return {
+            title: this.share_title,
+            imageUrl: this.share_cover,
+            path: this.share_path,
+        }
+    }
+
+  }
+
+</script>

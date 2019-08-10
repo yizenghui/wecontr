@@ -106,22 +106,30 @@ page{
 
     
   <view class="cu-bar bg-white">
-      <view class='action'>
+      <view class='action' @tap="goto('/pages/author/list?id={{article.author_id}}')">
         <block wx:if="{{article.author_id}}">{{article.author.name}}</block>
+
+        
+        
       </view>
     <view class="content text-bold">
       
     </view>
     <view class="action">
-      <text class="icon-qrcode text-grey" @tap="poster({{article.id}})"></text>
+      
+      <block wx:if="{{article.author_id && article.author && article.author.reward_qrcode}}" ><text @tap="showimage({{article.author.reward_qrcode}})" class="icon-recharge text-red margin-right-xs"></text> <text class="margin-right-sm" @tap="showimage({{article.author.reward_qrcode}})">赞赏</text></block>
        
-      <text class='icon-appreciatefill  text-grey'  wx:if="{{userlikearticle}}" @tap="unlikearticle({{article.id}})"></text>
-      <text class='icon-appreciate  text-gray' wx:if="{{!userlikearticle}}" @tap="likearticle({{article.id}})"></text> 
-      {{article.liked}}
-
+      <text class='icon-appreciatefill  text-grey margin-right-xs'  wx:if="{{userlikearticle}}" @tap="unlikearticle({{article.id}})"></text>
+      <text class='icon-appreciate  text-gray margin-right-xs' wx:if="{{!userlikearticle}}" @tap="likearticle({{article.id}})"></text> 
+      <text  wx:if="{{userlikearticle}}" @tap="unlikearticle({{article.id}})">{{article.liked}}</text>
+      <text  wx:if="{{!userlikearticle}}" @tap="likearticle({{article.id}})">{{article.liked}}</text>
         <button class="cu-btn bg-white" open-type='share'>
         分享<text class='icon-forward lg text-gray'></text>
         </button>
+      
+      <text @tap="poster({{article.id}})">生成海报</text> 
+      <text class="icon-qrcode text-grey margin-lr-xs" @tap="showimage({{article.qrcode_url}})"></text> 
+      
     </view>
   </view>
         
@@ -464,6 +472,12 @@ page{
       },
       isCard(e) {
           this.isCard = e.detail.value
+      },
+      showimage(url) {
+        wx.previewImage({
+          current: url, // 赞赏码
+          urls: [url]
+        })
       },
       click(){},
 
